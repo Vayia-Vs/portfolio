@@ -144,11 +144,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const parseTags = (name: string) => {
     const filename = name.split("/").pop() ?? "";
     const base = filename.replace(/\.[^/.]+$/, "");
-    const parts = base.split("#");
+    const parts = base.split("-");
     const tagParts = parts.slice(1);
-    return tagParts
-      .map((tag) => tag.trim().toLowerCase())
-      .filter(Boolean);
+    return tagParts.map((tag) => tag.trim().toLowerCase()).filter(Boolean);
   };
 
   const allTags = Array.from(new Set(images.flatMap(parseTags))).sort();
@@ -599,8 +597,11 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const imagesFromFs = entries
     .filter((entry) => entry.isFile())
     .map((entry) => entry.name)
-    .filter((name) => /#/.test(name))
     .filter((name) => /\.(png|jpe?g|webp|avif)$/i.test(name))
+    .filter((name) => {
+      const base = name.replace(/\.[^/.]+$/, "");
+      return base.split("-").length > 1;
+    })
     .sort();
 
   return {
