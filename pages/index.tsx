@@ -484,6 +484,91 @@ export default function Home({ imagesFromFs }: HomeProps) {
         </div>
       </section>
 
+      {/* ================= BOOK ME ================= */}
+      <section className="px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10">
+        <div className="max-w-5xl mx-auto">
+          <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-6">
+            Services
+          </p>
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-12">
+            Book me for...
+          </h2>
+
+          {/* Services Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            {/* Service Card 1 */}
+            <div className="border border-white/10 rounded-lg p-6 sm:p-8 hover:border-white/40 transition">
+              <div className="text-3xl mb-4">📸</div>
+              <h3 className="font-serif text-2xl mb-3">Portrait Sessions</h3>
+              <p className="text-white/60 text-sm mb-4">
+                Personal portraits, headshots, or intimate photo sessions in Athens or around you.
+              </p>
+              <a href="#contact" className="text-white/70 hover:text-white text-sm uppercase tracking-widest transition">
+                Inquire →
+              </a>
+            </div>
+
+            {/* Service Card 2 */}
+            <div className="border border-white/10 rounded-lg p-6 sm:p-8 hover:border-white/40 transition">
+              <div className="text-3xl mb-4">🎉</div>
+              <h3 className="font-serif text-2xl mb-3">Event Coverage</h3>
+              <p className="text-white/60 text-sm mb-4">
+                Weddings, pre-weddings, parties, and special moments captured authentically.
+              </p>
+              <a href="#contact" className="text-white/70 hover:text-white text-sm uppercase tracking-widest transition">
+                Inquire →
+              </a>
+            </div>
+
+            {/* Service Card 3 */}
+            <div className="border border-white/10 rounded-lg p-6 sm:p-8 hover:border-white/40 transition">
+              <div className="text-3xl mb-4">📱</div>
+              <h3 className="font-serif text-2xl mb-3">Instagram Content</h3>
+              <p className="text-white/60 text-sm mb-4">
+                Content creation for brands and creators. Feed-ready, story-ready content.
+              </p>
+              <a href="#contact" className="text-white/70 hover:text-white text-sm uppercase tracking-widest transition">
+                Inquire →
+              </a>
+            </div>
+
+            {/* Service Card 4 */}
+            <div className="border border-white/10 rounded-lg p-6 sm:p-8 hover:border-white/40 transition">
+              <div className="text-3xl mb-4">🏙️</div>
+              <h3 className="font-serif text-2xl mb-3">Street Photography Walks</h3>
+              <p className="text-white/60 text-sm mb-4">
+                Guided photography walks exploring light, movement, and urban stories together.
+              </p>
+              <a href="#contact" className="text-white/70 hover:text-white text-sm uppercase tracking-widest transition">
+                Inquire →
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Contact Info */}
+          <div className="bg-white/5 rounded-lg border border-white/10 p-6 sm:p-8 text-center">
+            <p className="text-white/60 mb-4">Interested in any of these?</p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <a 
+                href="mailto:vayia.photography@gmail.com"
+                className="text-white hover:text-white/70 transition"
+              >
+                📧 vayia.photography@gmail.com
+              </a>
+              <span className="text-white/20 hidden sm:block">•</span>
+              <a 
+                href="https://instagram.com/vayiavs"
+                target="_blank"
+                rel="noreferrer"
+                className="text-white/70 hover:text-white transition"
+              >
+                Instagram @vayiavs
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
             {/* ================= CONTACT ================= */}
       <section
         id="contact"
