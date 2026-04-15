@@ -386,7 +386,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center">
-            {visibleImages.slice(0, itemsToShow).map((name, index) => {
+            {(viewMode === "desktop" ? visibleImages : visibleImages.slice(0, itemsToShow)).map((name, index) => {
               // Determine height based on viewMode
               const heightClass = viewMode === "mobile" 
                 ? "h-40 sm:h-56 md:h-72 lg:h-96"
@@ -419,8 +419,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
             })}
           </div>
 
-          {/* SHOW MORE BUTTON */}
-          {visibleImages.length > itemsToShow && (
+          {/* SHOW MORE BUTTON - MOBILE ONLY */}
+          {viewMode !== "desktop" && visibleImages.length > itemsToShow && (
             <div className="mt-12 flex justify-center">
               <button
                 onClick={() => setItemsToShow(itemsToShow + 5)}
