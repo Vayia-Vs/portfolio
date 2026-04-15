@@ -164,10 +164,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
             ? "bg-black/80 backdrop-blur border-b border-white/10 py-4"
-            : "bg-transparent py-6"
+            : "bg-transparent py-4 sm:py-6"
         }`}
       >
-        <nav className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+        <nav className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between">
           <button
             onClick={() => scrollTo("hero")}
             className="text-2xl font-serif tracking-wide"
@@ -234,7 +234,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {T[lang].heroTag}
           </p>
 
-          <h1 className="font-serif text-5xl md:text-7xl lg:text-8xl leading-tight mb-8">
+          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-tight mb-8">
             {T[lang].heroTitle1}
             <br />
             <span className="italic">{T[lang].heroTitle2}</span>{" "}
@@ -257,10 +257,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= GALLERY ================= */}
       <section
         id="gallery"
-        className="px-8 md:px-20 py-32 border-t border-white/10"
+        className="px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10"
       >
-        <div className="mx-auto w-full max-w-6xl">
-          <h2 className="font-serif text-4xl md:text-5xl mb-20">
+        <div className="mx-auto w-full max-w-6xl px-2 sm:px-0">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-10 md:mb-20">
             {T[lang].galleryTitle}
           </h2>
 
@@ -291,7 +291,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             ))}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10 justify-items-center">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center">
             {visibleImages.map((name, index) => (
               <button
                 key={name}
@@ -305,7 +305,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   })
                 }
               >
-                <div className="h-80 sm:h-96 w-full overflow-hidden rounded-sm bg-white/10">
+                <div className="h-40 sm:h-56 md:h-72 lg:h-96 w-full overflow-hidden rounded-sm bg-white/10">
                   <img
                     src={toSrc(name)}
                     alt=""
@@ -322,19 +322,19 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= ABOUT ================= */}
       <section
         id="about"
-        className="px-8 md:px-20 py-32 border-t border-white/10"
+        className="px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10"
       >
-        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-16 items-start">
+        <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8 md:gap-16 items-start">
           <div>
             <p className="text-xs uppercase tracking-[0.4em] text-white/50 mb-6">
               About the work
             </p>
-            <h2 className="font-serif text-4xl md:text-5xl mb-8">
+            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-6 md:mb-8">
               {T[lang].aboutTitle1}{" "}
               <span className="italic">{T[lang].aboutTitle2}</span>
             </h2>
 
-            <div className="space-y-6 text-white/70 text-lg leading-relaxed">
+            <div className="space-y-4 sm:space-y-6 text-white/70 text-base sm:text-lg leading-relaxed">
               {T[lang].aboutText.map((p) => (
                 <p key={p}>{p}</p>
               ))}
@@ -372,18 +372,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {/* ================= CONTACT ================= */}
       <section
         id="contact"
-        className="px-8 md:px-20 py-32 border-t border-white/10"
+        className="px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10"
       >
         <div className="max-w-3xl mx-auto text-center">
           <p className="text-xs tracking-[0.5em] uppercase text-white/60 mb-6">
             Get in touch
           </p>
-          <h2 className="font-serif text-4xl md:text-5xl mb-6">
+          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-4 sm:mb-6">
             {T[lang].contactTitle1}
             <br />
             <span className="italic">{T[lang].contactTitle2}</span>
           </h2>
-          <p className="text-white/60 text-base md:text-lg leading-relaxed mb-12">
+          <p className="text-white/60 text-sm sm:text-base md:text-lg leading-relaxed mb-8 sm:mb-12">
             Have a project in mind? I'd love to hear about it. Drop me a message
             and let's create something beautiful together.
           </p>
@@ -402,7 +402,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <input name="bot-field" />
               </label>
             </div>
-            <div className="grid md:grid-cols-2 gap-10">
+            <div className="grid md:grid-cols-2 gap-6 md:gap-10">
               <label className="block">
                 <span className="block text-xs tracking-[0.3em] uppercase text-white/60 mb-4">
                   Name
@@ -441,7 +441,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </label>
 
             <div className="text-center pt-8">
-              <button className="inline-flex items-center gap-3 border border-white bg-white px-12 py-4 text-xs tracking-[0.4em] uppercase text-black transition hover:bg-white/90">
+              <button className="inline-flex items-center gap-2 sm:gap-3 border border-white bg-white px-6 sm:px-12 py-3 sm:py-4 text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] uppercase text-black transition hover:bg-white/90">
                 {T[lang].contactCTA}
                 <svg
                   aria-hidden="true"
@@ -460,14 +460,14 @@ export default function Home({ imagesFromFs }: HomeProps) {
         </div>
       </section>
       {/* ================= FOOTER ================= */}
-      <footer className="bg-neutral-900 px-8 md:px-20 py-16 border-t border-white/10">
-        <div className="flex flex-col items-center gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
+      <footer className="bg-neutral-900 px-4 sm:px-8 md:px-20 py-12 md:py-16 border-t border-white/10">
+        <div className="flex flex-col items-center gap-4 md:gap-6 text-center md:flex-row md:items-center md:justify-between md:text-left">
           <img
             src="/images/MYWATERMARK.png"
             alt="Vayia signature"
-            className="h-12 w-auto opacity-80"
+            className="h-10 sm:h-12 w-auto opacity-80"
           />
-          <div className="flex items-center gap-6 text-sm tracking-wide">
+          <div className="flex items-center gap-4 sm:gap-6 text-xs sm:text-sm tracking-wide">
             <a
               className="inline-flex items-center gap-2 text-white/60 hover:text-white"
               href="https://www.instagram.com/vayiavs/"
@@ -529,13 +529,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="sticky top-0 z-10 flex flex-wrap items-center justify-between gap-4 bg-black/80 px-2 py-2 backdrop-blur">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-white/40">
-                Esc close
-                {lightbox.images.length > 1 ? " / Left-Right to navigate" : ""}
+              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/40">
+                Esc {lightbox.images.length > 1 ? "/ Arrows" : ""}
               </p>
               <button
                 type="button"
-                className="text-white/70 hover:text-white"
+                className="text-xs sm:text-sm font-medium text-white/70 hover:text-white transition"
                 onClick={() =>
                   setLightbox({
                     open: false,
@@ -544,7 +543,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   })
                 }
               >
-                Close
+                ✕
               </button>
             </div>
             <div className="relative flex items-center justify-center pt-10">
@@ -552,7 +551,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <>
                   <button
                     type="button"
-                    className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 px-4 py-3 text-xs uppercase tracking-[0.3em] text-white/80 hover:border-white/60 hover:text-white"
+                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 px-3 sm:px-4 py-2 sm:py-3 text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/80 hover:border-white/60 hover:text-white transition touch-manipulation"
                     onClick={() =>
                       setLightbox((prev) => ({
                         ...prev,
@@ -562,11 +561,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       }))
                     }
                   >
-                    Prev
+                    ←
                   </button>
                   <button
                     type="button"
-                    className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 px-4 py-3 text-xs uppercase tracking-[0.3em] text-white/80 hover:border-white/60 hover:text-white"
+                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/20 bg-black/60 px-3 sm:px-4 py-2 sm:py-3 text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/80 hover:border-white/60 hover:text-white transition touch-manipulation"
                     onClick={() =>
                       setLightbox((prev) => ({
                         ...prev,
@@ -574,7 +573,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       }))
                     }
                   >
-                    Next
+                    →
                   </button>
                 </>
               )}
