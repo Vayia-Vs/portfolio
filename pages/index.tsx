@@ -11,6 +11,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   /* ================= STATE ================= */
   const [scrolled, setScrolled] = useState(false);
   const [lang, setLang] = useState<"en" | "gr">("en");
+  const [viewMode, setViewMode] = useState<"auto" | "mobile" | "desktop">("auto");
   const [activeFilter, setActiveFilter] = useState("all");
   const [images, setImages] = useState<string[]>([]);
   const [lightbox, setLightbox] = useState<{
@@ -19,11 +20,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
     index: number;
   }>({ open: false, images: [], index: 0 });
 
-  /* ================= LOAD SAVED LANGUAGE ================= */
+  /* ================= LOAD SAVED LANGUAGE & VIEW MODE ================= */
   useEffect(() => {
     const savedLang = localStorage.getItem("lang");
     if (savedLang === "en" || savedLang === "gr") {
       setLang(savedLang);
+    }
+    const savedViewMode = localStorage.getItem("viewMode");
+    if (savedViewMode === "mobile" || savedViewMode === "desktop" || savedViewMode === "auto") {
+      setViewMode(savedViewMode);
     }
   }, []);
 
@@ -188,27 +193,62 @@ export default function Home({ imagesFromFs }: HomeProps) {
             ))}
           </ul>
 
-          {/* LANGUAGE TOGGLE */}
-          <div className="flex items-center gap-3 text-sm tracking-widest uppercase">
-            <button
-              onClick={() => {
-                setLang("en");
-                localStorage.setItem("lang", "en");
-              }}
-              className={lang === "en" ? "text-white" : "text-white/40"}
-            >
-              EN
-            </button>
-            <span className="text-white/30">/</span>
-            <button
-              onClick={() => {
-                setLang("gr");
-                localStorage.setItem("lang", "gr");
-              }}
-              className={lang === "gr" ? "text-white" : "text-white/40"}
-            >
-              GR
-            </button>
+          {/* LANGUAGE & VIEW MODE TOGGLE */}
+          <div className="flex items-center gap-4 sm:gap-6">
+            {/* VIEW MODE */}
+            <div className="flex items-center gap-2 text-[10px] sm:text-xs tracking-widest uppercase">
+              <button
+                onClick={() => {
+                  setViewMode("mobile");
+                  localStorage.setItem("viewMode", "mobile");
+                }}
+                title="Mobile view"
+                className={`px-2 py-1 rounded transition ${
+                  viewMode === "mobile"
+                    ? "bg-white/20 text-white"
+                    : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                📱
+              </button>
+              <button
+                onClick={() => {
+                  setViewMode("desktop");
+                  localStorage.setItem("viewMode", "desktop");
+                }}
+                title="Desktop view"
+                className={`px-2 py-1 rounded transition ${
+                  viewMode === "desktop"
+                    ? "bg-white/20 text-white"
+                    : "text-white/40 hover:text-white/60"
+                }`}
+              >
+                🖥️
+              </button>
+            </div>
+
+            {/* LANGUAGE */}
+            <div className="flex items-center gap-3 text-sm tracking-widest uppercase border-l border-white/10 pl-4 sm:pl-6">
+              <button
+                onClick={() => {
+                  setLang("en");
+                  localStorage.setItem("lang", "en");
+                }}
+                className={lang === "en" ? "text-white" : "text-white/40"}
+              >
+                EN
+              </button>
+              <span className="text-white/30">/</span>
+              <button
+                onClick={() => {
+                  setLang("gr");
+                  localStorage.setItem("lang", "gr");
+                }}
+                className={lang === "gr" ? "text-white" : "text-white/40"}
+              >
+                GR
+              </button>
+            </div>
           </div>
         </nav>
       </header>
@@ -292,28 +332,37 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center">
-            {visibleImages.map((name, index) => (
-              <button
-                key={name}
-                type="button"
-                className="w-full max-w-[420px] text-left"
-                onClick={() =>
-                  setLightbox({
-                    open: true,
-                    images: visibleImages,
-                    index,
-                  })
-                }
-              >
-                <div className="h-40 sm:h-56 md:h-72 lg:h-96 w-full overflow-hidden rounded-sm bg-white/10">
-                  <img
-                    src={toSrc(name)}
-                    alt=""
-                    className="h-full w-full object-cover"
-                  />
-                </div>
-              </button>
-            ))}
+            {visibleImages.map((name, index) => {
+              // Determine height based on viewMode
+              const heightClass = viewMode === "mobile" 
+                ? "h-40 sm:h-56 md:h-72 lg:h-96"
+                : viewMode === "desktop"
+                ? "h-64 sm:h-80 md:h-96 lg:h-96"
+                : "h-40 sm:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
+              
+              return (
+                <button
+                  key={name}
+                  type="button"
+                  className="w-full max-w-[420px] text-left"
+                  onClick={() =>
+                    setLightbox({
+                      open: true,
+                      images: visibleImages,
+                      index,
+                    })
+                  }
+                >
+                  <div className={`${heightClass} w-full overflow-hidden rounded-sm bg-white/10`}>
+                    <img
+                      src={toSrc(name)}
+                      alt=""
+                      className="h-full w-full object-cover"
+                    />
+                  </div>
+                </button>
+              );
+            })}
           </div>
         </div>
 
