@@ -24,3 +24,148 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.gallery-backdrop {
+  background:
+    linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)),
+    radial-gradient(circle at 18% 12%, rgba(255, 255, 255, 0.22), transparent 27rem),
+    radial-gradient(circle at 86% 18%, rgba(255, 255, 255, 0.16), transparent 24rem),
+    #000000;
+}
+
+.gallery-backdrop::before {
+  content: "";
+  position: absolute;
+  inset: 1.5rem;
+  border: 1px solid rgba(215, 180, 106, 0.24);
+  background: rgba(255, 255, 255, 0.14);
+  pointer-events: none;
+}
+
+@keyframes galleryFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(34px) scale(0.9);
+  }
+  65% {
+    opacity: 1;
+    transform: translateY(-8px) scale(1.02);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes lightboxFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes lightboxFadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes lightboxPanelIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes lightboxImageIn {
+  from {
+    opacity: 0;
+    transform: translateY(14px) translateX(0) scale(0.965);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) translateX(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+@keyframes lightboxImageNextIn {
+  from {
+    opacity: 1;
+    transform: translateX(72px) scale(1);
+    filter: none;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: none;
+  }
+}
+
+@keyframes lightboxImagePrevIn {
+  from {
+    opacity: 1;
+    transform: translateX(-72px) scale(1);
+    filter: none;
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    filter: none;
+  }
+}
+
+@layer utilities {
+  .animate-gallery-item {
+    opacity: 0;
+    animation: galleryFadeIn 850ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+    will-change: opacity, transform;
+  }
+
+  .lightbox-overlay {
+    animation: lightboxFadeIn 260ms ease-out both;
+  }
+
+  .lightbox-overlay-out {
+    animation: lightboxFadeOut 240ms ease-in both;
+  }
+
+  .lightbox-panel {
+    animation: lightboxPanelIn 320ms ease-out both;
+  }
+
+  .lightbox-image {
+    animation: lightboxImageIn 420ms cubic-bezier(0.2, 0.85, 0.25, 1) both;
+    will-change: opacity, transform, filter;
+  }
+
+  .lightbox-image-next {
+    animation-name: lightboxImageNextIn;
+  }
+
+  .lightbox-image-prev {
+    animation-name: lightboxImagePrevIn;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-gallery-item,
+  .lightbox-overlay,
+  .lightbox-panel,
+  .lightbox-image {
+    opacity: 1;
+    animation: none;
+    transform: none;
+    filter: none;
+  }
+}
