@@ -510,10 +510,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
             {/* Service Card 2 */}
             <div className="border border-white/10 rounded-lg p-6 sm:p-8 hover:border-white/40 transition">
-              <div className="text-3xl mb-4">🎉</div>
-              <h3 className="font-serif text-2xl mb-3">Event Coverage</h3>
+              <div className="text-3xl mb-4">🛍️</div>
+              <h3 className="font-serif text-2xl mb-3">Product Photography</h3>
               <p className="text-white/60 text-sm mb-4">
-                Weddings, pre-weddings, parties, and special moments captured authentically.
+                For online shops, small businesses, and brands. Showcase your products beautifully.
               </p>
               <a href="#contact" className="text-white/70 hover:text-white text-sm uppercase tracking-widest transition">
                 Inquire →
