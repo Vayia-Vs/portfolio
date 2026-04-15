@@ -12,6 +12,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [scrolled, setScrolled] = useState(false);
   const [lang, setLang] = useState<"en" | "gr">("en");
   const [viewMode, setViewMode] = useState<"auto" | "mobile" | "desktop">("auto");
+  const [hasChosenView, setHasChosenView] = useState(true);
+  const [itemsToShow, setItemsToShow] = useState(5); // Gallery items shown
   const [activeFilter, setActiveFilter] = useState("all");
   const [images, setImages] = useState<string[]>([]);
   const [lightbox, setLightbox] = useState<{
@@ -29,6 +31,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
     const savedViewMode = localStorage.getItem("viewMode");
     if (savedViewMode === "mobile" || savedViewMode === "desktop" || savedViewMode === "auto") {
       setViewMode(savedViewMode);
+    }
+    // Check if user already chose view mode
+    const hasChosen = localStorage.getItem("hasChosenView");
+    if (hasChosen === "true") {
+      setHasChosenView(true);
+    } else {
+      setHasChosenView(false);
     }
   }, []);
 
@@ -164,6 +173,51 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
   return (
     <div className="bg-black text-white">
+      {/* ================= SPLASH SCREEN ================= */}
+      {!hasChosenView && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-md">
+          <div className="text-center space-y-12 px-6 py-12 bg-black/40 rounded-2xl border border-white/10 backdrop-blur">
+            <div>
+              <h2 className="text-4xl md:text-5xl font-serif mb-4">Welcome</h2>
+              <p className="text-white/60 text-lg">Choose your preferred view:</p>
+            </div>
+
+            {/* View Mode Selection */}
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button
+                onClick={() => {
+                  setViewMode("mobile");
+                  localStorage.setItem("viewMode", "mobile");
+                  localStorage.setItem("hasChosenView", "true");
+                  setHasChosenView(true);
+                }}
+                className="group px-8 py-6 rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition space-y-3"
+              >
+                <div className="text-5xl">📱</div>
+                <div className="text-white font-medium">Mobile View</div>
+                <div className="text-sm text-white/50">Optimized for phones</div>
+              </button>
+
+              <button
+                onClick={() => {
+                  setViewMode("desktop");
+                  localStorage.setItem("viewMode", "desktop");
+                  localStorage.setItem("hasChosenView", "true");
+                  setHasChosenView(true);
+                }}
+                className="group px-8 py-6 rounded-xl border-2 border-white/30 hover:border-white hover:bg-white/10 transition space-y-3"
+              >
+                <div className="text-5xl">🖥️</div>
+                <div className="text-white font-medium">Desktop View</div>
+                <div className="text-sm text-white/50">Large images & layout</div>
+              </button>
+            </div>
+
+            <p className="text-xs text-white/40">You can change this anytime in the header →</p>
+          </div>
+        </div>
+      )}
+
       {/* ================= HEADER ================= */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
@@ -332,7 +386,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center">
-            {visibleImages.map((name, index) => {
+            {visibleImages.slice(0, itemsToShow).map((name, index) => {
               // Determine height based on viewMode
               const heightClass = viewMode === "mobile" 
                 ? "h-40 sm:h-56 md:h-72 lg:h-96"
@@ -364,6 +418,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
               );
             })}
           </div>
+
+          {/* SHOW MORE BUTTON */}
+          {visibleImages.length > itemsToShow && (
+            <div className="mt-12 flex justify-center">
+              <button
+                onClick={() => setItemsToShow(itemsToShow + 5)}
+                className="px-6 sm:px-8 py-3 border border-white/40 text-white/70 hover:border-white hover:text-white text-sm uppercase tracking-widest transition"
+              >
+                Show More ↓
+              </button>
+            </div>
+          )}
         </div>
 
       </section>
@@ -564,6 +630,24 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </p>
         </div>
       </footer>
+
+      {/* ================= FLOATING ACTION BUTTONS ================= */}
+      {scrolled && (
+        <button
+          onClick={() => scrollTo("hero")}
+          className="fixed bottom-8 right-8 z-40 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur border border-white/30 p-3 text-white transition"
+          title="Back to top"
+        >
+          ↑
+        </button>
+      )}
+      <button
+        onClick={() => scrollTo("contact")}
+        className="fixed bottom-8 left-8 z-40 rounded-full bg-white/20 hover:bg-white/40 backdrop-blur border border-white/30 p-3 text-white transition"
+        title="Go to contact"
+      >
+        ↓
+      </button>
 
       {/* ================= LIGHTBOX ================= */}
       {lightbox.open && (
