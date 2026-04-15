@@ -450,7 +450,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-black/85 backdrop-blur border-b border-[#d7b46a]/25 py-4"
+            ? "bg-black/85 backdrop-blur border-b border-[#d7b46a]/25 py-4 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:after:left-6 sm:after:right-6"
             : "bg-transparent py-4 sm:py-6"
         }`}
       >
@@ -688,7 +688,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         id="about"
         className="px-4 sm:px-8 md:px-16 xl:px-20 py-18 md:py-24 xl:py-28 border-t border-white/10"
       >
-        <div className="ml-auto mr-0 grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
+        <div className="ml-0 mr-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
           <div className="max-w-3xl">
             <p className="mb-5 text-[10px] uppercase tracking-[0.45em] text-white/50">
               {T[lang].aboutKicker}
@@ -736,8 +736,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="gallery-backdrop px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10 relative overflow-hidden">
-        <div className="relative z-10 ml-0 mr-auto max-w-6xl">
+      <section className="relative overflow-hidden border-t border-white/10 bg-black px-4 py-20 sm:px-8 md:px-20 md:py-32">
+        <Image
+          src="/images/greece1-landsc.png"
+          alt=""
+          fill
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-black/42" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
+        <div className="absolute inset-0 bg-white/8" />
+        <div className="relative z-10 ml-auto mr-0 max-w-5xl">
           <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-6">
             {T[lang].servicesKicker}
           </p>
@@ -747,12 +757,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </h2>
           )}
 
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px]">
+          <div className="grid items-start gap-8">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                  className="border border-[#d7b46a]/45 rounded-lg p-6 sm:p-8 transition hover:border-[#f6dfaa] hover:bg-[#d7b46a]/8 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)]"
+                  className="rounded-lg border border-[#d7b46a]/45 bg-black/52 p-6 shadow-[0_18px_55px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/68 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)] sm:p-8"
                 >
                   <div className="mb-7 text-[#d7b46a]">
                     <ServiceIcon name={service.icon} />
@@ -764,16 +774,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   </a>
                 </div>
               ))}
-            </div>
-            <div className="relative aspect-[3/4] w-full max-w-[420px] overflow-hidden rounded-lg border border-white/15 bg-black/30 shadow-[0_18px_55px_rgba(0,0,0,0.34)] lg:sticky lg:top-28">
-              <Image
-                src="/images/ist8-street.jpg"
-                alt=""
-                fill
-                sizes="(min-width: 1024px) 30vw, 90vw"
-                className="object-cover grayscale"
-              />
-              <div className="absolute inset-0 bg-black/15" />
             </div>
           </div>
         </div>
