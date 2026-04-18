@@ -244,8 +244,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       name: String(formData.get("name") ?? "").trim(),
       email: String(formData.get("email") ?? "").trim(),
       inquiryType: String(formData.get("inquiryType") ?? "").trim(),
-      timeframe: String(formData.get("timeframe") ?? "").trim(),
-      budget: String(formData.get("budget") ?? "").trim(),
+      company: String(formData.get("company") ?? "").trim(),
       message: String(formData.get("message") ?? "").trim(),
       botField: String(formData.get("bot-field") ?? "").trim(),
       submittedAt: Number(formData.get("submitted-at") ?? contactStartedAt),
@@ -275,7 +274,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       }
       trackEvent("contact_submit", {
         inquiry_type: payload.inquiryType || "unspecified",
-        timeframe: payload.timeframe || "unspecified",
+        company: payload.company || "unspecified",
       });
       setContactState("success");
     } catch (error) {
@@ -1103,55 +1102,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-black/42" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
-        <div className="relative z-10 mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-12">
-          <div className="max-w-sm lg:sticky lg:top-28">
+        <div className="relative z-10 mx-auto max-w-6xl">
+          <div className="max-w-sm lg:mb-10">
             {T[lang].servicesKicker ? (
               <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
                 {formatUiLabel(T[lang].servicesKicker)}
               </p>
             ) : null}
-            <h2 className={`max-w-xs text-3xl italic leading-tight text-white sm:text-4xl md:text-[2.85rem] ${isGreek ? "font-sans" : "font-serif"}`}>
-              {T[lang].servicesHeading}
-            </h2>
-            <p className="mt-5 max-w-sm text-sm leading-7 text-white/65 sm:text-base sm:leading-8">
-              {T[lang].servicesLead}
-            </p>
-            <div className="mt-8 space-y-3">
-              <p className="text-[10px] uppercase tracking-[0.3em] text-white/38">
-                {formatUiLabel(T[lang].offersTitle)}
-              </p>
-              <div className="space-y-3">
-                {T[lang].offers.map((offer) => (
-                  <div
-                    key={offer.label}
-                    className="rounded-[1.1rem] border border-white/10 bg-black/38 px-4 py-3"
-                  >
-                    <div className="flex items-baseline justify-between gap-3">
-                      <p className="text-sm text-white/88">{offer.label}</p>
-                      <p className="text-sm text-[#f6dfaa]">{offer.price}</p>
-                    </div>
-                    <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-white/38">
-                      {offer.meta}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="mt-8">
-              <p className="mb-3 text-[10px] uppercase tracking-[0.3em] text-white/38">
-                {formatUiLabel(T[lang].processTitle)}
-              </p>
-              <ol className="space-y-3 text-sm text-white/62">
-                {T[lang].process.map((step, index) => (
-                  <li key={step} className="flex gap-3">
-                    <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#d7b46a]/45 text-[10px] text-[#f6dfaa]">
-                      {index + 1}
-                    </span>
-                    <span>{step}</span>
-                  </li>
-                ))}
-              </ol>
-            </div>
           </div>
 
           <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
@@ -1181,8 +1138,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
         data-reveal-section="true"
         className="reveal-section flex min-h-[100svh] items-center border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
-        <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-16">
-          <div className="text-center lg:sticky lg:top-28 lg:text-left">
+        <div className="mx-auto max-w-5xl text-center">
+          <div>
             {T[lang].contactKicker ? (
               <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
                 {formatUiLabel(T[lang].contactKicker)}
@@ -1192,23 +1149,14 @@ export default function Home({ imagesFromFs }: HomeProps) {
               {T[lang].contactTitle1}{" "}
               <span>{T[lang].contactTitle2}</span>
             </h2>
-            <p className="mx-auto mb-5 max-w-md text-sm leading-7 text-white/60 sm:text-base md:leading-relaxed lg:mx-0">
+            <p className="mx-auto mb-5 max-w-3xl text-sm leading-7 text-white/60 sm:mb-12 sm:text-base md:text-lg md:leading-relaxed">
               {T[lang].contactText}
-            </p>
-            <a
-              href={`mailto:${T[lang].contactEmail}`}
-              className="inline-flex text-sm tracking-[0.18em] text-[#d7b46a] transition hover:text-[#f6dfaa]"
-            >
-              {T[lang].contactEmail}
-            </a>
-            <p className="mt-4 text-xs uppercase tracking-[0.22em] text-white/40 sm:text-[11px] sm:tracking-[0.28em]">
-              {T[lang].contactMeta}
             </p>
           </div>
 
           <form
             onSubmit={handleContactSubmit}
-            className="mx-auto w-full max-w-3xl space-y-8 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-6 text-left shadow-[0_18px_55px_rgba(0,0,0,0.22)] backdrop-blur-sm sm:space-y-10 sm:px-8 sm:py-8"
+            className="mx-auto max-w-3xl space-y-8 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-6 text-left shadow-[0_18px_55px_rgba(0,0,0,0.22)] backdrop-blur-sm sm:space-y-10 sm:px-8 sm:py-8"
           >
             <div className="hidden">
               <label>
@@ -1241,57 +1189,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   placeholder={T[lang].formEmailPlaceholder}
                   className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
                 />
-              </label>
-            </div>
-
-            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
-              <label className="block">
-                <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
-                  {formatUiLabel(T[lang].formInquiryType)}
-                </span>
-                <select
-                  name="inquiryType"
-                  defaultValue={T[lang].formInquiryOptions[0]}
-                  className="w-full border-b border-white/30 bg-black py-3 text-white/80 transition focus:border-[#d7b46a]/80 focus:outline-none"
-                >
-                  {T[lang].formInquiryOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
-                  {formatUiLabel(T[lang].formTimeframe)}
-                </span>
-                <select
-                  name="timeframe"
-                  defaultValue={T[lang].formTimeframeOptions[0]}
-                  className="w-full border-b border-white/30 bg-black py-3 text-white/80 transition focus:border-[#d7b46a]/80 focus:outline-none"
-                >
-                  {T[lang].formTimeframeOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
-                  {formatUiLabel(T[lang].formBudget)}
-                </span>
-                <select
-                  name="budget"
-                  defaultValue={T[lang].formBudgetOptions[0]}
-                  className="w-full border-b border-white/30 bg-black py-3 text-white/80 transition focus:border-[#d7b46a]/80 focus:outline-none"
-                >
-                  {T[lang].formBudgetOptions.map((option) => (
-                    <option key={option} value={option}>
-                      {option}
-                    </option>
-                  ))}
-                </select>
               </label>
             </div>
 
@@ -1369,9 +1266,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
               {T[lang].footerLocation}
             </p>
           </div>
-          <p className="hidden text-[10px] uppercase tracking-[0.28em] text-white/35 md:block">
-            {T[lang].footerTagline}
-          </p>
           <div className="flex items-center justify-center gap-2 text-xs tracking-wide sm:gap-5 sm:text-sm">
             <a
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black sm:h-12 sm:w-12"

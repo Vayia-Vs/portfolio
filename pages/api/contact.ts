@@ -42,8 +42,7 @@ export default async function handler(
     name = "",
     email = "",
     inquiryType = "",
-    timeframe = "",
-    budget = "",
+    company = "",
     message = "",
     botField = "",
     submittedAt = 0,
@@ -61,8 +60,7 @@ export default async function handler(
   const cleanName = String(name).trim();
   const cleanEmail = String(email).trim();
   const cleanInquiryType = String(inquiryType).trim();
-  const cleanTimeframe = String(timeframe).trim();
-  const cleanBudget = String(budget).trim();
+  const cleanCompany = String(company).trim();
   const cleanMessage = String(message).trim();
   const submittedAtValue = Number(submittedAt);
 
@@ -87,8 +85,7 @@ export default async function handler(
     cleanName.length > 80 ||
     cleanEmail.length > 160 ||
     cleanInquiryType.length > 120 ||
-    cleanTimeframe.length > 120 ||
-    cleanBudget.length > 120 ||
+    cleanCompany.length > 160 ||
     cleanMessage.length > 4000
   ) {
     return res.status(400).json({ error: "Input too long" });
@@ -105,8 +102,7 @@ export default async function handler(
         <p><strong>Name:</strong> ${escapeHtml(cleanName)}</p>
         <p><strong>Email:</strong> ${escapeHtml(cleanEmail)}</p>
         <p><strong>Inquiry Type:</strong> ${escapeHtml(cleanInquiryType || "Not provided")}</p>
-        <p><strong>Timeframe:</strong> ${escapeHtml(cleanTimeframe || "Not provided")}</p>
-        <p><strong>Budget:</strong> ${escapeHtml(cleanBudget || "Not provided")}</p>
+        <p><strong>Company / Team:</strong> ${escapeHtml(cleanCompany || "Not provided")}</p>
         <p><strong>Message:</strong></p>
         <p>${escapeHtml(cleanMessage).replace(/\n/g, "<br />")}</p>
       `,
