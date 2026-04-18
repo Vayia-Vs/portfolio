@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GetStaticProps } from "next";
+import Head from "next/head";
 import Image from "next/image";
 import path from "path";
 import fs from "fs";
@@ -77,6 +78,8 @@ const featuredCategoryOrder: Record<string, string[]> = {
   ],
 };
 
+const siteUrl = "https://vayia-vs-portfolio.vercel.app";
+
 export default function Home({ imagesFromFs }: HomeProps) {
   /* ================= STATE ================= */
   const [scrolled, setScrolled] = useState(false);
@@ -149,7 +152,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       heroTitle2: "Moments",
       heroTitle3: "in Time",
       heroText:
-        "A curated collection of photographs exploring light, shadow, and the beauty of fleeting moments.",
+        "Street, portrait, and atmospheric photography shaped by quiet observation, natural light, and real moments.",
       viewGallery: "View Gallery",
       contactButton: "Get in Touch",
       galleryTitle: "My Collections",
@@ -158,16 +161,16 @@ export default function Home({ imagesFromFs }: HomeProps) {
       aboutTitle2: "of Seeing",
       aboutKicker: "About the work",
       aboutText: [
-        "I'm a street photographer at the beginning of my journey, working with a quiet, observant approach to life in the city. I'm drawn to people -- strangers and friends alike -- and to the subtle moments that often go unnoticed in everyday urban spaces.",
-        "Through street photography and portraiture, I focus on presence rather than spectacle. I'm interested in fleeting expressions, unguarded gestures, and the small pauses between movement and stillness. These moments reveal something honest about the person in front of the lens and the environment around them.",
-        "My work moves between observation and interaction. I aim for images that feel intimate without being intrusive, allowing space for personality and quiet connection.",
-        "Based in Athens.",
+        "I photograph the city as it unfolds: small gestures, passing light, and the quiet tension between people and place.",
+        "My work moves between street photography, portraiture, architecture, and landscapes, always guided by atmosphere rather than performance.",
+        "I am drawn to images that feel intimate and unforced. Even when the frame is simple, I want it to carry rhythm, stillness, and a sense of presence.",
+        "Based in Athens and available for selected collaborations.",
       ],
       contactTitle1: "Let's Work",
       contactTitle2: "Together",
       contactKicker: "Get in touch",
       contactText:
-        "Have a project in mind? I'd love to hear about it. Drop me a message and let's create something beautiful together.",
+        "If you have a portrait session, a brand idea, or a visual project in mind, send me a message and we can shape it together.",
       contactEmail: "vayiavs95@gmail.com",
       formName: "Name",
       formNamePlaceholder: "Your name",
@@ -184,18 +187,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
       services: [
         {
           icon: "portrait",
-          title: "Portrait Sessions",
-          text: "Personal portraits, family or couples sessions, and intimate photo sessions in Athens or around you.",
+          title: "Portraits",
+          text: "Editorial-feeling portraits, couples sessions, and quiet personal photographs with a natural, relaxed direction.",
         },
         {
           icon: "product",
-          title: "Product Photography",
-          text: "For online shops, small businesses, and brands. Showcase your products beautifully.",
+          title: "Brand & Product",
+          text: "Clean, atmospheric imagery for small businesses, personal brands, online shops, and visual campaigns.",
         },
         {
           icon: "walks",
-          title: "Street Photography Walks",
-          text: "Guided photography walks exploring light, movement, and urban stories together.",
+          title: "Creative Sessions",
+          text: "Collaborative shoots and visual storytelling sessions built around mood, location, and the identity of the project.",
         },
       ],
       inquire: "Inquire",
@@ -211,7 +214,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       heroTitle2: "που",
       heroTitle3: "μένουν",
       heroText:
-        "Ό,τι περνάει απαρατήρητο — μέχρι να το δεις.",
+        "Φωτογραφίες δρόμου, πορτρέτα και εικόνες ατμόσφαιρας με έμφαση στο φως, την παρατήρηση και τις αληθινές στιγμές.",
       viewGallery: "Περιήγηση",
       contactButton: "Επικοινωνία",
       galleryTitle: "Οι Συλλογές μου",
@@ -220,17 +223,16 @@ export default function Home({ imagesFromFs }: HomeProps) {
       aboutTitle2: "από τον φακό",
       aboutKicker: "Σχετικά με εμένα",
       aboutText: [
-        "Με ενδιαφέρει η αυθεντικότητα — άνθρωποι και χώροι χωρίς σκηνοθεσία.",
-        "Ένα βλέμμα που διαρκεί λίγο περισσότερο. Μια σκιά που αλλάζει τον χώρο. Στιγμές που δεν επαναλαμβάνονται.",
-        "Η φωτογραφία είναι για μένα επιλογή στιγμής· μια προσπάθεια να σταματήσει ο χρόνος εκεί όπου υπάρχει αλήθεια.",
-        "Street, portrait, architecture — ένας ήσυχος, προσωπικός ρυθμός.",
-        "Με αφετηρία την Αθήνα.",
+        "Φωτογραφίζω την πόλη όπως αποκαλύπτεται: μικρές κινήσεις, περαστικό φως και τη σχέση ανάμεσα στους ανθρώπους και τον χώρο.",
+        "Η δουλειά μου κινείται ανάμεσα στη φωτογραφία δρόμου, τα πορτρέτα, την αρχιτεκτονική και τα τοπία, με βάση πάντα την ατμόσφαιρα και όχι τη σκηνοθεσία.",
+        "Με ενδιαφέρουν οι εικόνες που νιώθουν ήσυχες αλλά παρούσες. Ακόμα και όταν το κάδρο είναι απλό, θέλω να κρατά ρυθμό, αλήθεια και χαρακτήρα.",
+        "Με αφετηρία την Αθήνα και διάθεση για επιλεγμένες συνεργασίες.",
       ],
       contactTitle1: "Επικοινώνησε",
       contactTitle2: "Εδώ",
       contactKicker: "",
       contactText:
-        "Αν έχεις μια ιδέα, ένα project ή απλώς θέλεις να μιλήσουμε για φωτογράφιση, στείλε μου μήνυμα και θα χαρώ να το δούμε μαζί.",
+        "Αν έχεις στο μυαλό σου ένα πορτρέτο, μια ιδέα για brand ή ένα φωτογραφικό project, στείλε μου μήνυμα να το δούμε μαζί.",
       contactEmail: "vayiavs95@gmail.com",
       formName: "ΟΝΟΜΑ",
       formNamePlaceholder: "Το όνομά σου",
@@ -248,17 +250,17 @@ export default function Home({ imagesFromFs }: HomeProps) {
         {
           icon: "portrait",
           title: "Πορτρέτα",
-          text: "Προσωπικά πορτρέτα, φωτογραφίσεις για ζευγάρια ή οικογένειες και πιο ήσυχες λήψεις στην Αθήνα και όπου σε βολεύει.",
+          text: "Πορτρέτα με φυσικό ρυθμό, φωτογραφίσεις για ζευγάρια και προσωπικές λήψεις με ήρεμη, ανεπιτήδευτη κατεύθυνση.",
         },
         {
           icon: "product",
-          title: "Φωτογράφιση Προϊόντων",
-          text: "Φωτογραφίες για μικρές επιχειρήσεις, e-shops και brands που θέλουν καθαρή και προσεγμένη εικόνα.",
+          title: "Brand & Προϊόν",
+          text: "Καθαρές και ατμοσφαιρικές εικόνες για μικρές επιχειρήσεις, personal brands, e-shops και οπτικές καμπάνιες.",
         },
         {
           icon: "walks",
-          title: "Φωτογραφικές Βόλτες",
-          text: "Βόλτες φωτογραφίας στην πόλη, με έμφαση στο φως, την κίνηση και το πώς παρατηρούμε τον χώρο.",
+          title: "Δημιουργικά Sessions",
+          text: "Συνεργατικές φωτογραφίσεις και visual storytelling με βάση τη διάθεση, το location και την ταυτότητα του project.",
         },
       ],
       inquire: "Ρώτησέ με",
@@ -447,6 +449,14 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
   const toSrc = (name: string) => `/images/${encodeURIComponent(name)}`;
   const isGreek = lang === "gr";
+  const seoTitle = isGreek
+    ? "Βάγια Βασιλείου | Φωτογραφία δρόμου, πορτρέτα και οπτικές ιστορίες"
+    : "Vayia Vasileiou | Street, portrait, and atmospheric photography";
+  const seoDescription = isGreek
+    ? "Portfolio φωτογραφίας με εικόνες δρόμου, πορτρέτα, αρχιτεκτονική και ατμοσφαιρικές λήψεις από την Αθήνα και όχι μόνο."
+    : "Photography portfolio featuring street, portrait, architecture, and atmospheric imagery from Athens and beyond.";
+  const seoLocale = isGreek ? "el_GR" : "en_US";
+  const seoImage = `${siteUrl}/images/hero.jpg`;
 
   useEffect(() => {
     if (!lightbox.open || typeof window === "undefined" || lightbox.images.length < 2) return;
@@ -592,6 +602,25 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
   return (
     <div className={`bg-black text-white ${isGreek ? "font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif]" : ""}`}>
+      <Head>
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="theme-color" content="#050505" />
+        <link rel="canonical" href={siteUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:site_name" content="Vayia Vasileiou Portfolio" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={siteUrl} />
+        <meta property="og:locale" content={seoLocale} />
+        <meta property="og:image" content={seoImage} />
+        <meta property="og:image:alt" content="Vayia Vasileiou photography portfolio" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
+        <meta name="twitter:image" content={seoImage} />
+      </Head>
       {/* ================= SPLASH SCREEN ================= */}
       {!hasChosenView && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-md">
@@ -768,8 +797,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
 
-        <div className="relative z-10 max-w-4xl px-5 pb-18 pt-28 text-center sm:px-6 sm:pb-20 sm:pt-36">
-          <h1 className={`mb-6 text-[clamp(1.58rem,7.2vw,5.1rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
+        <div className="relative z-10 mx-auto flex max-w-5xl flex-col items-center px-5 pb-18 pt-28 text-center sm:px-6 sm:pb-20 sm:pt-36">
+          <h1 className={`mb-6 text-center text-[clamp(1.58rem,7.2vw,5.35rem)] leading-[0.98] whitespace-nowrap sm:mb-8 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
             {lang === "gr" ? (
               <>
                 {T[lang].heroTitle1} {T[lang].heroTitle2}{" "}
@@ -786,8 +815,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <p
             className={`mx-auto mb-11 text-sm leading-7 text-white/72 sm:mb-12 sm:text-lg sm:leading-relaxed md:text-lg ${
               lang === "en"
-                ? "max-w-xl sm:max-w-2xl lg:max-w-5xl lg:whitespace-nowrap"
-                : "max-w-xl"
+                ? "max-w-xl sm:max-w-2xl lg:max-w-3xl"
+                : "max-w-xl lg:max-w-3xl"
             }`}
           >
             {T[lang].heroText}
@@ -991,8 +1020,21 @@ export default function Home({ imagesFromFs }: HomeProps) {
         id="about"
         className="border-t border-white/10 px-4 py-16 sm:px-8 md:px-16 md:py-24 xl:px-20 xl:py-28"
       >
-        <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
-          <div className="max-w-[44rem]">
+        <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[380px_minmax(0,1fr)] xl:grid-cols-[420px_minmax(0,1fr)] xl:gap-20">
+          <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none lg:pr-8 lg:pt-4">
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.22)]">
+              <Image
+                src="/images/vayia.JPEG"
+                alt="Vayia portrait"
+                fill
+                sizes="(min-width: 1024px) 34vw, 90vw"
+                className="object-cover"
+                quality={74}
+              />
+            </div>
+          </div>
+
+          <div className="max-w-[44rem] lg:pt-6">
             <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/50 sm:mb-5 sm:tracking-[0.45em]">
               {formatUiLabel(T[lang].aboutKicker)}
             </p>
@@ -1024,24 +1066,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
               )}
             </div>
           </div>
-
-          <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none lg:border-l lg:border-white/10 lg:pl-8 lg:pt-4">
-            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-white/10">
-              <Image
-                src="/images/vayia.JPEG"
-                alt="Vayia portrait"
-                fill
-                sizes="(min-width: 1024px) 40vw, 90vw"
-                className="object-cover"
-                quality={74}
-              />
-            </div>
-          </div>
         </div>
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative flex min-h-[96svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-18 md:px-20 md:py-18">
+      <section className="relative flex min-h-[96svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-18 md:px-20 md:py-20">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -1053,33 +1082,36 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-black/42" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
-        <div className="relative z-10 mx-auto max-w-5xl">
-          {T[lang].servicesKicker ? (
-            <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
-              {formatUiLabel(T[lang].servicesKicker)}
-            </p>
-          ) : null}
-          {T[lang].servicesTitle && (
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-12">
-              {T[lang].servicesTitle}
+        <div className="relative z-10 mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-12">
+          <div className="max-w-sm lg:sticky lg:top-28">
+            {T[lang].servicesKicker ? (
+              <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
+                {formatUiLabel(T[lang].servicesKicker)}
+              </p>
+            ) : null}
+            <h2 className={`max-w-xs text-3xl italic leading-tight text-white sm:text-4xl md:text-[2.85rem] ${isGreek ? "font-sans" : "font-serif"}`}>
+              {isGreek ? "Τροποι συνεργασιας" : "Ways We Can Work Together"}
             </h2>
-          )}
+            <p className="mt-5 max-w-sm text-sm leading-7 text-white/65 sm:text-base sm:leading-8">
+              {isGreek
+                ? "Απο προσωπα και brands μεχρι πιο ατμοσφαιρικα δημιουργικα sessions, η καθε συνεργασια χτιζεται με βαση το υφος και την αισθηση που θελεις να κρατησει η εικονα."
+                : "From portraits and brands to more atmospheric creative sessions, each collaboration is shaped around mood, clarity, and the feeling the images should leave behind."}
+            </p>
+          </div>
 
-          <div className="grid items-start gap-6">
-            <div className="mb-4 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
+          <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 sm:min-h-[260px]"
+                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 lg:min-h-[290px]"
                 >
-                  <h3 className={`mb-2 text-[1.35rem] leading-tight sm:text-[1.55rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
-                  <p className="mb-4 text-sm leading-7 text-white/60">{service.text}</p>
+                  <h3 className={`mb-3 text-[1.35rem] leading-tight sm:text-[1.55rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
+                  <p className="mb-6 text-sm leading-7 text-white/60">{service.text}</p>
                   <a href="#contact" className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest">
                     {T[lang].inquire} →
                   </a>
                 </div>
               ))}
-            </div>
           </div>
         </div>
       </section>
@@ -1089,23 +1121,31 @@ export default function Home({ imagesFromFs }: HomeProps) {
         id="contact"
         className="flex min-h-[100svh] items-center border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
-        <div className="mx-auto max-w-5xl text-center">
-          {T[lang].contactKicker ? (
-            <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
-              {formatUiLabel(T[lang].contactKicker)}
+        <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-16">
+          <div className="text-center lg:sticky lg:top-28 lg:text-left">
+            {T[lang].contactKicker ? (
+              <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
+                {formatUiLabel(T[lang].contactKicker)}
+              </p>
+            ) : null}
+            <h2 className={`mb-4 text-3xl italic sm:mb-6 sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
+              {T[lang].contactTitle1}{" "}
+              <span>{T[lang].contactTitle2}</span>
+            </h2>
+            <p className="mx-auto mb-5 max-w-md text-sm leading-7 text-white/60 sm:text-base md:leading-relaxed lg:mx-0">
+              {T[lang].contactText}
             </p>
-          ) : null}
-          <h2 className={`mb-4 text-3xl italic sm:mb-6 sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
-            {T[lang].contactTitle1}{" "}
-            <span>{T[lang].contactTitle2}</span>
-          </h2>
-          <p className="mb-8 text-sm leading-7 text-white/60 sm:mb-12 sm:text-base md:text-lg md:leading-relaxed">
-            {T[lang].contactText}
-          </p>
+            <a
+              href={`mailto:${T[lang].contactEmail}`}
+              className="inline-flex text-sm tracking-[0.18em] text-[#d7b46a] transition hover:text-[#f6dfaa]"
+            >
+              {T[lang].contactEmail}
+            </a>
+          </div>
 
           <form
             onSubmit={handleContactSubmit}
-            className="mx-auto max-w-3xl space-y-8 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-6 text-left shadow-[0_18px_55px_rgba(0,0,0,0.22)] backdrop-blur-sm sm:space-y-10 sm:px-8 sm:py-8"
+            className="mx-auto w-full max-w-3xl space-y-8 rounded-[1.5rem] border border-white/10 bg-white/[0.03] px-5 py-6 text-left shadow-[0_18px_55px_rgba(0,0,0,0.22)] backdrop-blur-sm sm:space-y-10 sm:px-8 sm:py-8"
           >
             <div className="hidden">
               <label>
