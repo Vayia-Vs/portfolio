@@ -859,33 +859,50 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-black/42" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
-        <div className="relative z-10 mx-auto max-w-[92rem]">
-          <div className="max-w-sm lg:mb-10">
+        <div className="relative z-10 mx-auto grid w-full max-w-[92rem] items-start gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-10">
+          <div className="animate-gallery-item rounded-[1.5rem] border border-white/10 bg-black/36 p-6 backdrop-blur-md sm:p-8 lg:sticky lg:top-10 lg:min-h-[26rem] lg:p-10">
             {T[lang].servicesKicker ? (
-              <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
+              <p className="mb-6 text-[10px] uppercase tracking-[0.32em] text-white/52 sm:text-xs sm:tracking-[0.4em]">
                 {formatUiLabel(T[lang].servicesKicker)}
               </p>
             ) : null}
+            <h2 className={`max-w-xl text-[2rem] italic leading-[1.04] sm:text-[2.6rem] lg:text-[3.4rem] ${isGreek ? "font-sans" : "font-serif"}`}>
+              {isGreek ? "Τρεις τροποι συνεργασιας με εικονα και ατμοσφαιρα." : "Three ways to work together through image and atmosphere."}
+            </h2>
+            <p className="mt-6 max-w-lg text-sm leading-7 text-white/64 sm:text-base sm:leading-8">
+              {isGreek
+                ? "Απο πιο προσωπικα πορτραιτα μεχρι καθαρες ληψεις προϊοντων και φωτογραφικες βολτες στην πολη, το section αυτο κρατα την ιδια ησυχη αισθητικη αλλα με πιο καθαρη δομη."
+                : "From personal portraits to clean product imagery and city photography walks, this section keeps the same quiet tone but in a clearer, more intentional structure."}
+            </p>
           </div>
 
-          <div className="grid items-start gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-8">
-              {T[lang].services.map((service, index) => (
-                <div
-                  key={service.title}
-                  className="animate-gallery-item rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 lg:flex lg:min-h-[24rem] lg:flex-col lg:justify-between lg:p-8"
-                  style={{ animationDelay: `${260 + index * 140}ms` }}
-                >
-                  <h3 className={`mb-3 text-[1.35rem] leading-tight sm:text-[1.55rem] lg:text-[1.75rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
-                  <p className="mb-8 text-sm leading-7 text-white/60 lg:mb-10 lg:text-[0.98rem]">{service.text}</p>
-                  <a
-                    href="#contact"
-                    onClick={() => trackEvent("cta_click", { cta: "service_inquire", service: service.title })}
-                    className="mt-auto text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest"
-                  >
-                    {T[lang].inquire} →
-                  </a>
+          <div className="grid gap-4 sm:gap-5">
+            {T[lang].services.map((service, index) => (
+              <div
+                key={service.title}
+                className="animate-gallery-item rounded-[1.35rem] border border-[#d7b46a]/30 bg-[linear-gradient(135deg,rgba(0,0,0,0.58),rgba(0,0,0,0.34))] p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition hover:border-[#f6dfaa]/70 hover:bg-[linear-gradient(135deg,rgba(0,0,0,0.64),rgba(0,0,0,0.42))] hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:p-6 lg:grid lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)_auto] lg:items-center lg:gap-8 lg:px-7 lg:py-7"
+                style={{ animationDelay: `${220 + index * 160}ms` }}
+              >
+                <div className="mb-4 lg:mb-0">
+                  <span className="mb-3 block text-[10px] uppercase tracking-[0.28em] text-[#d7b46a]/75">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <h3 className={`text-[1.35rem] leading-tight sm:text-[1.6rem] lg:text-[1.85rem] ${isGreek ? "font-sans" : "font-serif"}`}>
+                    {service.title}
+                  </h3>
                 </div>
-              ))}
+                <p className="mb-5 text-sm leading-7 text-white/66 lg:mb-0 lg:max-w-2xl lg:text-[0.98rem]">
+                  {service.text}
+                </p>
+                <a
+                  href="#contact"
+                  onClick={() => trackEvent("cta_click", { cta: "service_inquire", service: service.title })}
+                  className="inline-flex items-center text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest lg:justify-self-end"
+                >
+                  {T[lang].inquire} →
+                </a>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -1125,7 +1142,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </div>
             </div>
             {lightbox.images.length > 1 && (
-              <div className="mx-auto mt-4 hidden w-full max-w-5xl items-center justify-center gap-3 overflow-x-auto px-2 pb-1 sm:flex">
+              <div className="hide-scrollbar mx-auto mt-4 hidden w-full max-w-5xl items-center justify-center gap-3 overflow-x-auto px-2 pb-1 sm:flex">
                 {lightbox.images.map((imageName, index) => (
                   <button
                     key={`thumb-${imageName}`}
