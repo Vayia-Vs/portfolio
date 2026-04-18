@@ -42,6 +42,41 @@ const curatedImageOrder = [
   "ist7-street.jpg",
 ];
 
+const featuredCategoryOrder: Record<string, string[]> = {
+  street: [
+    "ist8-street.jpg",
+    "rome7-street.png",
+    "greece3-street.png",
+    "skg1-street-int.jpg",
+    "ist10-street.png",
+    "greece4-street.png",
+    "rome1-street.png",
+    "ist4-street.jpg",
+  ],
+  landsc: [
+    "greece1-landsc.png",
+    "ist15-landsc.jpg",
+    "greece2-landsc.png",
+    "greece5-street.png",
+  ],
+  archit: [
+    "rome2-archit.png",
+    "ist1-archit-int.png",
+    "rome8-archit-int.png",
+    "ist7-archit.png",
+    "ist9-archit.png",
+    "rome3-archit-int.png",
+    "rome6-archit.png",
+  ],
+  int: [
+    "rome4-int.png",
+    "rome8-archit-int.png",
+    "rome3-archit-int.png",
+    "ist1-archit-int.png",
+    "skg1-street-int.jpg",
+  ],
+};
+
 export default function Home({ imagesFromFs }: HomeProps) {
   /* ================= STATE ================= */
   const [scrolled, setScrolled] = useState(false);
@@ -68,6 +103,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartXRef = useRef<number | null>(null);
   const mobileGalleryRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const messageTextareaRef = useRef<HTMLTextAreaElement | null>(null);
 
   /* ================= LOAD SAVED LANGUAGE & VIEW MODE ================= */
   useEffect(() => {
@@ -389,6 +425,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
     }
   };
 
+  const handleMessageInput = (e: React.FormEvent<HTMLTextAreaElement>) => {
+    const textarea = e.currentTarget;
+    textarea.style.height = "0px";
+    textarea.style.height = `${Math.min(textarea.scrollHeight, 220)}px`;
+  };
+
   const images = useMemo(() => {
     const rankedImages = new Map(
       curatedImageOrder.map((name, index) => [name, index]),
@@ -411,8 +453,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
       .replace(/[\u0300-\u036f]/g, "")
       .toUpperCase();
 
-  const formatUiLabel = (value: string) =>
-    isGreek ? formatGreekCaps(value) : value;
+  const formatUiLabel = useCallback(
+    (value: string) => (isGreek ? formatGreekCaps(value) : value),
+    [isGreek],
+  );
 
   const parseTags = (name: string) => {
     const filename = name.split("/").pop() ?? "";
@@ -447,28 +491,46 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const galleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 18vw, (min-width: 1024px) 20vw, 33vw"
     : "(min-width: 1024px) 33vw, (min-width: 420px) 50vw, 100vw";
-  const mobileGallerySections = allTags.map((tag) => ({
-    key: tag,
-    title:
-      tag === "archit"
-        ? isGreek
-          ? "ΑΡΧΙΤΕΚΤΟΝΙΚΗ"
-          : "ARCHITECTURE"
-        : tag === "landsc"
-          ? isGreek
-            ? "ΤΟΠΙΑ"
-            : "LANDSCAPE"
-          : tag === "int"
-            ? isGreek
-              ? "ΕΣΩΤΕΡΙΚΟΙ ΧΩΡΟΙ"
-              : "INTERIOR"
-          : tag === "street"
+  const mobileGallerySections = useMemo(
+    () =>
+      allTags.map((tag) => {
+        const tagImages = images.filter((name) => parseTags(name).includes(tag));
+        const featuredOrder = new Map(
+          (featuredCategoryOrder[tag] ?? []).map((name, index) => [name, index]),
+        );
+
+        const orderedImages = [...tagImages].sort((a, b) => {
+          const aRank = featuredOrder.get(a) ?? Number.MAX_SAFE_INTEGER;
+          const bRank = featuredOrder.get(b) ?? Number.MAX_SAFE_INTEGER;
+          if (aRank !== bRank) return aRank - bRank;
+          return a.localeCompare(b);
+        });
+
+        return {
+          key: tag,
+          title:
+            tag === "archit"
               ? isGreek
-                ? "ΦΩΤΟΓΡΑΦΙΑ ΔΡΟΜΟΥ"
-                : "STREET"
-              : formatUiLabel(tag),
-    images: images.filter((name) => parseTags(name).includes(tag)),
-  }));
+                ? "ΑΡΧΙΤΕΚΤΟΝΙΚΗ"
+                : "ARCHITECTURE"
+              : tag === "landsc"
+                ? isGreek
+                  ? "ΤΟΠΙΑ"
+                  : "LANDSCAPE"
+                : tag === "int"
+                  ? isGreek
+                    ? "ΕΣΩΤΕΡΙΚΟΙ ΧΩΡΟΙ"
+                    : "INTERIOR"
+                  : tag === "street"
+                    ? isGreek
+                      ? "ΦΩΤΟΓΡΑΦΙΑ ΔΡΟΜΟΥ"
+                      : "STREET"
+                    : formatUiLabel(tag),
+          images: orderedImages,
+        };
+      }),
+    [allTags, formatUiLabel, images, isGreek],
+  );
 
   useEffect(() => {
     if (!allTags.length) return;
@@ -680,7 +742,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       >
         <div className="absolute inset-0">
           <div
-            className="w-full h-full bg-center bg-cover"
+            className="h-full w-full bg-cover bg-[position:58%_center] sm:bg-center"
             style={{
               backgroundImage:
                 "url('/images/hero.jpg')",
@@ -765,7 +827,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       ref={(element) => {
                         mobileGalleryRefs.current[section.key] = element;
                       }}
-                      className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2"
+                      className="hide-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2"
                       onScroll={() => handleMobileGalleryScroll(section.key)}
                     >
                       {sectionVisible.map((name, index) => (
@@ -1065,11 +1127,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </span>
               <div className="relative rounded-[1.45rem] border border-white/15 bg-white/[0.04] px-4 py-2.5 pr-14 shadow-[0_14px_36px_rgba(0,0,0,0.18)]">
                 <textarea
+                  ref={messageTextareaRef}
                   required
                   name="message"
                   rows={1}
                   placeholder={T[lang].formMessagePlaceholder}
-                  className="h-8 w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
+                  onInput={handleMessageInput}
+                  className="min-h-8 w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
                 />
                 <button
                   type="submit"
