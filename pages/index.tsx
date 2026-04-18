@@ -42,60 +42,6 @@ const curatedImageOrder = [
   "ist7-street.jpg",
 ];
 
-const ServiceIcon = ({ name }: { name: string }) => {
-  const iconProps = {
-    "aria-hidden": true,
-    width: 32,
-    height: 32,
-    viewBox: "0 0 24 24",
-    fill: "none",
-    stroke: "currentColor",
-    strokeWidth: 1.4,
-    strokeLinecap: "round" as const,
-    strokeLinejoin: "round" as const,
-  };
-
-  if (name === "product") {
-    return (
-      <svg {...iconProps}>
-        <path d="M6 8h12l-1 12H7L6 8z" />
-        <path d="M9 8a3 3 0 0 1 6 0" />
-        <path d="M9 13h6" />
-      </svg>
-    );
-  }
-
-  if (name === "content") {
-    return (
-      <svg {...iconProps}>
-        <rect x="6" y="3" width="12" height="18" rx="2" />
-        <path d="M10 7h4" />
-        <path d="M9 16h6" />
-        <path d="M12 19h.01" />
-      </svg>
-    );
-  }
-
-  if (name === "walks") {
-    return (
-      <svg {...iconProps}>
-        <path d="M4 20h16" />
-        <path d="M6 20V9l4-3 4 3v11" />
-        <path d="M14 20V7l4 2v11" />
-        <path d="M9 13h2" />
-      </svg>
-    );
-  }
-
-  return (
-    <svg {...iconProps}>
-      <path d="M4 9h3l1.5-2h7L17 9h3v10H4V9z" />
-      <circle cx="12" cy="14" r="3" />
-      <path d="M7 11h.01" />
-    </svg>
-  );
-};
-
 export default function Home({ imagesFromFs }: HomeProps) {
   /* ================= STATE ================= */
   const [scrolled, setScrolled] = useState(false);
@@ -234,9 +180,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
       contactButton: "Επικοινωνία",
       galleryTitle: "Οι Συλλογές μου",
       showMore: "Περισσοτερα",
-      aboutTitle1: "Το βλέμμα",
-      aboutTitle2: "πίσω από τον φακό",
-      aboutKicker: "Λίγα λόγια",
+      aboutTitle1: "Πίσω",
+      aboutTitle2: "από τον φακό",
+      aboutKicker: "Σχετικά με εμένα",
       aboutText: [
         "Με ενδιαφέρει η αυθεντικότητα — άνθρωποι και χώροι χωρίς σκηνοθεσία.",
         "Ένα βλέμμα που διαρκεί λίγο περισσότερο. Μια σκιά που αλλάζει τον χώρο. Στιγμές που δεν επαναλαμβάνονται.",
@@ -260,7 +206,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       contactSending: "Αποστολή...",
       contactSuccess: "Το μήνυμά σου στάλθηκε.",
       contactError: "Κάτι πήγε στραβά. Δοκίμασε ξανά.",
-      servicesKicker: "Συνεργασία",
+      servicesKicker: "",
       servicesTitle: "",
       services: [
         {
@@ -1016,7 +962,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative flex min-h-[100svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-12 sm:px-8 sm:py-16 md:px-20 md:py-24">
+      <section className="relative flex min-h-[72svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-10 sm:px-8 sm:py-14 md:px-20 md:py-18">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -1028,27 +974,26 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
         <div className="relative z-10 mx-auto max-w-5xl">
-          <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
-            {formatUiLabel(T[lang].servicesKicker)}
-          </p>
+          {T[lang].servicesKicker ? (
+            <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
+              {formatUiLabel(T[lang].servicesKicker)}
+            </p>
+          ) : null}
           {T[lang].servicesTitle && (
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-12">
               {T[lang].servicesTitle}
             </h2>
           )}
 
-          <div className="grid items-start gap-6">
-            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
+          <div className="grid items-start gap-4">
+            <div className="mb-2 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 sm:gap-4">
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                className="rounded-[1.25rem] border border-[#d7b46a]/45 bg-black/52 p-5 shadow-[0_18px_55px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/68 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)] sm:rounded-lg sm:p-6 sm:min-h-[270px]"
-              >
-                  <div className="mb-7 text-[#d7b46a]">
-                    <ServiceIcon name={service.icon} />
-                  </div>
-                  <h3 className={`mb-3 text-[1.7rem] sm:text-2xl ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
-                  <p className="mb-4 text-sm leading-7 text-white/60">{service.text}</p>
+                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-4 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-5 sm:min-h-[205px]"
+                >
+                  <h3 className={`mb-2 text-[1.35rem] leading-tight sm:text-[1.55rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
+                  <p className="mb-3 text-sm leading-6 text-white/60">{service.text}</p>
                   <a href="#contact" className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest">
                     {T[lang].inquire} →
                   </a>
