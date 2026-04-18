@@ -30,18 +30,32 @@ export default function App({ Component, pageProps }: AppProps) {
     const previousScrollRestoration = window.history.scrollRestoration;
     window.history.scrollRestoration = "manual";
 
-    const scrollToTop = () => {
+    const handleRouteChangeComplete = (url: string) => {
+      const hashIndex = url.indexOf("#");
+
+      if (hashIndex >= 0) {
+        const targetId = decodeURIComponent(url.slice(hashIndex + 1));
+
+        window.setTimeout(() => {
+          document.getElementById(targetId)?.scrollIntoView({
+            behavior: "auto",
+            block: "start",
+          });
+        }, 0);
+        return;
+      }
+
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     };
 
-    scrollToTop();
-    router.events.on("routeChangeComplete", scrollToTop);
+    handleRouteChangeComplete(router.asPath);
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
 
     return () => {
-      router.events.off("routeChangeComplete", scrollToTop);
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
       window.history.scrollRestoration = previousScrollRestoration;
     };
-  }, [router.events]);
+  }, [router.asPath, router.events]);
 
   return (
     <>

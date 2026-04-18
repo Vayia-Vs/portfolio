@@ -183,6 +183,13 @@ export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
         </div>
       </main>
 
+      <Link
+        href="/#gallery"
+        className="fixed bottom-[calc(1rem+env(safe-area-inset-bottom))] right-4 z-40 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-4 py-3 text-[11px] uppercase tracking-[0.24em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] sm:bottom-8 sm:right-8 sm:text-sm"
+      >
+        Back home
+      </Link>
+
       {lightbox.open && (
         <div
           className={`lightbox-overlay fixed inset-0 z-[100] overflow-hidden bg-black/92 p-3 sm:p-6 ${

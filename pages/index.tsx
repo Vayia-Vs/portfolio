@@ -396,11 +396,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
     return isGreek ? `Φωτογραφια ${label}` : `${label} photograph`;
   };
 
-  const previewImages = images.slice(0, 10);
-  const galleryImages = isFramesExpanded ? images : previewImages;
-  const selectedProjects = projectsContent;
   const isDesktopGallery = viewMode === "desktop";
   const isMobileLayout = viewMode !== "desktop";
+  const previewImages = images.slice(0, isMobileLayout ? 8 : 10);
+  const galleryImages = isFramesExpanded ? images : previewImages;
+  const selectedProjects = projectsContent;
   const looseGalleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 22vw, (min-width: 1024px) 28vw, 45vw"
     : "(min-width: 768px) 46vw, 92vw";
@@ -775,7 +775,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       source: "loose_frames",
                       image: name,
                     });
-                    openLightbox(galleryImages, index);
+                    const lightboxIndex = images.findIndex((imageName) => imageName === name);
+                    openLightbox(images, lightboxIndex >= 0 ? lightboxIndex : index);
                   }}
                 >
                   <div className="relative aspect-square w-full overflow-hidden rounded-[1.2rem] border border-white/8 bg-white/[0.04] shadow-[0_18px_46px_rgba(0,0,0,0.22)] transition duration-500 group-hover:-translate-y-1 group-hover:border-[#d7b46a]/60">
@@ -814,7 +815,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className="reveal-section border-t border-white/10 px-4 py-16 sm:px-8 md:px-16 md:py-24 xl:px-20 xl:py-28"
       >
         <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[380px_minmax(0,1fr)] xl:grid-cols-[420px_minmax(0,1fr)] xl:gap-20">
-          <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none lg:pr-8 lg:pt-4">
+          <div className="order-2 mx-auto w-full max-w-[320px] lg:order-1 lg:mx-0 lg:max-w-none lg:pr-8 lg:pt-4">
             <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.22)]">
               <Image
                 src="/images/vayia.JPEG"
@@ -827,7 +828,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </div>
           </div>
 
-          <div className="max-w-[44rem] lg:pt-6">
+          <div className="order-1 max-w-[44rem] lg:order-2 lg:pt-6">
             <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/50 sm:mb-5 sm:tracking-[0.45em]">
               {formatUiLabel(T[lang].aboutKicker)}
             </p>
