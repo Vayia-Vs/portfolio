@@ -206,11 +206,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
           text: "For online shops, small businesses, and brands. Showcase your products beautifully.",
         },
         {
-          icon: "content",
-          title: "Instagram Content",
-          text: "Content creation for brands and creators. Feed-ready, story-ready content.",
-        },
-        {
           icon: "walks",
           title: "Street Photography Walks",
           text: "Guided photography walks exploring light, movement, and urban stories together.",
@@ -272,11 +267,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
           icon: "product",
           title: "Φωτογράφιση Προϊόντων",
           text: "Φωτογραφίες για μικρές επιχειρήσεις, e-shops και brands που θέλουν καθαρή και προσεγμένη εικόνα.",
-        },
-        {
-          icon: "content",
-          title: "Περιεχόμενο Instagram",
-          text: "Περιεχόμενο για social media, με εικόνες έτοιμες για feed, stories και καμπάνιες.",
         },
         {
           icon: "walks",
@@ -472,7 +462,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
     : "mx-auto w-full max-w-6xl px-1 sm:px-0 relative z-10";
   const galleryGridClass = isDesktopGallery
     ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 xl:gap-6 justify-items-stretch"
-    : "grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center";
+    : "grid grid-cols-6 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 md:gap-6 lg:gap-10 justify-items-center";
   const galleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 18vw, (min-width: 1024px) 20vw, 33vw"
     : "(min-width: 1024px) 33vw, (min-width: 420px) 50vw, 100vw";
@@ -727,13 +717,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {visibleImages.slice(0, itemsToShow).map((name, index) => {
               // Determine height based on viewMode
               const heightClass = viewMode === "mobile" 
-                ? "h-[25rem] min-[420px]:h-56 md:h-72 lg:h-96"
+                ? "h-32 sm:h-56 md:h-72 lg:h-96"
                 : viewMode === "desktop"
                 ? "h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96"
-                : "h-[25rem] min-[420px]:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
+                : "h-32 sm:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
+              const mobileSpanClass =
+                index % 5 < 3 ? "col-span-2 sm:col-span-1" : "col-span-3 sm:col-span-1";
               const itemClass = isDesktopGallery
                 ? "animate-gallery-item w-full text-left group"
-                : "animate-gallery-item w-full max-w-[420px] text-left group";
+                : `animate-gallery-item ${mobileSpanClass} w-full text-left group sm:max-w-[420px]`;
               
               return (
                 <button
@@ -947,7 +939,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               <button
                 type="submit"
                 disabled={contactState === "submitting"}
-                className="inline-flex items-center gap-2 border border-white bg-white px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black hover:shadow-[0_0_28px_rgba(215,180,106,0.3)] disabled:cursor-not-allowed disabled:opacity-70 sm:gap-3 sm:px-12 sm:py-4 sm:text-xs sm:tracking-[0.4em]"
+                className="inline-flex items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] disabled:cursor-not-allowed disabled:opacity-70 sm:gap-3 sm:rounded sm:px-12 sm:py-4 sm:text-xs sm:tracking-[0.4em]"
               >
                 {contactState === "submitting"
                   ? T[lang].contactSending
@@ -996,42 +988,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <circle cx="17" cy="7" r="1.5" fill="currentColor" stroke="none" />
               </svg>
             </a>
-            <a
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black sm:h-12 sm:w-12"
-              href="#"
-              aria-label="Pinterest"
-            >
-              <svg
-                aria-hidden="true"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-              >
-                <path d="M12 21c1.2-2.4 1.6-4.2 2.1-6.3" />
-                <path d="M10.8 14.4c-.7 2.5-1.2 4.1-2.1 5.6" />
-                <path d="M12 3a8 8 0 0 0-2.4 15.6" />
-                <path d="M12 3a8 8 0 0 1 2.2 15.7" />
-                <path d="M10.7 13.1c-1-.7-1.5-1.7-1.5-3a3.2 3.2 0 0 1 3.4-3.2c2.1 0 3.5 1.3 3.5 3.2 0 2.2-1.2 4-2.9 4-.8 0-1.4-.5-1.4-1.2 0-.4.8-2.8.8-3.4 0-.7-.4-1.1-1-1.1-.8 0-1.4.9-1.4 2 0 .7.2 1.2.5 1.7z" />
-              </svg>
-            </a>
-            <a
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black sm:h-12 sm:w-12"
-              href="#"
-              aria-label="Facebook"
-            >
-              <svg
-                aria-hidden="true"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-              >
-                <path d="M14 8h2.5V4.2A16 16 0 0 0 13 4c-3.4 0-5.2 2-5.2 5.4V12H5v4h2.8v8H12v-8h3.4l.6-4h-4V9.8c0-1.2.3-1.8 2-1.8z" />
-              </svg>
-            </a>
           </div>
           <Image
             src="/images/MYWATERMARK.png"
@@ -1070,13 +1026,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= LIGHTBOX ================= */}
       {lightbox.open && (
         <div
-          className={`lightbox-overlay fixed inset-0 z-[100] overflow-y-auto bg-black/90 p-3 sm:p-6 ${
+          className={`lightbox-overlay fixed inset-0 z-[100] overflow-hidden bg-black/92 p-3 sm:p-6 ${
             isLightboxClosing ? "lightbox-overlay-out" : ""
           }`}
           onClick={closeLightbox}
         >
           <div
-            className="relative max-h-full w-full"
+            className="relative flex h-full w-full flex-col justify-center"
             onClick={(e) => e.stopPropagation()}
             onTouchStart={handleLightboxTouchStart}
             onTouchEnd={handleLightboxTouchEnd}
@@ -1090,19 +1046,19 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 ✕
               </button>
             </div>
-            <div className="relative flex items-center justify-center pt-2 sm:pt-4">
+            <div className="relative flex flex-1 items-center justify-center overflow-hidden pt-2 sm:pt-4">
               {lightbox.images.length > 1 && (
                 <>
                   <button
                     type="button"
-                    className="absolute left-1 top-1/2 -translate-y-1/2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3 py-2 text-xs uppercase tracking-[0.2em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] touch-manipulation sm:left-3 sm:px-4 sm:py-3 sm:tracking-[0.3em]"
+                    className="absolute left-1 top-1/2 z-30 -translate-y-1/2 rounded-full border border-[#d7b46a]/75 bg-transparent px-3 py-2 text-lg text-[#e6c989] shadow-[0_0_20px_rgba(215,180,106,0.14)] transition hover:border-[#f6dfaa] hover:text-[#f6dfaa] touch-manipulation sm:left-3 sm:px-4 sm:py-3"
                     onClick={() => moveLightbox("prev")}
                   >
                     ←
                   </button>
                   <button
                     type="button"
-                    className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3 py-2 text-xs uppercase tracking-[0.2em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] touch-manipulation sm:right-3 sm:px-4 sm:py-3 sm:tracking-[0.3em]"
+                    className="absolute right-1 top-1/2 z-30 -translate-y-1/2 rounded-full border border-[#d7b46a]/75 bg-transparent px-3 py-2 text-lg text-[#e6c989] shadow-[0_0_20px_rgba(215,180,106,0.14)] transition hover:border-[#f6dfaa] hover:text-[#f6dfaa] touch-manipulation sm:right-3 sm:px-4 sm:py-3"
                     onClick={() => moveLightbox("next")}
                   >
                     →
@@ -1111,13 +1067,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
               )}
               <div
                 key={`${lightbox.images[lightbox.index]}-${slideDirection}`}
-                className={`lightbox-image lightbox-image-${slideDirection} relative h-[72vh] w-[92vw] sm:h-[70vh] sm:w-[90vw]`}
+                className={`lightbox-image lightbox-image-${slideDirection} relative z-10 h-[68svh] w-[86vw] max-w-5xl sm:h-[70vh] sm:w-[84vw]`}
               >
                 <Image
                   src={toSrc(lightbox.images[lightbox.index])}
                   alt=""
                   fill
-                  sizes="90vw"
+                  sizes="84vw"
                   className="object-contain"
                   priority
                 />
