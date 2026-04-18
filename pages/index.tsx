@@ -433,29 +433,30 @@ export default function Home({ imagesFromFs }: HomeProps) {
       ? images
       : images.filter((name) => parseTags(name).includes(activeFilter));
   const isDesktopGallery = viewMode === "desktop";
+  const isMobileLayout = viewMode !== "desktop";
   const galleryContainerClass = isDesktopGallery
     ? "mx-auto w-full max-w-[1600px] px-2 sm:px-0 relative z-10"
-    : "mx-auto w-full max-w-6xl px-2 sm:px-0 relative z-10";
+    : "mx-auto w-full max-w-6xl px-1 sm:px-0 relative z-10";
   const galleryGridClass = isDesktopGallery
     ? "grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 lg:gap-5 xl:gap-6 justify-items-stretch"
-    : "grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center";
+    : "grid grid-cols-1 min-[420px]:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 md:gap-6 lg:gap-10 justify-items-center";
   const galleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 18vw, (min-width: 1024px) 20vw, 33vw"
-    : "(min-width: 1024px) 33vw, 50vw";
+    : "(min-width: 1024px) 33vw, (min-width: 420px) 50vw, 100vw";
 
   return (
     <div className="bg-black text-white">
       {/* ================= SPLASH SCREEN ================= */}
       {!hasChosenView && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-md">
-          <div className="text-center space-y-12 px-6 py-12 bg-gray-900/90 rounded-2xl border border-amber-500/20 backdrop-blur">
+          <div className="mx-4 w-full max-w-md rounded-2xl border border-amber-500/20 bg-gray-900/90 px-5 py-8 text-center backdrop-blur sm:space-y-12 sm:px-6 sm:py-12">
             <div>
-              <h2 className="text-4xl md:text-5xl font-serif mb-4">Welcome</h2>
-              <p className="text-white/60 text-lg">Choose your preferred view:</p>
+              <h2 className="mb-4 font-serif text-3xl md:text-5xl">Welcome</h2>
+              <p className="text-base text-white/60 sm:text-lg">Choose your preferred view:</p>
             </div>
 
             {/* View Mode Selection */}
-            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+            <div className="mt-8 flex flex-col justify-center gap-4 sm:mt-0 sm:flex-row sm:gap-6">
               <button
                 onClick={() => {
                   setViewMode("mobile");
@@ -463,7 +464,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   localStorage.setItem("hasChosenView", "true");
                   setHasChosenView(true);
                 }}
-                className="group px-8 py-6 rounded-xl border-2 border-amber-500/30 hover:border-amber-500/60 hover:bg-amber-500/10 transition space-y-3"
+                className="group w-full rounded-xl border-2 border-amber-500/30 px-6 py-5 transition hover:border-amber-500/60 hover:bg-amber-500/10 sm:px-8 sm:py-6"
               >
                 <div className="text-5xl">📱</div>
                 <div className="text-white font-medium">Mobile View</div>
@@ -477,7 +478,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   localStorage.setItem("hasChosenView", "true");
                   setHasChosenView(true);
                 }}
-                className="group px-8 py-6 rounded-xl border-2 border-amber-500/30 hover:border-amber-500/60 hover:bg-amber-500/10 transition space-y-3"
+                className="group w-full rounded-xl border-2 border-amber-500/30 px-6 py-5 transition hover:border-amber-500/60 hover:bg-amber-500/10 sm:px-8 sm:py-6"
               >
                 <div className="text-5xl">🖥️</div>
                 <div className="text-white font-medium">Desktop View</div>
@@ -485,7 +486,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </button>
             </div>
 
-            <p className="text-xs text-white/40">You can change this anytime in the header →</p>
+            <p className="mt-6 text-xs text-white/40 sm:mt-0">You can change this anytime in the header.</p>
           </div>
         </div>
       )}
@@ -494,100 +495,111 @@ export default function Home({ imagesFromFs }: HomeProps) {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-black/85 backdrop-blur border-b border-[#d7b46a]/25 py-4 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:after:left-6 sm:after:right-6"
-            : "bg-transparent py-4 sm:py-6"
+            ? "bg-black/85 backdrop-blur border-b border-[#d7b46a]/25 py-3 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:py-4 sm:after:left-6 sm:after:right-6"
+            : "bg-transparent py-3 sm:py-6"
         }`}
       >
-        <nav className="grid w-full grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6">
-          <p className="justify-self-start text-sm font-light uppercase tracking-[0.34em] text-white/85 sm:text-base lg:text-lg">
-            Vayia Vasileiou
-          </p>
+        <nav className="px-4 sm:px-6">
+          <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:grid-cols-[1fr_auto_1fr]">
+            <p className="justify-self-start text-[11px] font-light uppercase tracking-[0.24em] text-white/85 sm:text-base sm:tracking-[0.34em] lg:text-lg">
+              Vayia Vasileiou
+            </p>
 
-          <ul className="hidden items-center justify-self-center md:flex md:gap-4 lg:gap-8">
+            <ul className="hidden items-center justify-self-center md:flex md:gap-4 lg:gap-8">
+              {T[lang].nav.map((item) => (
+                <li key={item.target}>
+                  <button
+                    onClick={() => scrollTo(item.target)}
+                    className="rounded border border-transparent px-3 py-2 text-xs tracking-[0.22em] uppercase text-white/70 transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] lg:text-sm"
+                  >
+                    {item.label}
+                  </button>
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex items-center justify-self-end gap-2 sm:gap-4">
+              <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/25 p-1 text-[10px] uppercase tracking-[0.18em] sm:gap-2 sm:text-xs sm:tracking-widest">
+                <button
+                  onClick={() => {
+                    setViewMode("mobile");
+                    localStorage.setItem("viewMode", "mobile");
+                  }}
+                  title="Mobile view"
+                  className={`rounded-full px-2 py-1 transition sm:px-3 ${
+                    viewMode === "mobile"
+                      ? "border-[#d7b46a] bg-[#d7b46a]/20 text-[#f6dfaa]"
+                      : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
+                  }`}
+                >
+                  📱
+                </button>
+                <button
+                  onClick={() => {
+                    setViewMode("desktop");
+                    localStorage.setItem("viewMode", "desktop");
+                  }}
+                  title="Desktop view"
+                  className={`rounded-full px-2 py-1 transition sm:px-3 ${
+                    viewMode === "desktop"
+                      ? "border-[#d7b46a] bg-[#d7b46a]/20 text-[#f6dfaa]"
+                      : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
+                  }`}
+                >
+                  🖥️
+                </button>
+              </div>
+
+              <div className="flex items-center gap-1 rounded-full border border-white/10 bg-black/25 p-1 text-[11px] uppercase tracking-[0.18em] sm:gap-2 sm:text-sm sm:tracking-widest">
+                <button
+                  onClick={() => {
+                    setLang("en");
+                    localStorage.setItem("lang", "en");
+                  }}
+                  className={`rounded-full px-2 py-1 transition sm:px-3 ${
+                    lang === "en"
+                      ? "border-[#d7b46a] bg-[#d7b46a]/15 text-[#f6dfaa]"
+                      : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
+                  }`}
+                >
+                  EN
+                </button>
+                <button
+                  onClick={() => {
+                    setLang("gr");
+                    localStorage.setItem("lang", "gr");
+                  }}
+                  className={`rounded-full px-2 py-1 transition sm:px-3 ${
+                    lang === "gr"
+                      ? "border-[#d7b46a] bg-[#d7b46a]/15 text-[#f6dfaa]"
+                      : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
+                  }`}
+                >
+                  GR
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <ul className="mt-3 flex gap-2 overflow-x-auto pb-1 md:hidden">
             {T[lang].nav.map((item) => (
               <li key={item.target}>
                 <button
                   onClick={() => scrollTo(item.target)}
-                  className="rounded border border-transparent px-3 py-2 text-xs tracking-[0.22em] uppercase text-white/70 transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] lg:text-sm"
+                  className="whitespace-nowrap rounded-full border border-[#d7b46a]/30 bg-black/35 px-3 py-2 text-[10px] tracking-[0.24em] uppercase text-white/80 transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
                 >
                   {item.label}
                 </button>
               </li>
             ))}
           </ul>
-
-          {/* LANGUAGE & VIEW MODE TOGGLE */}
-          <div className="flex items-center justify-self-end gap-3 sm:gap-5">
-            {/* VIEW MODE */}
-            <div className="flex items-center gap-2 text-[10px] sm:text-xs tracking-widest uppercase">
-              <button
-                onClick={() => {
-                  setViewMode("mobile");
-                  localStorage.setItem("viewMode", "mobile");
-                }}
-                title="Mobile view"
-                className={`rounded border px-2 py-1 transition ${
-                  viewMode === "mobile"
-                    ? "border-[#d7b46a] bg-[#d7b46a]/20 text-[#f6dfaa]"
-                    : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
-                }`}
-              >
-                📱
-              </button>
-              <button
-                onClick={() => {
-                  setViewMode("desktop");
-                  localStorage.setItem("viewMode", "desktop");
-                }}
-                title="Desktop view"
-                className={`rounded border px-2 py-1 transition ${
-                  viewMode === "desktop"
-                    ? "border-[#d7b46a] bg-[#d7b46a]/20 text-[#f6dfaa]"
-                    : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
-                }`}
-              >
-                🖥️
-              </button>
-            </div>
-
-            {/* LANGUAGE */}
-            <div className="flex items-center gap-3 text-sm tracking-widest uppercase border-l border-white/10 pl-4 sm:pl-6">
-              <button
-                onClick={() => {
-                  setLang("en");
-                  localStorage.setItem("lang", "en");
-                }}
-                className={`rounded border px-2 py-1 transition ${
-                  lang === "en"
-                    ? "border-[#d7b46a] bg-[#d7b46a]/15 text-[#f6dfaa]"
-                    : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
-                }`}
-              >
-                EN
-              </button>
-              <span className="text-white/30">/</span>
-              <button
-                onClick={() => {
-                  setLang("gr");
-                  localStorage.setItem("lang", "gr");
-                }}
-                className={`rounded border px-2 py-1 transition ${
-                  lang === "gr"
-                    ? "border-[#d7b46a] bg-[#d7b46a]/15 text-[#f6dfaa]"
-                    : "border-transparent text-white/40 hover:border-[#d7b46a]/70 hover:bg-[#d7b46a]/10 hover:text-[#f6dfaa]"
-                }`}
-              >
-                GR
-              </button>
-            </div>
-          </div>
         </nav>
       </header>
 
       {/* ================= HERO ================= */}
       <section
         id="hero"
-        className="relative min-h-screen flex items-center justify-center overflow-hidden"
+        className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
       >
         <div className="absolute inset-0">
           <div
@@ -600,12 +612,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
 
-        <div className="relative z-10 text-center px-6 max-w-4xl">
-          <p className="text-xs tracking-[0.3em] uppercase text-white/60 mb-6">
+        <div className="relative z-10 max-w-4xl px-5 pb-14 pt-28 text-center sm:px-6 sm:pb-16 sm:pt-32">
+          <p className="mb-5 text-[10px] uppercase tracking-[0.28em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.3em]">
             {T[lang].heroTag}
           </p>
 
-          <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl leading-tight mb-12">
+          <h1 className="mb-8 font-serif text-[2.6rem] leading-[0.96] sm:mb-10 sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
             {lang === "gr" ? (
               <>
                 {T[lang].heroTitle1}{" "}
@@ -623,9 +635,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </h1>
 
           <p
-            className={`mx-auto mb-12 text-base leading-relaxed text-white/65 sm:text-lg md:text-lg ${
+            className={`mx-auto mb-10 text-sm leading-7 text-white/72 sm:mb-12 sm:text-lg sm:leading-relaxed md:text-lg ${
               lang === "en"
-                ? "max-w-5xl lg:whitespace-nowrap"
+                ? "max-w-xl sm:max-w-2xl lg:max-w-5xl lg:whitespace-nowrap"
                 : "max-w-xl"
             }`}
           >
@@ -634,7 +646,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
           <button
             onClick={() => scrollTo("gallery")}
-            className="inline-flex items-center gap-3 border-b border-white/40 pb-2 text-sm uppercase tracking-widest transition hover:border-[#d7b46a] hover:font-bold hover:text-[#f6dfaa]"
+            className="inline-flex items-center gap-3 rounded-full border border-white/30 bg-black/25 px-5 py-3 text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:border-b sm:border-x-0 sm:border-t-0 sm:bg-transparent sm:px-0 sm:py-0 sm:pb-2 sm:text-sm sm:tracking-widest"
           >
             {T[lang].viewGallery} ↓
           </button>
@@ -644,20 +656,20 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= GALLERY ================= */}
       <section
         id="gallery"
-        className="gallery-backdrop px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10 relative overflow-hidden"
+        className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className={galleryContainerClass}>
-            <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-10 md:mb-20 text-white">
-              {T[lang].galleryTitle}
-            </h2>
+          <h2 className="mb-8 font-serif text-3xl text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl">
+            {T[lang].galleryTitle}
+          </h2>
 
-          <div className="mb-10 flex flex-wrap items-center gap-3 text-xs uppercase tracking-[0.3em] text-white/70">
+          <div className="-mx-1 mb-8 flex gap-2 overflow-x-auto px-1 pb-2 text-[10px] uppercase tracking-[0.22em] text-white/70 sm:mb-10 sm:flex-wrap sm:gap-3 sm:text-xs sm:tracking-[0.3em]">
             {filters.map((filter) => (
               <button
                 key={filter}
                 type="button"
                 onClick={() => setActiveFilter(filter)}
-                className={`rounded border px-3 sm:px-4 py-2 font-normal uppercase tracking-[0.3em] transition ${
+                className={`shrink-0 rounded-full border px-3 py-2 font-normal uppercase tracking-[0.22em] transition sm:rounded sm:px-4 sm:tracking-[0.3em] ${
                   activeFilter === filter
                     ? "border-[#d7b46a] bg-[#d7b46a] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)]"
                     : "border-[#d7b46a]/60 bg-[#d7b46a]/10 text-[#f6dfaa] hover:border-[#f6dfaa] hover:bg-[#d7b46a] hover:text-black"
@@ -682,10 +694,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {(viewMode === "desktop" ? visibleImages : visibleImages.slice(0, itemsToShow)).map((name, index) => {
               // Determine height based on viewMode
               const heightClass = viewMode === "mobile" 
-                ? "h-40 sm:h-56 md:h-72 lg:h-96"
+                ? "h-[25rem] min-[420px]:h-56 md:h-72 lg:h-96"
                 : viewMode === "desktop"
                 ? "h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96"
-                : "h-40 sm:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
+                : "h-[25rem] min-[420px]:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
               const itemClass = isDesktopGallery
                 ? "animate-gallery-item w-full text-left group"
                 : "animate-gallery-item w-full max-w-[420px] text-left group";
@@ -698,7 +710,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   style={{ animationDelay: `${Math.min(index, 14) * 90}ms` }}
                   onClick={() => openLightbox(visibleImages, index)}
                 >
-                  <div className={`${heightClass} w-full overflow-hidden rounded-lg border border-transparent bg-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.34)] relative group transition-all duration-300 transform hover:scale-105 hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/70 hover:shadow-[0_18px_55px_rgba(0,0,0,0.34),0_0_28px_rgba(215,180,106,0.3)]`}>
+                  <div className={`${heightClass} relative w-full overflow-hidden rounded-[1.25rem] border border-transparent bg-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.34)] transition-all duration-300 group hover:scale-[1.02] hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/70 hover:shadow-[0_18px_55px_rgba(0,0,0,0.34),0_0_28px_rgba(215,180,106,0.3)] sm:rounded-lg sm:hover:scale-105`}>
                     <Image
                       src={toSrc(name)}
                       alt=""
@@ -717,7 +729,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             <div className="mt-12 flex justify-center">
               <button
                 onClick={() => setItemsToShow(itemsToShow + 5)}
-                className="rounded border border-[#d7b46a] bg-[#d7b46a] px-6 sm:px-8 py-3 text-sm uppercase tracking-widest text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)]"
+                className="rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:rounded sm:px-8 sm:text-sm sm:tracking-widest"
               >
                 {T[lang].showMore} ↓
               </button>
@@ -730,11 +742,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= ABOUT ================= */}
       <section
         id="about"
-        className="px-4 sm:px-8 md:px-16 xl:px-20 py-18 md:py-24 xl:py-28 border-t border-white/10"
+        className="border-t border-white/10 px-4 py-16 sm:px-8 md:px-16 md:py-24 xl:px-20 xl:py-28"
       >
         <div className="ml-0 mr-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
           <div className="max-w-[44rem]">
-            <p className="mb-5 text-[10px] uppercase tracking-[0.45em] text-white/50">
+            <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/50 sm:mb-5 sm:tracking-[0.45em]">
               {T[lang].aboutKicker}
             </p>
             <h2 className="mb-6 font-serif text-3xl leading-tight sm:text-4xl xl:text-5xl">
@@ -742,7 +754,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               <span className="italic">{T[lang].aboutTitle2}</span>
             </h2>
 
-            <div className="max-w-[38rem] space-y-5 text-sm leading-8 text-white/70 sm:text-base xl:space-y-6">
+            <div className="max-w-[38rem] space-y-4 text-sm leading-7 text-white/70 sm:space-y-5 sm:text-base sm:leading-8 xl:space-y-6">
               {T[lang].aboutText.map((p) => (
                 <p key={p}>{p}</p>
               ))}
@@ -755,8 +767,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </div>
           </div>
 
-          <div className="lg:border-l lg:border-white/10 lg:pl-8 lg:pt-4">
-            <div className="relative aspect-[3/4] w-full max-w-[420px] overflow-hidden bg-white/10">
+          <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none lg:border-l lg:border-white/10 lg:pl-8 lg:pt-4">
+            <div className="relative aspect-[3/4] w-full overflow-hidden rounded-[1.5rem] bg-white/10">
               <Image
                 src="/images/vayia.JPEG"
                 alt="Vayia portrait"
@@ -770,7 +782,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative overflow-hidden border-t border-white/10 bg-black px-4 py-20 sm:px-8 md:px-20 md:py-32">
+      <section className="relative overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -782,7 +794,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
         <div className="relative z-10 ml-auto mr-0 max-w-5xl">
-          <p className="text-xs tracking-[0.4em] uppercase text-white/50 mb-6">
+          <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
             {T[lang].servicesKicker}
           </p>
           {T[lang].servicesTitle && (
@@ -792,18 +804,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
           )}
 
           <div className="grid items-start gap-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+            <div className="mb-12 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                  className="rounded-lg border border-[#d7b46a]/45 bg-black/52 p-6 shadow-[0_18px_55px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/68 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)] sm:p-8"
+                  className="rounded-[1.25rem] border border-[#d7b46a]/45 bg-black/52 p-5 shadow-[0_18px_55px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/68 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)] sm:rounded-lg sm:p-8"
                 >
                   <div className="mb-7 text-[#d7b46a]">
                     <ServiceIcon name={service.icon} />
                   </div>
-                  <h3 className="font-serif text-2xl mb-3">{service.title}</h3>
-                  <p className="text-white/60 text-sm mb-4">{service.text}</p>
-                  <a href="#contact" className="text-[#d7b46a] hover:text-[#f6dfaa] text-sm uppercase tracking-widest transition">
+                  <h3 className="mb-3 font-serif text-[1.7rem] sm:text-2xl">{service.title}</h3>
+                  <p className="mb-4 text-sm leading-7 text-white/60">{service.text}</p>
+                  <a href="#contact" className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest">
                     {T[lang].inquire} →
                   </a>
                 </div>
@@ -816,23 +828,23 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {/* ================= CONTACT ================= */}
       <section
         id="contact"
-        className="px-4 sm:px-8 md:px-20 py-20 md:py-32 border-t border-white/10"
+        className="border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className="mx-auto max-w-5xl text-center">
-          <p className="text-xs tracking-[0.5em] uppercase text-white/60 mb-6">
+          <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
             {T[lang].contactKicker}
           </p>
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-4 sm:mb-6">
             {T[lang].contactTitle1}{" "}
             <span className="italic">{T[lang].contactTitle2}</span>
           </h2>
-          <p className="text-white/60 text-sm sm:text-base md:text-lg leading-relaxed mb-8 sm:mb-12">
+          <p className="mb-8 text-sm leading-7 text-white/60 sm:mb-12 sm:text-base md:text-lg md:leading-relaxed">
             {T[lang].contactText}
           </p>
 
           <form
             onSubmit={handleContactSubmit}
-            className="space-y-10 text-left"
+            className="space-y-8 text-left sm:space-y-10"
           >
             <div className="hidden">
               <label>
@@ -850,7 +862,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   type="text"
                   name="name"
                   placeholder={T[lang].formNamePlaceholder}
-                  className="w-full bg-transparent border-b border-white/30 py-3 text-white/80 placeholder:text-white/35 focus:outline-none focus:border-[#d7b46a]/80 transition"
+                  className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
                 />
               </label>
               <label className="block">
@@ -862,7 +874,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   type="email"
                   name="email"
                   placeholder={T[lang].formEmailPlaceholder}
-                  className="w-full bg-transparent border-b border-white/30 py-3 text-white/80 placeholder:text-white/35 focus:outline-none focus:border-[#d7b46a]/80 transition"
+                  className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
                 />
               </label>
             </div>
@@ -876,7 +888,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 name="message"
                 rows={4}
                 placeholder={T[lang].formMessagePlaceholder}
-                className="w-full bg-transparent border-b border-white/30 py-3 text-white/80 placeholder:text-white/35 focus:outline-none focus:border-[#d7b46a]/80 transition"
+                className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
               />
             </label>
 
@@ -898,11 +910,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </p>
             )}
 
-            <div className="text-center pt-8">
+            <div className="pt-6 text-center sm:pt-8">
               <button
                 type="submit"
                 disabled={contactState === "submitting"}
-                className="inline-flex items-center gap-2 sm:gap-3 border border-white bg-white px-6 sm:px-12 py-3 sm:py-4 text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] uppercase text-black transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black hover:shadow-[0_0_28px_rgba(215,180,106,0.3)] disabled:cursor-not-allowed disabled:opacity-70"
+                className="inline-flex items-center gap-2 border border-white bg-white px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black hover:shadow-[0_0_28px_rgba(215,180,106,0.3)] disabled:cursor-not-allowed disabled:opacity-70 sm:gap-3 sm:px-12 sm:py-4 sm:text-xs sm:tracking-[0.4em]"
               >
                 {contactState === "submitting"
                   ? T[lang].contactSending
@@ -924,7 +936,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         </div>
       </section>
       {/* ================= FOOTER ================= */}
-      <footer className="bg-[#111716] px-4 sm:px-8 md:px-20 py-6 border-t border-white/10">
+      <footer className="border-t border-white/10 bg-[#111716] px-4 py-6 sm:px-8 md:px-20">
         <div className="grid items-center gap-6 text-center md:grid-cols-[1fr_auto_1fr] md:text-left">
           <p className="text-white/50 text-sm md:justify-self-start">
             &copy; {new Date().getFullYear()} All rights reserved
@@ -1002,7 +1014,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {scrolled && (
         <button
           onClick={() => scrollTo("hero")}
-          className="fixed bottom-8 right-8 z-40 rounded-full border border-[#d7b46a] bg-[#d7b46a] p-3 text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] backdrop-blur transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa]"
+          className={`fixed z-40 rounded-full border border-[#d7b46a] bg-[#d7b46a] p-3 text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] backdrop-blur transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] ${
+            isMobileLayout ? "bottom-24 right-4" : "bottom-8 right-8"
+          }`}
           title="Back to top"
         >
           ↑
@@ -1011,7 +1025,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {!isAtPageBottom && (
         <button
           onClick={() => scrollTo("contact")}
-          className="fixed bottom-8 left-8 z-40 rounded-full border border-[#d7b46a] bg-[#d7b46a] p-3 text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] backdrop-blur transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa]"
+          className={`fixed z-40 rounded-full border border-[#d7b46a] bg-[#d7b46a] p-3 text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] backdrop-blur transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] ${
+            isMobileLayout ? "bottom-8 right-4" : "bottom-8 left-8"
+          }`}
           title="Go to contact"
         >
           ↓
@@ -1021,7 +1037,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= LIGHTBOX ================= */}
       {lightbox.open && (
         <div
-          className={`lightbox-overlay fixed inset-0 z-[100] bg-black/90 p-6 overflow-y-auto ${
+          className={`lightbox-overlay fixed inset-0 z-[100] overflow-y-auto bg-black/90 p-3 sm:p-6 ${
             isLightboxClosing ? "lightbox-overlay-out" : ""
           }`}
           onClick={closeLightbox}
@@ -1030,7 +1046,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             className="relative max-h-full w-full"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="lightbox-panel sticky top-0 z-10 flex flex-wrap items-center justify-between gap-4 bg-black/80 px-2 py-2 backdrop-blur">
+            <div className="lightbox-panel sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 bg-black/80 px-2 py-2 backdrop-blur sm:gap-4">
               <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/40">
                 {String(lightbox.index + 1).padStart(2, "0")} /{" "}
                 {String(lightbox.images.length).padStart(2, "0")}
@@ -1044,19 +1060,19 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 ✕
               </button>
             </div>
-            <div className="relative flex items-center justify-center pt-10">
+            <div className="relative flex items-center justify-center pt-6 sm:pt-10">
               {lightbox.images.length > 1 && (
                 <>
                   <button
                     type="button"
-                    className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3 sm:px-4 py-2 sm:py-3 text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] touch-manipulation"
+                    className="absolute left-1 top-1/2 -translate-y-1/2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3 py-2 text-xs uppercase tracking-[0.2em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] touch-manipulation sm:left-3 sm:px-4 sm:py-3 sm:tracking-[0.3em]"
                     onClick={() => moveLightbox("prev")}
                   >
                     ←
                   </button>
                   <button
                     type="button"
-                    className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3 sm:px-4 py-2 sm:py-3 text-xs uppercase tracking-[0.2em] sm:tracking-[0.3em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] touch-manipulation"
+                    className="absolute right-1 top-1/2 -translate-y-1/2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3 py-2 text-xs uppercase tracking-[0.2em] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] touch-manipulation sm:right-3 sm:px-4 sm:py-3 sm:tracking-[0.3em]"
                     onClick={() => moveLightbox("next")}
                   >
                     →
@@ -1065,7 +1081,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               )}
               <div
                 key={`${lightbox.images[lightbox.index]}-${slideDirection}`}
-                className={`lightbox-image lightbox-image-${slideDirection} relative h-[70vh] w-[90vw]`}
+                className={`lightbox-image lightbox-image-${slideDirection} relative h-[72vh] w-[92vw] sm:h-[70vh] sm:w-[90vw]`}
               >
                 <Image
                   src={toSrc(lightbox.images[lightbox.index])}

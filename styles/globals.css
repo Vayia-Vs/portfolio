@@ -42,6 +42,12 @@ body {
   pointer-events: none;
 }
 
+@media (max-width: 640px) {
+  .gallery-backdrop::before {
+    inset: 0.75rem;
+  }
+}
+
 @keyframes galleryFadeIn {
   from {
     opacity: 0;
