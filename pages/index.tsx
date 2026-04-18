@@ -676,7 +676,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         </div>
 
         <div className="relative z-10 max-w-4xl px-5 pb-18 pt-32 text-center sm:px-6 sm:pb-20 sm:pt-36">
-          <h1 className={`mb-8 text-[clamp(1.45rem,6.5vw,4.7rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
+          <h1 className={`mb-8 text-[clamp(1.58rem,7.2vw,5.1rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
             {lang === "gr" ? (
               <>
                 {T[lang].heroTitle1} {T[lang].heroTitle2}{" "}
@@ -723,7 +723,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className={galleryContainerClass}>
-          <h2 className={`mb-8 text-3xl text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
+          <h2 className={`mb-8 text-3xl italic text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
             {T[lang].galleryTitle}
           </h2>
 
@@ -820,9 +820,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
             <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/50 sm:mb-5 sm:tracking-[0.45em]">
               {formatUiLabel(T[lang].aboutKicker)}
             </p>
-            <h2 className={`mb-6 text-3xl leading-tight sm:text-4xl xl:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
+            <h2 className={`mb-6 text-3xl italic leading-tight sm:text-4xl xl:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
               {T[lang].aboutTitle1}{" "}
-              <span className="italic">{T[lang].aboutTitle2}</span>
+              <span>{T[lang].aboutTitle2}</span>
             </h2>
 
             <div className="max-w-[38rem] space-y-4 text-sm leading-7 text-white/70 sm:space-y-5 sm:text-base sm:leading-8 xl:space-y-6">
@@ -919,9 +919,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
               {formatUiLabel(T[lang].contactKicker)}
             </p>
           ) : null}
-          <h2 className={`mb-4 text-3xl sm:mb-6 sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
+          <h2 className={`mb-4 text-3xl italic sm:mb-6 sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
             {T[lang].contactTitle1}{" "}
-            <span className="italic">{T[lang].contactTitle2}</span>
+            <span>{T[lang].contactTitle2}</span>
           </h2>
           <p className="mb-8 text-sm leading-7 text-white/60 sm:mb-12 sm:text-base md:text-lg md:leading-relaxed">
             {T[lang].contactText}
