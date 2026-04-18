@@ -171,7 +171,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       viewGallery: "View Gallery",
       contactButton: "Get in Touch",
       galleryTitle: "My Collections",
-      showMore: "Show More",
+      showMore: "more...",
       aboutTitle1: "The Art",
       aboutTitle2: "of Seeing",
       aboutKicker: "About the work",
@@ -233,7 +233,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       viewGallery: "Περιήγηση",
       contactButton: "Επικοινωνία",
       galleryTitle: "Οι Συλλογές μου",
-      showMore: "Δες περισσότερες",
+      showMore: "Περισσοτερα",
       aboutTitle1: "Το βλέμμα",
       aboutTitle2: "πίσω από τον φακό",
       aboutKicker: "Λίγα λόγια",
@@ -516,9 +516,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
             ? isGreek
               ? "ΕΣΩΤΕΡΙΚΟΙ ΧΩΡΟΙ"
               : "INTERIOR"
-            : tag === "street"
+          : tag === "street"
               ? isGreek
-                ? "STREET"
+                ? "ΦΩΤΟΓΡΑΦΙΑ ΔΡΟΜΟΥ"
                 : "STREET"
               : formatUiLabel(tag),
     images: images.filter((name) => parseTags(name).includes(tag)),
@@ -805,7 +805,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 );
 
                 return (
-                  <div key={section.key} className="space-y-4">
+                  <div key={section.key} className="space-y-4 rounded-[1.55rem] bg-black/32 px-4 py-5 shadow-[0_20px_42px_rgba(0,0,0,0.18)]">
                     <div className="flex items-end justify-between gap-3">
                       <h3 className="text-sm uppercase tracking-[0.28em] text-[#f6dfaa] sm:text-lg sm:tracking-[0.24em]">
                         {section.title}
@@ -870,9 +870,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
                               [section.key]: prev[section.key] + 5,
                             }))
                           }
-                          className="text-[10px] uppercase tracking-[0.24em] text-[#f6dfaa] transition hover:text-white"
+                          className="text-[10px] uppercase tracking-[0.18em] text-[#f6dfaa] transition hover:text-white"
                         >
-                          {T[lang].showMore}...
+                          {T[lang].showMore}
                         </button>
                       )}
                     </div>
