@@ -106,6 +106,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [hasChosenView, setHasChosenView] = useState(true);
   const [itemsToShow, setItemsToShow] = useState(5); // Gallery items shown
   const [activeFilter, setActiveFilter] = useState("all");
+  const [mobileGalleryVisible, setMobileGalleryVisible] = useState<Record<string, number>>({});
+  const [mobileGalleryIndex, setMobileGalleryIndex] = useState<Record<string, number>>({});
   const [contactState, setContactState] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
@@ -119,6 +121,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [showSwipeHint, setShowSwipeHint] = useState(false);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartXRef = useRef<number | null>(null);
+  const mobileGalleryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   /* ================= LOAD SAVED LANGUAGE & VIEW MODE ================= */
   useEffect(() => {
@@ -498,6 +501,71 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const galleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 18vw, (min-width: 1024px) 20vw, 33vw"
     : "(min-width: 1024px) 33vw, (min-width: 420px) 50vw, 100vw";
+  const mobileGallerySections = allTags.map((tag) => ({
+    key: tag,
+    title:
+      tag === "archit"
+        ? isGreek
+          ? "ΑΡΧΙΤΕΚΤΟΝΙΚΗ"
+          : "ARCHITECTURE"
+        : tag === "landsc"
+          ? isGreek
+            ? "ΤΟΠΙΑ"
+            : "LANDSCAPE"
+          : tag === "int"
+            ? isGreek
+              ? "ΕΣΩΤΕΡΙΚΟΙ ΧΩΡΟΙ"
+              : "INTERIOR"
+            : tag === "street"
+              ? isGreek
+                ? "STREET"
+                : "STREET"
+              : formatUiLabel(tag),
+    images: images.filter((name) => parseTags(name).includes(tag)),
+  }));
+
+  useEffect(() => {
+    if (!allTags.length) return;
+
+    setMobileGalleryVisible((prev) => {
+      const next: Record<string, number> = {};
+      allTags.forEach((tag) => {
+        next[tag] = prev[tag] ?? 5;
+      });
+      return next;
+    });
+
+    setMobileGalleryIndex((prev) => {
+      const next: Record<string, number> = {};
+      allTags.forEach((tag) => {
+        next[tag] = prev[tag] ?? 0;
+      });
+      return next;
+    });
+  }, [allTags]);
+
+  const handleMobileGalleryScroll = (key: string) => {
+    const element = mobileGalleryRefs.current[key];
+    if (!element) return;
+    const card = element.querySelector<HTMLElement>("[data-mobile-gallery-card='true']");
+    const cardWidth = card?.offsetWidth ?? 1;
+
+    setMobileGalleryIndex((prev) => ({
+      ...prev,
+      [key]: Math.round(element.scrollLeft / cardWidth),
+    }));
+  };
+
+  const scrollMobileGalleryTo = (key: string, index: number) => {
+    const element = mobileGalleryRefs.current[key];
+    const card = element?.querySelector<HTMLElement>("[data-mobile-gallery-card='true']");
+    if (!element || !card) return;
+
+    element.scrollTo({
+      left: card.offsetWidth * index,
+      behavior: "smooth",
+    });
+  };
 
   return (
     <div className={`bg-black text-white ${isGreek ? "font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif]" : ""}`}>
@@ -727,84 +795,167 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {T[lang].galleryTitle}
           </h2>
 
-          <div className="-mx-1 mb-8 flex gap-2 overflow-x-auto px-1 pb-2 text-[10px] uppercase tracking-[0.22em] text-white/70 sm:mb-10 sm:flex-wrap sm:gap-3 sm:text-xs sm:tracking-[0.3em]">
-            {filters.map((filter) => (
-              <button
-                key={filter}
-                type="button"
-                onClick={() => setActiveFilter(filter)}
-                className={`min-h-11 shrink-0 rounded-full border px-3 py-2 font-normal uppercase tracking-[0.22em] transition sm:rounded sm:px-4 sm:tracking-[0.3em] ${
-                  activeFilter === filter
-                    ? "border-[#d7b46a] bg-[#d7b46a] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)]"
-                    : "border-[#d7b46a]/60 bg-[#d7b46a]/10 text-[#f6dfaa] hover:border-[#f6dfaa] hover:bg-[#d7b46a] hover:text-black"
-                }`}
-              >
-                {(filter === "all"
-                  ? "ALL"
-                  : filter === "archit"
-                    ? "ARCHITECTURE"
-                    : filter === "landsc"
-                      ? "LANDSCAPE"
-                      : filter === "int"
-                        ? "INTERIOR"
-                        : filter === "street"
-                          ? "STREET PHOTOGRAPHY"
-                          : filter.toUpperCase())}
-                <span className="ml-2 text-[9px] opacity-70">
-                  {filter === "all" ? images.length : (filterCounts[filter] ?? 0)}
-                </span>
-              </button>
-            ))}
-          </div>
+          {isMobileLayout ? (
+            <div className="space-y-12">
+              {mobileGallerySections.map((section) => {
+                const sectionVisible = section.images.slice(0, mobileGalleryVisible[section.key]);
+                const sectionIndex = Math.min(
+                  mobileGalleryIndex[section.key],
+                  Math.max(sectionVisible.length - 1, 0),
+                );
 
-          <div className={galleryGridClass}>
-            {visibleImages.slice(0, itemsToShow).map((name, index) => {
-              // Determine height based on viewMode
-              const heightClass = viewMode === "mobile" 
-                ? "h-44 sm:h-56 md:h-72 lg:h-96"
-                : viewMode === "desktop"
-                ? "h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96"
-                : "h-44 sm:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
-              const mobileSpanClass =
-                index % 5 < 3 ? "col-span-2 sm:col-span-1" : "col-span-3 sm:col-span-1";
-              const itemClass = isDesktopGallery
-                ? "animate-gallery-item w-full text-left group"
-                : `animate-gallery-item ${mobileSpanClass} w-full text-left group sm:max-w-[420px]`;
-              
-              return (
-                <button
-                  key={`${activeFilter}-${name}`}
-                  type="button"
-                  className={itemClass}
-                  style={{ animationDelay: `${Math.min(index, 14) * 90}ms` }}
-                  onClick={() => openLightbox(visibleImages, index)}
-                >
-                  <div className={`${heightClass} relative w-full overflow-hidden rounded-[1.25rem] border border-transparent bg-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.34)] transition-all duration-300 group hover:scale-[1.02] hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/70 hover:shadow-[0_18px_55px_rgba(0,0,0,0.34),0_0_28px_rgba(215,180,106,0.3)] sm:rounded-lg sm:hover:scale-105`}>
-                    <Image
-                      src={toSrc(name)}
-                      alt=""
-                      fill
-                      sizes={galleryImageSizes}
-                      className="object-cover"
-                      priority={index < 3}
-                      quality={index < 5 ? 78 : 72}
-                    />
+                return (
+                  <div key={section.key} className="space-y-4">
+                    <div className="flex items-end justify-between gap-3">
+                      <h3 className="text-lg uppercase tracking-[0.24em] text-[#f6dfaa]">
+                        {section.title}
+                      </h3>
+                      <span className="text-[10px] uppercase tracking-[0.22em] text-white/35">
+                        {section.images.length}
+                      </span>
+                    </div>
+
+                    <div
+                      ref={(element) => {
+                        mobileGalleryRefs.current[section.key] = element;
+                      }}
+                      className="-mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2"
+                      onScroll={() => handleMobileGalleryScroll(section.key)}
+                    >
+                      {sectionVisible.map((name, index) => (
+                        <button
+                          key={`${section.key}-${name}`}
+                          type="button"
+                          data-mobile-gallery-card="true"
+                          className="animate-gallery-item relative aspect-square w-[74vw] shrink-0 snap-start overflow-hidden rounded-[1.35rem] border border-transparent bg-white/10 text-left shadow-[0_18px_55px_rgba(0,0,0,0.34)] transition-all duration-300"
+                          style={{ animationDelay: `${Math.min(index, 6) * 80}ms` }}
+                          onClick={() => openLightbox(sectionVisible, index)}
+                        >
+                          <Image
+                            src={toSrc(name)}
+                            alt=""
+                            fill
+                            sizes="74vw"
+                            className="object-cover"
+                            priority={index < 2}
+                            quality={76}
+                          />
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-2">
+                        {sectionVisible.map((_, index) => (
+                          <button
+                            key={`${section.key}-dot-${index}`}
+                            type="button"
+                            aria-label={`Go to ${section.title} image ${index + 1}`}
+                            onClick={() => scrollMobileGalleryTo(section.key, index)}
+                            className={`h-2.5 rounded-full transition-all ${
+                              sectionIndex === index
+                                ? "w-5 bg-[#d7b46a]"
+                                : "w-2.5 bg-white/28"
+                            }`}
+                          />
+                        ))}
+                      </div>
+
+                      {section.images.length > mobileGalleryVisible[section.key] && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setMobileGalleryVisible((prev) => ({
+                              ...prev,
+                              [section.key]: prev[section.key] + 5,
+                            }))
+                          }
+                          className="text-[11px] uppercase tracking-[0.24em] text-[#f6dfaa] transition hover:text-white"
+                        >
+                          {T[lang].showMore}...
+                        </button>
+                      )}
+                    </div>
                   </div>
-                </button>
-              );
-            })}
-          </div>
-
-          {/* SHOW MORE BUTTON - MOBILE ONLY */}
-          {visibleImages.length > itemsToShow && (
-            <div className="mt-12 flex justify-center">
-              <button
-                onClick={() => setItemsToShow((current) => current + 5)}
-                className="rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:rounded sm:px-8 sm:text-sm sm:tracking-widest"
-              >
-                {T[lang].showMore} ↓
-              </button>
+                );
+              })}
             </div>
+          ) : (
+            <>
+              <div className="-mx-1 mb-8 flex gap-2 overflow-x-auto px-1 pb-2 text-[10px] uppercase tracking-[0.22em] text-white/70 sm:mb-10 sm:flex-wrap sm:gap-3 sm:text-xs sm:tracking-[0.3em]">
+                {filters.map((filter) => (
+                  <button
+                    key={filter}
+                    type="button"
+                    onClick={() => setActiveFilter(filter)}
+                    className={`min-h-11 shrink-0 rounded-full border px-3 py-2 font-normal uppercase tracking-[0.22em] transition sm:rounded sm:px-4 sm:tracking-[0.3em] ${
+                      activeFilter === filter
+                        ? "border-[#d7b46a] bg-[#d7b46a] text-black shadow-[0_0_24px_rgba(215,180,106,0.28)]"
+                        : "border-[#d7b46a]/60 bg-[#d7b46a]/10 text-[#f6dfaa] hover:border-[#f6dfaa] hover:bg-[#d7b46a] hover:text-black"
+                    }`}
+                  >
+                    {(filter === "all"
+                      ? "ALL"
+                      : filter === "archit"
+                        ? "ARCHITECTURE"
+                        : filter === "landsc"
+                          ? "LANDSCAPE"
+                          : filter === "int"
+                            ? "INTERIOR"
+                            : filter === "street"
+                              ? "STREET PHOTOGRAPHY"
+                              : filter.toUpperCase())}
+                    <span className="ml-2 text-[9px] opacity-70">
+                      {filter === "all" ? images.length : (filterCounts[filter] ?? 0)}
+                    </span>
+                  </button>
+                ))}
+              </div>
+
+              <div className={galleryGridClass}>
+                {visibleImages.slice(0, itemsToShow).map((name, index) => {
+                  const heightClass = isDesktopGallery
+                    ? "h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96"
+                    : "h-44 sm:h-56 md:h-72 lg:h-96";
+                  const itemClass = isDesktopGallery
+                    ? "animate-gallery-item w-full text-left group"
+                    : "animate-gallery-item w-full text-left group sm:max-w-[420px]";
+
+                  return (
+                    <button
+                      key={`${activeFilter}-${name}`}
+                      type="button"
+                      className={itemClass}
+                      style={{ animationDelay: `${Math.min(index, 14) * 90}ms` }}
+                      onClick={() => openLightbox(visibleImages, index)}
+                    >
+                      <div className={`${heightClass} relative w-full overflow-hidden rounded-[1.25rem] border border-transparent bg-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.34)] transition-all duration-300 group hover:scale-[1.02] hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/70 hover:shadow-[0_18px_55px_rgba(0,0,0,0.34),0_0_28px_rgba(215,180,106,0.3)] sm:rounded-lg sm:hover:scale-105`}>
+                        <Image
+                          src={toSrc(name)}
+                          alt=""
+                          fill
+                          sizes={galleryImageSizes}
+                          className="object-cover"
+                          priority={index < 3}
+                          quality={index < 5 ? 78 : 72}
+                        />
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {visibleImages.length > itemsToShow && (
+                <div className="mt-12 flex justify-center">
+                  <button
+                    onClick={() => setItemsToShow((current) => current + 5)}
+                    className="rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:rounded sm:px-8 sm:text-sm sm:tracking-widest"
+                  >
+                    {T[lang].showMore} ↓
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
 
