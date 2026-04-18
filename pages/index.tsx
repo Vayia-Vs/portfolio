@@ -1,84 +1,22 @@
 ﻿import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { GetStaticProps } from "next";
 import Head from "next/head";
+import Link from "next/link";
 import Image from "next/image";
 import path from "path";
 import fs from "fs";
+import {
+  curatedImageOrder,
+  featuredCategoryOrder,
+  homeContent,
+  siteUrl,
+} from "@/content/homeContent";
+import { projectsContent } from "@/content/projectsContent";
+import { trackEvent } from "@/lib/analytics";
 
 type HomeProps = {
   imagesFromFs: string[];
 };
-
-const curatedImageOrder = [
-  "ist8-street.jpg",
-  "rome2-archit.png",
-  "greece1-landsc.png",
-  "skg1-street-int.jpg",
-  "ist1-archit-int.png",
-  "rome7-street.png",
-  "greece3-street.png",
-  "ist15-landsc.jpg",
-  "rome8-archit-int.png",
-  "skg2-street.png",
-  "ist10-street.png",
-  "rome4-int.png",
-  "greece2-landsc.png",
-  "ist7-archit.png",
-  "rome1-street.png",
-  "greece5-street.png",
-  "ist9-archit.png",
-  "skg3-street.png",
-  "rome3-archit-int.png",
-  "ist4-street.jpg",
-  "greece4-street.png",
-  "rome6-archit.png",
-  "ist11-street.png",
-  "ist2-street.jpg",
-  "ist14-street.png",
-  "ist5-street.jpg",
-  "ist12-street.png",
-  "ist3-street.jpg",
-  "ist13-street.png",
-  "ist6-street.jpg",
-  "ist7-street.jpg",
-];
-
-const featuredCategoryOrder: Record<string, string[]> = {
-  street: [
-    "ist8-street.jpg",
-    "rome7-street.png",
-    "greece3-street.png",
-    "skg1-street-int.jpg",
-    "ist10-street.png",
-    "greece4-street.png",
-    "rome1-street.png",
-    "ist4-street.jpg",
-  ],
-  landsc: [
-    "greece1-landsc.png",
-    "ist15-landsc.jpg",
-    "greece2-landsc.png",
-    "greece5-street.png",
-  ],
-  archit: [
-    "rome2-archit.png",
-    "ist1-archit-int.png",
-    "rome8-archit-int.png",
-    "ist7-archit.png",
-    "ist9-archit.png",
-    "rome3-archit-int.png",
-    "rome6-archit.png",
-  ],
-  int: [
-    "rome4-int.png",
-    "rome8-archit-int.png",
-    "rome3-archit-int.png",
-    "ist1-archit-int.png",
-    "skg1-street-int.jpg",
-  ],
-};
-
-const siteUrl = "https://vayia-vs-portfolio.vercel.app";
 
 export default function Home({ imagesFromFs }: HomeProps) {
   /* ================= STATE ================= */
@@ -95,6 +33,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [contactState, setContactState] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
+  const [contactErrorMessage, setContactErrorMessage] = useState("");
   const [lightbox, setLightbox] = useState<{
     open: boolean;
     images: string[];
@@ -166,132 +105,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   }, []);
 
   /* ================= TEXTS ================= */
-  const T = {
-    en: {
-      nav: [
-        { label: "Gallery", target: "gallery" },
-        { label: "About", target: "about" },
-        { label: "Contact", target: "contact" },
-      ],
-      heroTitle1: "Capturing",
-      heroTitle2: "Moments",
-      heroTitle3: "in Time",
-      heroText:
-        "Street, portrait, and atmospheric photography shaped by quiet observation, natural light, and real moments.",
-      viewGallery: "View Gallery",
-      contactButton: "Get in Touch",
-      galleryTitle: "My Collections",
-      showMore: "more...",
-      aboutTitle1: "The Art",
-      aboutTitle2: "of Seeing",
-      aboutKicker: "About the work",
-      aboutText: [
-        "I photograph the city as it unfolds: small gestures, passing light, and the quiet tension between people and place.",
-        "My work moves between street photography, portraiture, architecture, and landscapes, always guided by atmosphere rather than performance.",
-        "I am drawn to images that feel intimate and unforced. Even when the frame is simple, I want it to carry rhythm, stillness, and a sense of presence.",
-        "Based in Athens and available for selected collaborations.",
-      ],
-      contactTitle1: "Let's Work",
-      contactTitle2: "Together",
-      contactKicker: "Get in touch",
-      contactText:
-        "If you have a portrait session, a brand idea, or a visual project in mind, send me a message and we can shape it together.",
-      contactEmail: "vayiavs95@gmail.com",
-      formName: "Name",
-      formNamePlaceholder: "Your name",
-      formEmail: "Email",
-      formEmailPlaceholder: "your@email.com",
-      formMessage: "Message",
-      formMessagePlaceholder: "Tell me what you have in mind...",
-      contactCTA: "Send Message",
-      contactSending: "Sending...",
-      contactSuccess: "Your message has been sent.",
-      contactError: "Something went wrong. Please try again.",
-      servicesKicker: "Work with me",
-      servicesTitle: "",
-      services: [
-        {
-          icon: "portrait",
-          title: "Portraits",
-          text: "Editorial-feeling portraits, couples sessions, and quiet personal photographs with a natural, relaxed direction.",
-        },
-        {
-          icon: "product",
-          title: "Brand & Product",
-          text: "Clean, atmospheric imagery for small businesses, personal brands, online shops, and visual campaigns.",
-        },
-        {
-          icon: "walks",
-          title: "Creative Sessions",
-          text: "Collaborative shoots and visual storytelling sessions built around mood, location, and the identity of the project.",
-        },
-      ],
-      inquire: "Inquire",
-      portraitCaption: "Quiet moments, honest presence",
-    },
-    gr: {
-      nav: [
-        { label: "Συλλογές", target: "gallery" },
-        { label: "Σχετικά με εμένα", target: "about" },
-        { label: "Επικοινωνία", target: "contact" },
-      ],
-      heroTitle1: "Στιγμές",
-      heroTitle2: "που",
-      heroTitle3: "μένουν",
-      heroText:
-        "Φωτογραφίες δρόμου, πορτρέτα και εικόνες ατμόσφαιρας με έμφαση στο φως, την παρατήρηση και τις αληθινές στιγμές.",
-      viewGallery: "Περιήγηση",
-      contactButton: "Επικοινωνία",
-      galleryTitle: "Οι Συλλογές μου",
-      showMore: "Περισσοτερα",
-      aboutTitle1: "Πίσω",
-      aboutTitle2: "από τον φακό",
-      aboutKicker: "Σχετικά με εμένα",
-      aboutText: [
-        "Φωτογραφίζω την πόλη όπως αποκαλύπτεται: μικρές κινήσεις, περαστικό φως και τη σχέση ανάμεσα στους ανθρώπους και τον χώρο.",
-        "Η δουλειά μου κινείται ανάμεσα στη φωτογραφία δρόμου, τα πορτρέτα, την αρχιτεκτονική και τα τοπία, με βάση πάντα την ατμόσφαιρα και όχι τη σκηνοθεσία.",
-        "Με ενδιαφέρουν οι εικόνες που νιώθουν ήσυχες αλλά παρούσες. Ακόμα και όταν το κάδρο είναι απλό, θέλω να κρατά ρυθμό, αλήθεια και χαρακτήρα.",
-        "Με αφετηρία την Αθήνα και διάθεση για επιλεγμένες συνεργασίες.",
-      ],
-      contactTitle1: "Επικοινώνησε",
-      contactTitle2: "Εδώ",
-      contactKicker: "",
-      contactText:
-        "Αν έχεις στο μυαλό σου ένα πορτρέτο, μια ιδέα για brand ή ένα φωτογραφικό project, στείλε μου μήνυμα να το δούμε μαζί.",
-      contactEmail: "vayiavs95@gmail.com",
-      formName: "ΟΝΟΜΑ",
-      formNamePlaceholder: "Το όνομά σου",
-      formEmail: "EMAIL",
-      formEmailPlaceholder: "το@email σου",
-      formMessage: "ΜΗΝΥΜΑ",
-      formMessagePlaceholder: "Πες μου τι έχεις στο μυαλό σου...",
-      contactCTA: "Αποστολή",
-      contactSending: "Αποστολή...",
-      contactSuccess: "Το μήνυμά σου στάλθηκε.",
-      contactError: "Κάτι πήγε στραβά. Δοκίμασε ξανά.",
-      servicesKicker: "",
-      servicesTitle: "",
-      services: [
-        {
-          icon: "portrait",
-          title: "Πορτρέτα",
-          text: "Πορτρέτα με φυσικό ρυθμό, φωτογραφίσεις για ζευγάρια και προσωπικές λήψεις με ήρεμη, ανεπιτήδευτη κατεύθυνση.",
-        },
-        {
-          icon: "product",
-          title: "Brand & Προϊόν",
-          text: "Καθαρές και ατμοσφαιρικές εικόνες για μικρές επιχειρήσεις, personal brands, e-shops και οπτικές καμπάνιες.",
-        },
-        {
-          icon: "walks",
-          title: "Δημιουργικά Sessions",
-          text: "Συνεργατικές φωτογραφίσεις και visual storytelling με βάση τη διάθεση, το location και την ταυτότητα του project.",
-        },
-      ],
-      inquire: "Ρώτησέ με",
-      portraitCaption: "Ήσυχες στιγμές, αληθινή παρουσία",
-    },
-  };
+  const T = homeContent;
 
   /* ================= EFFECTS ================= */
   useEffect(() => {
@@ -421,6 +235,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   ) => {
     e.preventDefault();
     setContactState("submitting");
+    setContactErrorMessage("");
 
     const form = e.currentTarget;
     const formData = new FormData(form);
@@ -428,6 +243,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
     const payload = {
       name: String(formData.get("name") ?? "").trim(),
       email: String(formData.get("email") ?? "").trim(),
+      inquiryType: String(formData.get("inquiryType") ?? "").trim(),
+      timeframe: String(formData.get("timeframe") ?? "").trim(),
+      budget: String(formData.get("budget") ?? "").trim(),
       message: String(formData.get("message") ?? "").trim(),
       botField: String(formData.get("bot-field") ?? "").trim(),
       submittedAt: Number(formData.get("submitted-at") ?? contactStartedAt),
@@ -443,7 +261,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
       });
 
       if (!response.ok) {
-        throw new Error("Request failed");
+        const result = (await response.json().catch(() => null)) as
+          | { error?: string }
+          | null;
+        throw new Error(result?.error || "Request failed");
       }
 
       form.reset();
@@ -452,8 +273,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
       if (textarea) {
         textarea.style.height = "";
       }
+      trackEvent("contact_submit", {
+        inquiry_type: payload.inquiryType || "unspecified",
+        timeframe: payload.timeframe || "unspecified",
+      });
       setContactState("success");
-    } catch {
+    } catch (error) {
+      if (error instanceof Error) {
+        setContactErrorMessage(error.message);
+      }
       setContactState("error");
     }
   };
@@ -558,6 +386,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
     return formatUiLabel(primaryTag);
   };
 
+  const getImageAlt = (name: string) => {
+    const label = getPrimaryTagLabel(name).toLowerCase();
+    return isGreek ? `Φωτογραφια ${label}` : `${label} photograph`;
+  };
+
   const allTags = Array.from(new Set(images.flatMap(parseTags))).sort();
 
   const filters = ["all", ...allTags];
@@ -571,6 +404,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
     activeFilter === "all"
       ? images
       : images.filter((name) => parseTags(name).includes(activeFilter));
+  const selectedProjects = projectsContent.slice(0, 3);
   const isDesktopGallery = viewMode === "desktop";
   const isMobileLayout = viewMode !== "desktop";
   const galleryContainerClass = isDesktopGallery
@@ -748,7 +582,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
             : "bg-transparent py-3 sm:py-6"
         }`}
       >
-        <nav className="px-4 sm:px-6">
+        <a
+          href="#gallery"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[60] focus:rounded-full focus:bg-[#d7b46a] focus:px-4 focus:py-2 focus:text-black"
+        >
+          {isGreek ? "Μεταβαση στη συλλογη" : "Skip to gallery"}
+        </a>
+        <nav className="px-4 sm:px-6" aria-label={isGreek ? "Κυρια πλοηγηση" : "Primary navigation"}>
           <div className="grid w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-3 md:grid-cols-[1fr_auto_1fr]">
             <p className={`justify-self-start font-light uppercase text-white/85 transition-all ${scrolled ? "text-[10px] tracking-[0.2em] sm:text-base sm:tracking-[0.34em]" : "text-[11px] tracking-[0.24em] sm:text-base sm:tracking-[0.34em]"} lg:text-lg`}>
               Vayia Vasileiou
@@ -779,6 +619,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                     localStorage.setItem("viewMode", "mobile");
                   }}
                   title="Mobile view"
+                  aria-label={isGreek ? "Mobile προβολη" : "Switch to mobile view"}
                   className={`rounded-full px-2 py-1 transition sm:px-3 ${
                     viewMode === "mobile"
                       ? "border-[#d7b46a] bg-[#d7b46a]/20 text-[#f6dfaa]"
@@ -793,6 +634,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                     localStorage.setItem("viewMode", "desktop");
                   }}
                   title="Desktop view"
+                  aria-label={isGreek ? "Desktop προβολη" : "Switch to desktop view"}
                   className={`rounded-full px-2 py-1 transition sm:px-3 ${
                     viewMode === "desktop"
                       ? "border-[#d7b46a] bg-[#d7b46a]/20 text-[#f6dfaa]"
@@ -809,6 +651,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                     setLang("en");
                     localStorage.setItem("lang", "en");
                   }}
+                  aria-label="Switch language to English"
                   className={`rounded-full px-2 py-1 transition sm:px-3 ${
                     lang === "en"
                       ? "border-[#d7b46a] bg-[#d7b46a]/15 text-[#f6dfaa]"
@@ -822,6 +665,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                     setLang("gr");
                     localStorage.setItem("lang", "gr");
                   }}
+                  aria-label="Αλλαγη γλωσσας σε Ελληνικα"
                   className={`rounded-full px-2 py-1 transition sm:px-3 ${
                     lang === "gr"
                       ? "border-[#d7b46a] bg-[#d7b46a]/15 text-[#f6dfaa]"
@@ -898,13 +742,19 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
           <div className="mt-2 flex flex-row items-center justify-center gap-2 sm:gap-4">
             <button
-              onClick={() => scrollTo("gallery")}
+              onClick={() => {
+                trackEvent("cta_click", { cta: "view_gallery", location: "hero" });
+                scrollTo("gallery");
+              }}
               className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3.5 py-2 text-[9px] uppercase tracking-[0.18em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
               {T[lang].viewGallery} ↓
             </button>
             <button
-              onClick={() => scrollTo("contact")}
+              onClick={() => {
+                trackEvent("cta_click", { cta: "contact", location: "hero" });
+                scrollTo("contact");
+              }}
               className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-3 py-1.5 text-[8.5px] uppercase tracking-[0.16em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
               {T[lang].contactButton}
@@ -958,11 +808,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
                           data-mobile-gallery-card="true"
                           className="animate-gallery-item relative aspect-square w-[72vw] shrink-0 snap-start overflow-hidden rounded-[1.2rem] border border-white/8 bg-white/10 text-left shadow-[0_18px_40px_rgba(0,0,0,0.28)] transition-all duration-300"
                           style={{ animationDelay: `${Math.min(index, 6) * 80}ms` }}
-                          onClick={() => openLightbox(sectionVisible, index)}
+                          onClick={() => {
+                            trackEvent("gallery_open", {
+                              source: "mobile_row",
+                              category: section.key,
+                              image: name,
+                            });
+                            openLightbox(sectionVisible, index);
+                          }}
                         >
                           <Image
                             src={toSrc(name)}
-                            alt=""
+                            alt={getImageAlt(name)}
                             fill
                             sizes="(min-width: 640px) 280px, 72vw"
                             className="object-cover"
@@ -1056,12 +913,19 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       type="button"
                       className={itemClass}
                       style={{ animationDelay: `${Math.min(index, 14) * 90}ms` }}
-                      onClick={() => openLightbox(visibleImages, index)}
+                      onClick={() => {
+                        trackEvent("gallery_open", {
+                          source: "desktop_grid",
+                          filter: activeFilter,
+                          image: name,
+                        });
+                        openLightbox(visibleImages, index);
+                      }}
                     >
                       <div className={`${heightClass} relative w-full overflow-hidden rounded-[1.35rem] border border-white/5 bg-white/10 shadow-[0_22px_60px_rgba(0,0,0,0.34)] transition-all duration-500 group hover:-translate-y-1 hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/65 hover:shadow-[0_20px_60px_rgba(0,0,0,0.34),0_0_30px_rgba(215,180,106,0.24)] sm:rounded-[1.1rem]`}>
                         <Image
                           src={toSrc(name)}
-                          alt=""
+                          alt={getImageAlt(name)}
                           fill
                           sizes={galleryImageSizes}
                           className="object-cover"
@@ -1097,6 +961,75 @@ export default function Home({ imagesFromFs }: HomeProps) {
           )}
         </div>
 
+      </section>
+
+      <section
+        id="projects"
+        data-reveal-section="true"
+        className="reveal-section border-t border-white/10 px-4 py-16 sm:px-8 md:px-20 md:py-24"
+      >
+        <div className="mx-auto max-w-6xl">
+          <div className="mb-10 flex items-end justify-between gap-4">
+            <div>
+              <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/45">
+                {isGreek ? "Selected projects" : "Selected projects"}
+              </p>
+              <h2 className={`text-3xl italic sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
+                {isGreek ? "Ιστοριες σε ενοτητες" : "Stories in Project Form"}
+              </h2>
+            </div>
+            <Link
+              href="/projects"
+              className="hidden rounded-full border border-white/12 px-4 py-2 text-sm text-white/70 transition hover:border-[#d7b46a] hover:text-[#f6dfaa] sm:inline-flex"
+            >
+              {isGreek ? "Ολες οι σελιδες" : "All projects"}
+            </Link>
+          </div>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            {selectedProjects.map((project) => (
+              <Link
+                key={project.slug}
+                href={`/projects/${project.slug}`}
+                className="group overflow-hidden rounded-[1.5rem] border border-white/10 bg-white/[0.03] shadow-[0_20px_50px_rgba(0,0,0,0.24)] transition hover:-translate-y-1 hover:border-[#d7b46a]/70"
+                onClick={() => trackEvent("project_open", { project_slug: project.slug, source: "home" })}
+              >
+                <div className="relative aspect-[4/5] overflow-hidden">
+                  <Image
+                    src={`/images/${encodeURIComponent(project.cover)}`}
+                    alt={isGreek ? project.gr.title : project.en.title}
+                    fill
+                    sizes="(min-width: 1280px) 28vw, (min-width: 768px) 42vw, 92vw"
+                    className="object-cover transition duration-700 group-hover:scale-[1.03]"
+                    quality={72}
+                  />
+                </div>
+                <div className="space-y-3 p-5">
+                  <div className="flex items-center justify-between gap-3">
+                    <h3 className={`text-2xl italic ${isGreek ? "font-sans" : "font-serif"}`}>
+                      {isGreek ? project.gr.title : project.en.title}
+                    </h3>
+                    <span className="text-[11px] uppercase tracking-[0.24em] text-white/38">
+                      {project.year}
+                    </span>
+                  </div>
+                  <p className="text-sm leading-7 text-white/60">
+                    {isGreek ? project.gr.summary : project.en.summary}
+                  </p>
+                </div>
+              </Link>
+            ))}
+          </div>
+
+          <div className="mt-8 sm:hidden">
+            <Link
+              href="/projects"
+              className="inline-flex rounded-full border border-white/12 px-4 py-2 text-sm text-white/70 transition hover:border-[#d7b46a] hover:text-[#f6dfaa]"
+            >
+              {isGreek ? "Ολες οι σελιδες" : "All projects"}
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* ================= ABOUT ================= */}
@@ -1178,13 +1111,47 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </p>
             ) : null}
             <h2 className={`max-w-xs text-3xl italic leading-tight text-white sm:text-4xl md:text-[2.85rem] ${isGreek ? "font-sans" : "font-serif"}`}>
-              {isGreek ? "Τροποι συνεργασιας" : "Ways We Can Work Together"}
+              {T[lang].servicesHeading}
             </h2>
             <p className="mt-5 max-w-sm text-sm leading-7 text-white/65 sm:text-base sm:leading-8">
-              {isGreek
-                ? "Απο προσωπα και brands μεχρι πιο ατμοσφαιρικα δημιουργικα sessions, η καθε συνεργασια χτιζεται με βαση το υφος και την αισθηση που θελεις να κρατησει η εικονα."
-                : "From portraits and brands to more atmospheric creative sessions, each collaboration is shaped around mood, clarity, and the feeling the images should leave behind."}
+              {T[lang].servicesLead}
             </p>
+            <div className="mt-8 space-y-3">
+              <p className="text-[10px] uppercase tracking-[0.3em] text-white/38">
+                {formatUiLabel(T[lang].offersTitle)}
+              </p>
+              <div className="space-y-3">
+                {T[lang].offers.map((offer) => (
+                  <div
+                    key={offer.label}
+                    className="rounded-[1.1rem] border border-white/10 bg-black/38 px-4 py-3"
+                  >
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="text-sm text-white/88">{offer.label}</p>
+                      <p className="text-sm text-[#f6dfaa]">{offer.price}</p>
+                    </div>
+                    <p className="mt-1 text-[11px] uppercase tracking-[0.18em] text-white/38">
+                      {offer.meta}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="mt-8">
+              <p className="mb-3 text-[10px] uppercase tracking-[0.3em] text-white/38">
+                {formatUiLabel(T[lang].processTitle)}
+              </p>
+              <ol className="space-y-3 text-sm text-white/62">
+                {T[lang].process.map((step, index) => (
+                  <li key={step} className="flex gap-3">
+                    <span className="mt-0.5 inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[#d7b46a]/45 text-[10px] text-[#f6dfaa]">
+                      {index + 1}
+                    </span>
+                    <span>{step}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
           </div>
 
           <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
@@ -1195,7 +1162,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 >
                   <h3 className={`mb-3 text-[1.35rem] leading-tight sm:text-[1.55rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
                   <p className="mb-6 text-sm leading-7 text-white/60">{service.text}</p>
-                  <a href="#contact" className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest">
+                  <a
+                    href="#contact"
+                    onClick={() => trackEvent("cta_click", { cta: "service_inquire", service: service.title })}
+                    className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest"
+                  >
                     {T[lang].inquire} →
                   </a>
                 </div>
@@ -1231,9 +1202,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               {T[lang].contactEmail}
             </a>
             <p className="mt-4 text-xs uppercase tracking-[0.22em] text-white/40 sm:text-[11px] sm:tracking-[0.28em]">
-              {isGreek
-                ? "Αθηνα • επιλεγμενες συνεργασιες • απαντηση με email"
-                : "Athens-based • selected collaborations • replies by email"}
+              {T[lang].contactMeta}
             </p>
           </div>
 
@@ -1272,6 +1241,57 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   placeholder={T[lang].formEmailPlaceholder}
                   className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
                 />
+              </label>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-6 md:gap-8">
+              <label className="block">
+                <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
+                  {formatUiLabel(T[lang].formInquiryType)}
+                </span>
+                <select
+                  name="inquiryType"
+                  defaultValue={T[lang].formInquiryOptions[0]}
+                  className="w-full border-b border-white/30 bg-black py-3 text-white/80 transition focus:border-[#d7b46a]/80 focus:outline-none"
+                >
+                  {T[lang].formInquiryOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
+                  {formatUiLabel(T[lang].formTimeframe)}
+                </span>
+                <select
+                  name="timeframe"
+                  defaultValue={T[lang].formTimeframeOptions[0]}
+                  className="w-full border-b border-white/30 bg-black py-3 text-white/80 transition focus:border-[#d7b46a]/80 focus:outline-none"
+                >
+                  {T[lang].formTimeframeOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block">
+                <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
+                  {formatUiLabel(T[lang].formBudget)}
+                </span>
+                <select
+                  name="budget"
+                  defaultValue={T[lang].formBudgetOptions[0]}
+                  className="w-full border-b border-white/30 bg-black py-3 text-white/80 transition focus:border-[#d7b46a]/80 focus:outline-none"
+                >
+                  {T[lang].formBudgetOptions.map((option) => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
 
@@ -1318,6 +1338,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
             {contactState !== "idle" && (
               <p
+                aria-live="polite"
                 className={`text-sm ${
                   contactState === "success"
                     ? "text-[#d7b46a]"
@@ -1329,7 +1350,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 {contactState === "success"
                   ? T[lang].contactSuccess
                   : contactState === "error"
-                    ? T[lang].contactError
+                    ? contactErrorMessage || T[lang].contactError
                     : T[lang].contactSending}
               </p>
             )}
@@ -1345,11 +1366,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
               &copy; {new Date().getFullYear()} Vayia Vasileiou
             </p>
             <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-white/30 sm:text-[11px]">
-              {isGreek ? "Αθηνα, Ελλαδα" : "Athens, Greece"}
+              {T[lang].footerLocation}
             </p>
           </div>
           <p className="hidden text-[10px] uppercase tracking-[0.28em] text-white/35 md:block">
-            {isGreek ? "Street • Portrait • Atmosphere" : "Street • Portrait • Atmosphere"}
+            {T[lang].footerTagline}
           </p>
           <div className="flex items-center justify-center gap-2 text-xs tracking-wide sm:gap-5 sm:text-sm">
             <a
@@ -1414,6 +1435,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
           className={`lightbox-overlay fixed inset-0 z-[100] overflow-hidden bg-black/92 p-3 sm:p-6 ${
             isLightboxClosing ? "lightbox-overlay-out" : ""
           }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label={isGreek ? "Προεπισκοπηση εικονας" : "Image preview"}
           onClick={closeLightbox}
         >
           <div
@@ -1439,7 +1463,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               >
                 <Image
                   src={toSrc(lightbox.images[lightbox.index])}
-                  alt=""
+                  alt={getImageAlt(lightbox.images[lightbox.index])}
                   fill
                   sizes="84vw"
                   className="object-contain"
@@ -1466,7 +1490,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   >
                     <Image
                       src={toSrc(imageName)}
-                      alt=""
+                      alt={getImageAlt(imageName)}
                       fill
                       sizes="64px"
                       className="object-cover"

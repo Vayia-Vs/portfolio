@@ -32,6 +32,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid rgba(215, 180, 106, 0.95);
+  outline-offset: 3px;
+}
+
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;

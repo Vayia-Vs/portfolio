@@ -1,6 +1,7 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Noto_Sans, Noto_Serif } from "next/font/google";
+import Script from "next/script";
 
 const notoSans = Noto_Sans({
   subsets: ["latin", "greek"],
@@ -18,9 +19,29 @@ const notoSerif = Noto_Serif({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
-    <main className={`${notoSans.variable} ${notoSerif.variable}`}>
-      <Component {...pageProps} />
-    </main>
+    <>
+      {gaId ? (
+        <>
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga4-init" strategy="afterInteractive">
+            {`
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}', { page_path: window.location.pathname });
+            `}
+          </Script>
+        </>
+      ) : null}
+      <main className={`${notoSans.variable} ${notoSerif.variable}`}>
+        <Component {...pageProps} />
+      </main>
+    </>
   );
 }
