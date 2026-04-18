@@ -100,6 +100,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   /* ================= STATE ================= */
   const [scrolled, setScrolled] = useState(false);
   const [isAtPageBottom, setIsAtPageBottom] = useState(false);
+  const [hasPassedHero, setHasPassedHero] = useState(false);
   const [lang, setLang] = useState<"en" | "gr">("en");
   const [viewMode, setViewMode] = useState<"auto" | "mobile" | "desktop">("auto");
   const [hasChosenView, setHasChosenView] = useState(true);
@@ -116,7 +117,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [isLightboxClosing, setIsLightboxClosing] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "prev" | "none">("none");
   const [showSwipeHint, setShowSwipeHint] = useState(false);
-  const [isContactFocused, setIsContactFocused] = useState(false);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartXRef = useRef<number | null>(null);
 
@@ -166,7 +166,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       heroText:
         "A curated collection of photographs exploring light, shadow, and the beauty of fleeting moments.",
       viewGallery: "View Gallery",
-      galleryTitle: "Collections",
+      galleryTitle: "My Collections",
       showMore: "Show More",
       aboutTitle1: "The Art",
       aboutTitle2: "of Seeing",
@@ -227,7 +227,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       heroText:
         "Ό,τι περνάει απαρατήρητο — μέχρι να το δεις.",
       viewGallery: "Περιήγηση",
-      galleryTitle: "Συλλογές",
+      galleryTitle: "Οι Συλλογές μου",
       showMore: "Δες περισσότερες",
       aboutTitle1: "Το βλέμμα",
       aboutTitle2: "πίσω από τον φακό",
@@ -285,9 +285,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
       const scrollY = window.scrollY;
       const pageBottom =
         document.documentElement.scrollHeight - (scrollY + window.innerHeight);
+      const heroHeight = document.getElementById("hero")?.offsetHeight ?? window.innerHeight;
 
       setScrolled(scrollY > 50);
       setIsAtPageBottom(pageBottom < 80);
+      setHasPassedHero(scrollY > Math.max(heroHeight - 140, 220));
     };
 
     onScroll();
@@ -536,7 +538,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-black/88 backdrop-blur border-b border-[#d7b46a]/25 py-2 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:py-4 sm:after:left-6 sm:after:right-6"
+            ? "bg-black/88 backdrop-blur border-b border-[#d7b46a]/25 py-2 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:py-3 sm:after:left-6 sm:after:right-6"
             : "bg-transparent py-3 sm:py-6"
         }`}
       >
@@ -627,7 +629,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
               <li key={item.target}>
                 <button
                   onClick={() => scrollTo(item.target)}
-                  className="min-h-11 whitespace-nowrap rounded-full border border-[#d7b46a]/30 bg-black/35 px-4 py-3 text-[10px] tracking-[0.24em] uppercase text-white/80 transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
+                  className={`min-h-11 whitespace-nowrap px-3 py-2 text-[10px] uppercase transition ${
+                    scrolled
+                      ? "font-semibold tracking-[0.2em] text-[#d7b46a]"
+                      : "rounded-full border border-[#d7b46a]/30 bg-black/35 px-4 py-3 tracking-[0.24em] text-white/80 hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
+                  }`}
                 >
                   {item.label}
                 </button>
@@ -654,7 +660,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         </div>
 
         <div className="relative z-10 max-w-4xl px-5 pb-14 pt-28 text-center sm:px-6 sm:pb-16 sm:pt-32">
-          <h1 className="mb-8 font-serif text-[2.6rem] leading-[0.96] sm:mb-10 sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
+          <h1 className="mb-8 font-serif text-[clamp(1.8rem,8vw,5.4rem)] leading-[0.96] whitespace-nowrap sm:mb-10">
             {lang === "gr" ? (
               <>
                 {T[lang].heroTitle1}{" "}
@@ -663,9 +669,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </>
             ) : (
               <>
-                {T[lang].heroTitle1}
-                <br />
-                <span className="italic">{T[lang].heroTitle2}</span>{" "}
+                {T[lang].heroTitle1} <span className="italic">{T[lang].heroTitle2}</span>{" "}
                 {T[lang].heroTitle3}
               </>
             )}
@@ -681,7 +685,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {T[lang].heroText}
           </p>
 
-          <div className="flex flex-col items-center justify-center gap-3 sm:flex-row sm:gap-5">
+          <div className="flex flex-row items-center justify-center gap-3 sm:gap-5">
             <button
               onClick={() => scrollTo("gallery")}
               className="inline-flex min-h-12 items-center gap-3 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-7 sm:text-sm sm:tracking-widest"
@@ -834,7 +838,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative overflow-hidden border-t border-white/10 bg-black px-4 py-12 sm:px-8 sm:py-16 md:px-20 md:py-24">
+      <section className="relative flex min-h-[100svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-12 sm:px-8 sm:py-16 md:px-20 md:py-24">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -880,7 +884,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {/* ================= CONTACT ================= */}
       <section
         id="contact"
-        className="border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
+        className="flex min-h-[100svh] items-center border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className="mx-auto max-w-5xl text-center">
           <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
@@ -914,8 +918,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   type="text"
                   name="name"
                   placeholder={T[lang].formNamePlaceholder}
-                  onFocus={() => setIsContactFocused(true)}
-                  onBlur={() => setIsContactFocused(false)}
                   className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
                 />
               </label>
@@ -928,26 +930,31 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   type="email"
                   name="email"
                   placeholder={T[lang].formEmailPlaceholder}
-                  onFocus={() => setIsContactFocused(true)}
-                  onBlur={() => setIsContactFocused(false)}
                   className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
                 />
               </label>
             </div>
 
             <label className="block">
-                <span className="block text-xs tracking-[0.42em] uppercase text-white/70 mb-4">
+              <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
                 {T[lang].formMessage}
               </span>
-              <textarea
-                required
-                name="message"
-                rows={4}
-                placeholder={T[lang].formMessagePlaceholder}
-                onFocus={() => setIsContactFocused(true)}
-                onBlur={() => setIsContactFocused(false)}
-                className="w-full border-b border-white/30 bg-transparent py-3 text-white/80 placeholder:text-white/35 transition focus:border-[#d7b46a]/80 focus:outline-none"
-              />
+              <div className="relative rounded-[1.75rem] border border-white/15 bg-white/[0.04] p-4 pr-20 shadow-[0_14px_36px_rgba(0,0,0,0.18)]">
+                <textarea
+                  required
+                  name="message"
+                  rows={4}
+                  placeholder={T[lang].formMessagePlaceholder}
+                  className="w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
+                />
+                <button
+                  type="submit"
+                  disabled={contactState === "submitting"}
+                  className="absolute bottom-4 right-4 inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#d7b46a] bg-[#d7b46a] px-4 text-[11px] uppercase tracking-[0.18em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_20px_rgba(215,180,106,0.26)] disabled:cursor-not-allowed disabled:opacity-70"
+                >
+                  {contactState === "submitting" ? "..." : "Send"}
+                </button>
+              </div>
             </label>
 
             {contactState !== "idle" && (
@@ -968,28 +975,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </p>
             )}
 
-            <div className="pt-6 text-center sm:pt-8">
-              <button
-                type="submit"
-                disabled={contactState === "submitting"}
-                className="inline-flex min-h-12 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] disabled:cursor-not-allowed disabled:opacity-70 sm:gap-3 sm:rounded sm:px-12 sm:py-4 sm:text-xs sm:tracking-[0.4em]"
-              >
-                {contactState === "submitting"
-                  ? T[lang].contactSending
-                  : T[lang].contactCTA}
-                <svg
-                  aria-hidden="true"
-                  width="16"
-                  height="16"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                >
-                  <path d="M4 12l16-7-6 14-3-4-7-3z" />
-                </svg>
-              </button>
-            </div>
           </form>
         </div>
       </section>
@@ -1032,18 +1017,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
         </div>
       </footer>
 
-      {isMobileLayout && isContactFocused && (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d7b46a]/25 bg-black/88 px-4 pb-[calc(0.9rem+env(safe-area-inset-bottom))] pt-3 backdrop-blur md:hidden">
-          <button
-            type="button"
-            onClick={() => document.querySelector<HTMLButtonElement>('button[type="submit"]')?.click()}
-            className="flex min-h-12 w-full items-center justify-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa]"
-          >
-            {contactState === "submitting" ? T[lang].contactSending : T[lang].contactCTA}
-          </button>
-        </div>
-      )}
-
       {/* ================= FLOATING ACTION BUTTONS ================= */}
       {scrolled && (
         <button
@@ -1056,7 +1029,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           ↑
         </button>
       )}
-      {!isAtPageBottom && (
+      {hasPassedHero && !isAtPageBottom && (
         <button
           onClick={() => scrollTo("contact")}
           className={`fixed z-40 rounded-full border border-[#d7b46a] bg-[#d7b46a] p-3 text-black shadow-[0_0_24px_rgba(215,180,106,0.28)] backdrop-blur transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] ${
@@ -1119,14 +1092,14 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <div className="flex items-center gap-4 sm:gap-6">
                   <button
                     type="button"
-                    className="inline-flex min-h-11 items-center px-1 py-2 text-[1.4rem] font-light leading-none text-[#e6c989] transition hover:text-[#f6dfaa]"
+                    className="inline-flex min-h-11 items-center px-1 py-2 text-[1.4rem] font-light leading-none text-white transition hover:text-[#f6dfaa]"
                     onClick={() => moveLightbox("prev")}
                   >
                     {"<"}
                   </button>
                   <button
                     type="button"
-                    className="inline-flex min-h-11 items-center px-1 py-2 text-[1.4rem] font-light leading-none text-[#e6c989] transition hover:text-[#f6dfaa]"
+                    className="inline-flex min-h-11 items-center px-1 py-2 text-[1.4rem] font-light leading-none text-white transition hover:text-[#f6dfaa]"
                     onClick={() => moveLightbox("next")}
                   >
                     {">"}
