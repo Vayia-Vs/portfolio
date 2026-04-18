@@ -456,6 +456,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
   const toSrc = (name: string) => `/images/${encodeURIComponent(name)}`;
 
+  const formatGreekCaps = (value: string) =>
+    value
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toUpperCase();
+
+  const formatUiLabel = (value: string) =>
+    isGreek ? formatGreekCaps(value) : value;
+
   const parseTags = (name: string) => {
     const filename = name.split("/").pop() ?? "";
     const base = filename.replace(/\.[^/.]+$/, "");
@@ -491,13 +500,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
     : "(min-width: 1024px) 33vw, (min-width: 420px) 50vw, 100vw";
 
   return (
-    <div className={`bg-black text-white ${isGreek ? "font-sans" : ""}`}>
+    <div className={`bg-black text-white ${isGreek ? "font-['Segoe_UI',Tahoma,Geneva,Verdana,sans-serif]" : ""}`}>
       {/* ================= SPLASH SCREEN ================= */}
       {!hasChosenView && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-md">
           <div className="mx-4 w-full max-w-md rounded-2xl border border-amber-500/20 bg-gray-900/90 px-5 py-8 text-center backdrop-blur sm:space-y-12 sm:px-6 sm:py-12">
             <div>
-              <h2 className="mb-4 font-serif text-3xl md:text-5xl">Welcome</h2>
+              <h2 className={`mb-4 text-3xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>Welcome</h2>
               <p className="text-base text-white/60 sm:text-lg">Choose your preferred view:</p>
             </div>
 
@@ -562,7 +571,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                         : "rounded border border-transparent tracking-[0.22em] text-white/70 hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
                     }`}
                   >
-                    {item.label}
+                    {formatUiLabel(item.label)}
                   </button>
                 </li>
               ))}
@@ -642,7 +651,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       : "rounded-full border border-[#d7b46a]/30 bg-black/35 px-4 py-3 tracking-[0.24em] text-white/80 hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
                   }`}
                 >
-                  {item.label}
+                  {formatUiLabel(item.label)}
                 </button>
               </li>
             ))}
@@ -653,7 +662,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= HERO ================= */}
       <section
         id="hero"
-        className="relative flex min-h-[106svh] items-center justify-center overflow-hidden"
+        className="relative flex min-h-[110svh] items-center justify-center overflow-hidden"
       >
         <div className="absolute inset-0">
           <div
@@ -666,8 +675,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
 
-        <div className="relative z-10 max-w-4xl px-5 pb-16 pt-30 text-center sm:px-6 sm:pb-18 sm:pt-34">
-          <h1 className={`mb-8 text-[clamp(1.6rem,7vw,5rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
+        <div className="relative z-10 max-w-4xl px-5 pb-18 pt-32 text-center sm:px-6 sm:pb-20 sm:pt-36">
+          <h1 className={`mb-8 text-[clamp(1.45rem,6.5vw,4.7rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
             {lang === "gr" ? (
               <>
                 {T[lang].heroTitle1} {T[lang].heroTitle2}{" "}
@@ -694,13 +703,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="flex flex-row items-center justify-center gap-2 sm:gap-4">
             <button
               onClick={() => scrollTo("gallery")}
-              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
+              className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3.5 py-2 text-[9px] uppercase tracking-[0.18em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
               {T[lang].viewGallery} ↓
             </button>
             <button
               onClick={() => scrollTo("contact")}
-              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
+              className="inline-flex min-h-9 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[9px] uppercase tracking-[0.18em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
               {T[lang].contactButton}
             </button>
@@ -714,7 +723,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className={galleryContainerClass}>
-          <h2 className="mb-8 font-serif text-3xl text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl">
+          <h2 className={`mb-8 text-3xl text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
             {T[lang].galleryTitle}
           </h2>
 
@@ -809,9 +818,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
           <div className="max-w-[44rem]">
             <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/50 sm:mb-5 sm:tracking-[0.45em]">
-              {T[lang].aboutKicker}
+              {formatUiLabel(T[lang].aboutKicker)}
             </p>
-            <h2 className="mb-6 font-serif text-3xl leading-tight sm:text-4xl xl:text-5xl">
+            <h2 className={`mb-6 text-3xl leading-tight sm:text-4xl xl:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
               {T[lang].aboutTitle1}{" "}
               <span className="italic">{T[lang].aboutTitle2}</span>
             </h2>
@@ -869,7 +878,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-white/8" />
         <div className="relative z-10 mx-auto max-w-5xl">
           <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
-            {T[lang].servicesKicker}
+            {formatUiLabel(T[lang].servicesKicker)}
           </p>
           {T[lang].servicesTitle && (
             <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-12">
@@ -887,7 +896,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   <div className="mb-7 text-[#d7b46a]">
                     <ServiceIcon name={service.icon} />
                   </div>
-                  <h3 className="mb-3 font-serif text-[1.7rem] sm:text-2xl">{service.title}</h3>
+                  <h3 className={`mb-3 text-[1.7rem] sm:text-2xl ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
                   <p className="mb-4 text-sm leading-7 text-white/60">{service.text}</p>
                   <a href="#contact" className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest">
                     {T[lang].inquire} →
@@ -907,10 +916,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="mx-auto max-w-5xl text-center">
           {T[lang].contactKicker ? (
             <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
-              {T[lang].contactKicker}
+              {formatUiLabel(T[lang].contactKicker)}
             </p>
           ) : null}
-          <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-4 sm:mb-6">
+          <h2 className={`mb-4 text-3xl sm:mb-6 sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
             {T[lang].contactTitle1}{" "}
             <span className="italic">{T[lang].contactTitle2}</span>
           </h2>
@@ -931,7 +940,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             <div className="grid md:grid-cols-2 gap-6 md:gap-10">
               <label className="block">
                 <span className="block text-xs tracking-[0.42em] uppercase text-white/70 mb-4">
-                  {T[lang].formName}
+                  {formatUiLabel(T[lang].formName)}
                 </span>
                 <input
                   required
@@ -943,7 +952,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </label>
               <label className="block">
                 <span className="block text-xs tracking-[0.42em] uppercase text-white/70 mb-4">
-                  {T[lang].formEmail}
+                  {formatUiLabel(T[lang].formEmail)}
                 </span>
                 <input
                   required
@@ -957,20 +966,20 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
             <label className="block">
               <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
-                {T[lang].formMessage}
+                {formatUiLabel(T[lang].formMessage)}
               </span>
-              <div className="relative rounded-[1.6rem] border border-white/15 bg-white/[0.04] px-4 py-3 pr-16 shadow-[0_14px_36px_rgba(0,0,0,0.18)]">
+              <div className="relative rounded-[1.45rem] border border-white/15 bg-white/[0.04] px-4 py-2.5 pr-14 shadow-[0_14px_36px_rgba(0,0,0,0.18)]">
                 <textarea
                   required
                   name="message"
-                  rows={2}
+                  rows={1}
                   placeholder={T[lang].formMessagePlaceholder}
-                  className="w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
+                  className="h-8 w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
                 />
                 <button
                   type="submit"
                   disabled={contactState === "submitting"}
-                  className="absolute bottom-3 right-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d7b46a] bg-[#d7b46a] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_20px_rgba(215,180,106,0.26)] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#d7b46a] bg-[#d7b46a] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_20px_rgba(215,180,106,0.26)] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <svg
                     aria-hidden="true"
