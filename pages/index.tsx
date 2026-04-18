@@ -981,7 +981,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   rows={1}
                   placeholder={T[lang].formMessagePlaceholder}
                   onInput={handleMessageInput}
-                  className="min-h-8 w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
+                  className="min-h-8 w-full resize-none bg-transparent py-1 text-[0.85rem] text-white/80 placeholder:text-[0.72rem] placeholder:text-white/35 transition focus:outline-none sm:text-base sm:placeholder:text-sm"
                 />
                 <button
                   type="submit"
