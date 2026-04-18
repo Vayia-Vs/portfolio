@@ -674,7 +674,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         data-reveal-section="true"
         className="reveal-section border-t border-white/10 px-4 py-16 sm:px-8 md:px-20 md:py-24"
       >
-        <div className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-[92rem]">
           <div className="mb-10 flex items-end justify-between gap-4">
             <div>
               <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/45">
@@ -762,7 +762,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             ) : null}
           </div>
 
-          <div className={`grid gap-3 sm:gap-4 ${isFramesExpanded ? "grid-cols-2 md:grid-cols-4 xl:grid-cols-5" : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"}`}>
+          <div className={`grid gap-2.5 sm:gap-3.5 ${isFramesExpanded ? "grid-cols-2 md:grid-cols-4 xl:grid-cols-5" : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"}`}>
             {galleryImages.map((name, index) => {
               return (
                 <button
@@ -788,15 +788,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       priority={index < 4}
                       quality={index < 4 ? 74 : 68}
                     />
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-transparent to-transparent opacity-70 transition duration-500 group-hover:opacity-95" />
-                    <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 px-4 py-3">
-                      <span className="text-[9px] uppercase tracking-[0.24em] text-white/78 sm:text-[10px] sm:tracking-[0.3em]">
-                        {getPrimaryTagLabel(name)}
-                      </span>
-                      <span className="text-[9px] uppercase tracking-[0.18em] text-[#f6dfaa] sm:text-[10px] sm:tracking-[0.24em]">
-                        {isGreek ? "Ανοιγμα" : "Open"}
-                      </span>
-                    </div>
                   </div>
                 </button>
               );
@@ -805,12 +796,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
           {!isFramesExpanded && images.length > previewImages.length && (
             <div className="mt-10 flex justify-center sm:mt-12">
-              <button
-                onClick={openExpandedGallery}
+              <Link
+                href="/gallery"
                 className="rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:px-8 sm:text-sm sm:tracking-widest"
               >
                 {T[lang].showMore} ↓
-              </button>
+              </Link>
             </div>
           )}
         </div>
@@ -887,7 +878,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-black/42" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
-        <div className="relative z-10 mx-auto max-w-6xl">
+        <div className="relative z-10 mx-auto max-w-[92rem]">
           <div className="max-w-sm lg:mb-10">
             {T[lang].servicesKicker ? (
               <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
@@ -896,18 +887,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
             ) : null}
           </div>
 
-          <div className="grid items-start gap-4 sm:grid-cols-2 lg:grid-cols-3 sm:gap-5">
+          <div className="grid items-start gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-8">
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 lg:min-h-[290px]"
+                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 lg:flex lg:min-h-[24rem] lg:flex-col lg:justify-between lg:p-8"
                 >
-                  <h3 className={`mb-3 text-[1.35rem] leading-tight sm:text-[1.55rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
-                  <p className="mb-6 text-sm leading-7 text-white/60">{service.text}</p>
+                  <h3 className={`mb-3 text-[1.35rem] leading-tight sm:text-[1.55rem] lg:text-[1.75rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
+                  <p className="mb-8 text-sm leading-7 text-white/60 lg:mb-10 lg:text-[0.98rem]">{service.text}</p>
                   <a
                     href="#contact"
                     onClick={() => trackEvent("cta_click", { cta: "service_inquire", service: service.title })}
-                    className="text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest"
+                    className="mt-auto text-sm uppercase tracking-[0.24em] text-[#d7b46a] transition hover:text-[#f6dfaa] sm:tracking-widest"
                   >
                     {T[lang].inquire} →
                   </a>
