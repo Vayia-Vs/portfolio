@@ -166,6 +166,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       heroText:
         "A curated collection of photographs exploring light, shadow, and the beauty of fleeting moments.",
       viewGallery: "View Gallery",
+      contactButton: "Get in Touch",
       galleryTitle: "My Collections",
       showMore: "Show More",
       aboutTitle1: "The Art",
@@ -199,7 +200,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         {
           icon: "portrait",
           title: "Portrait Sessions",
-          text: "Personal portraits, headshots, or intimate photo sessions in Athens or around you.",
+          text: "Personal portraits, family or couples sessions, and intimate photo sessions in Athens or around you.",
         },
         {
           icon: "product",
@@ -217,7 +218,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
     },
     gr: {
       nav: [
-        { label: "Οι Συλλογές μου", target: "gallery" },
+        { label: "Συλλογές", target: "gallery" },
         { label: "Σχετικά με εμένα", target: "about" },
         { label: "Επικοινωνία", target: "contact" },
       ],
@@ -227,6 +228,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       heroText:
         "Ό,τι περνάει απαρατήρητο — μέχρι να το δεις.",
       viewGallery: "Περιήγηση",
+      contactButton: "Επικοινωνία",
       galleryTitle: "Οι Συλλογές μου",
       showMore: "Δες περισσότερες",
       aboutTitle1: "Το βλέμμα",
@@ -241,7 +243,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       ],
       contactTitle1: "Επικοινώνησε",
       contactTitle2: "Εδώ",
-      contactKicker: "Επικοινωνία",
+      contactKicker: "",
       contactText:
         "Αν έχεις μια ιδέα, ένα project ή απλώς θέλεις να μιλήσουμε για φωτογράφιση, στείλε μου μήνυμα και θα χαρώ να το δούμε μαζί.",
       contactEmail: "vayiavs95@gmail.com",
@@ -261,7 +263,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         {
           icon: "portrait",
           title: "Πορτρέτα",
-          text: "Προσωπικά πορτρέτα, headshots ή πιο ήσυχες φωτογραφίσεις στην Αθήνα και όπου σε βολεύει.",
+          text: "Προσωπικά πορτρέτα, φωτογραφίσεις για ζευγάρια ή οικογένειες και πιο ήσυχες λήψεις στην Αθήνα και όπου σε βολεύει.",
         },
         {
           icon: "product",
@@ -477,6 +479,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       : images.filter((name) => parseTags(name).includes(activeFilter));
   const isDesktopGallery = viewMode === "desktop";
   const isMobileLayout = viewMode !== "desktop";
+  const isGreek = lang === "gr";
   const galleryContainerClass = isDesktopGallery
     ? "mx-auto w-full max-w-[1600px] px-2 sm:px-0 relative z-10"
     : "mx-auto w-full max-w-6xl px-1 sm:px-0 relative z-10";
@@ -488,7 +491,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
     : "(min-width: 1024px) 33vw, (min-width: 420px) 50vw, 100vw";
 
   return (
-    <div className="bg-black text-white">
+    <div className={`bg-black text-white ${isGreek ? "font-sans" : ""}`}>
       {/* ================= SPLASH SCREEN ================= */}
       {!hasChosenView && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center bg-black/50 backdrop-blur-md">
@@ -538,7 +541,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled
-            ? "bg-black/88 backdrop-blur border-b border-[#d7b46a]/25 py-2 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:py-3 sm:after:left-6 sm:after:right-6"
+            ? "bg-black/88 backdrop-blur border-b border-[#d7b46a]/25 py-1.5 after:absolute after:bottom-0 after:left-4 after:right-4 after:h-px after:bg-[#d7b46a]/80 after:shadow-[0_0_18px_rgba(215,180,106,0.45)] sm:py-2 sm:after:left-6 sm:after:right-6"
             : "bg-transparent py-3 sm:py-6"
         }`}
       >
@@ -553,7 +556,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <li key={item.target}>
                   <button
                     onClick={() => scrollTo(item.target)}
-                    className="rounded border border-transparent px-3 py-2 text-xs tracking-[0.22em] uppercase text-white/70 transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] lg:text-sm"
+                    className={`px-3 py-2 text-xs uppercase transition lg:text-sm ${
+                      scrolled
+                        ? "font-semibold tracking-[0.18em] text-[#d7b46a]"
+                        : "rounded border border-transparent tracking-[0.22em] text-white/70 hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
+                    }`}
                   >
                     {item.label}
                   </button>
@@ -624,7 +631,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </div>
           </div>
 
-          <ul className="mt-3 flex justify-center gap-2 overflow-x-auto pb-1 md:hidden">
+          <ul className={`flex justify-center gap-2 overflow-x-auto pb-1 md:hidden ${scrolled ? "mt-1" : "mt-3"}`}>
             {T[lang].nav.map((item) => (
               <li key={item.target}>
                 <button
@@ -646,7 +653,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= HERO ================= */}
       <section
         id="hero"
-        className="relative flex min-h-[100svh] items-center justify-center overflow-hidden"
+        className="relative flex min-h-[106svh] items-center justify-center overflow-hidden"
       >
         <div className="absolute inset-0">
           <div
@@ -659,17 +666,16 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
 
-        <div className="relative z-10 max-w-4xl px-5 pb-14 pt-28 text-center sm:px-6 sm:pb-16 sm:pt-32">
-          <h1 className="mb-8 font-serif text-[clamp(1.8rem,8vw,5.4rem)] leading-[0.96] whitespace-nowrap sm:mb-10">
+        <div className="relative z-10 max-w-4xl px-5 pb-16 pt-30 text-center sm:px-6 sm:pb-18 sm:pt-34">
+          <h1 className={`mb-8 text-[clamp(1.6rem,7vw,5rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
             {lang === "gr" ? (
               <>
-                {T[lang].heroTitle1}{" "}
-                <span className="italic">{T[lang].heroTitle2}</span>{" "}
+                {T[lang].heroTitle1} {T[lang].heroTitle2}{" "}
                 {T[lang].heroTitle3}
               </>
             ) : (
               <>
-                {T[lang].heroTitle1} <span className="italic">{T[lang].heroTitle2}</span>{" "}
+                {T[lang].heroTitle1} {T[lang].heroTitle2}{" "}
                 {T[lang].heroTitle3}
               </>
             )}
@@ -685,18 +691,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {T[lang].heroText}
           </p>
 
-          <div className="flex flex-row items-center justify-center gap-3 sm:gap-5">
+          <div className="flex flex-row items-center justify-center gap-2 sm:gap-4">
             <button
               onClick={() => scrollTo("gallery")}
-              className="inline-flex min-h-12 items-center gap-3 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-7 sm:text-sm sm:tracking-widest"
+              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
               {T[lang].viewGallery} ↓
             </button>
             <button
               onClick={() => scrollTo("contact")}
-              className="inline-flex min-h-12 items-center gap-3 rounded-full border border-white/30 bg-black/25 px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-7 sm:text-sm sm:tracking-widest"
+              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-4 py-2.5 text-[10px] uppercase tracking-[0.22em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
-              {T[lang].contactKicker}
+              {T[lang].contactButton}
             </button>
           </div>
         </div>
@@ -817,9 +823,21 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </div>
 
             <div className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.35em] text-[#d7b46a] uppercase">
-              <span>Street Photography</span>
-              <span>Portrait</span>
-              <span>Architecture</span>
+              {isGreek ? (
+                <>
+                  <span>Φωτογραφία δρόμου</span>
+                  <span>Πορτραίτα</span>
+                  <span>Αρχιτεκτονική</span>
+                  <span>Τοπία</span>
+                </>
+              ) : (
+                <>
+                  <span>Street Photography</span>
+                  <span>Portrait</span>
+                  <span>Architecture</span>
+                  <span>Landscapes</span>
+                </>
+              )}
             </div>
           </div>
 
@@ -887,9 +905,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className="flex min-h-[100svh] items-center border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className="mx-auto max-w-5xl text-center">
-          <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
-            {T[lang].contactKicker}
-          </p>
+          {T[lang].contactKicker ? (
+            <p className="mb-5 text-[10px] uppercase tracking-[0.34em] text-white/60 sm:mb-6 sm:text-xs sm:tracking-[0.5em]">
+              {T[lang].contactKicker}
+            </p>
+          ) : null}
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl mb-4 sm:mb-6">
             {T[lang].contactTitle1}{" "}
             <span className="italic">{T[lang].contactTitle2}</span>
@@ -939,20 +959,36 @@ export default function Home({ imagesFromFs }: HomeProps) {
               <span className="mb-4 block text-xs tracking-[0.42em] uppercase text-white/70">
                 {T[lang].formMessage}
               </span>
-              <div className="relative rounded-[1.75rem] border border-white/15 bg-white/[0.04] p-4 pr-20 shadow-[0_14px_36px_rgba(0,0,0,0.18)]">
+              <div className="relative rounded-[1.6rem] border border-white/15 bg-white/[0.04] px-4 py-3 pr-16 shadow-[0_14px_36px_rgba(0,0,0,0.18)]">
                 <textarea
                   required
                   name="message"
-                  rows={4}
+                  rows={2}
                   placeholder={T[lang].formMessagePlaceholder}
                   className="w-full resize-none bg-transparent py-1 text-white/80 placeholder:text-white/35 transition focus:outline-none"
                 />
                 <button
                   type="submit"
                   disabled={contactState === "submitting"}
-                  className="absolute bottom-4 right-4 inline-flex min-h-11 min-w-11 items-center justify-center rounded-full border border-[#d7b46a] bg-[#d7b46a] px-4 text-[11px] uppercase tracking-[0.18em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_20px_rgba(215,180,106,0.26)] disabled:cursor-not-allowed disabled:opacity-70"
+                  className="absolute bottom-3 right-3 inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#d7b46a] bg-[#d7b46a] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_20px_rgba(215,180,106,0.26)] disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {contactState === "submitting" ? "..." : "Send"}
+                  <svg
+                    aria-hidden="true"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.7"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    {contactState === "submitting" ? (
+                      <path d="M5 12h14" />
+                    ) : (
+                      <path d="M5 12h11m-5-5 5 5-5 5" />
+                    )}
+                  </svg>
                 </button>
               </div>
             </label>
