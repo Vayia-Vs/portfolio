@@ -869,10 +869,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           <div className="grid items-start gap-4 sm:grid-cols-2 sm:gap-5 lg:grid-cols-3 lg:gap-8">
-              {T[lang].services.map((service) => (
+              {T[lang].services.map((service, index) => (
                 <div
                   key={service.title}
-                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 lg:flex lg:min-h-[24rem] lg:flex-col lg:justify-between lg:p-8"
+                  className="animate-gallery-item rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 lg:flex lg:min-h-[24rem] lg:flex-col lg:justify-between lg:p-8"
+                  style={{ animationDelay: `${260 + index * 140}ms` }}
                 >
                   <h3 className={`mb-3 text-[1.35rem] leading-tight sm:text-[1.55rem] lg:text-[1.75rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
                   <p className="mb-8 text-sm leading-7 text-white/60 lg:mb-10 lg:text-[0.98rem]">{service.text}</p>

@@ -144,9 +144,9 @@ export const homeContent = {
       { label: "Σχετικά με εμένα", target: "about" },
       { label: "Επικοινωνία", target: "contact" },
     ],
-    heroTitle1: "Αυθεντικά",
-    heroTitle2: "καρέ",
-    heroTitle3: "της ζωής",
+    heroTitle1: "Καθημερινότητα",
+    heroTitle2: "σε",
+    heroTitle3: "εικόνες",
     heroText:
       "Μια επιμελημένη επιλογή φωτογραφιών γύρω από το φως, τη σκιά και την ομορφιά των στιγμών που χάνονται γρήγορα.",
     viewGallery: "Περιήγηση",
