@@ -805,9 +805,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 );
 
                 return (
-                  <div key={section.key} className="space-y-4">
+                  <div key={section.key} className="space-y-4 rounded-[1.75rem] border border-white/10 bg-black/18 p-4 shadow-[0_18px_40px_rgba(0,0,0,0.16)] backdrop-blur-[2px] sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-0">
                     <div className="flex items-end justify-between gap-3">
-                      <h3 className="text-lg uppercase tracking-[0.24em] text-[#f6dfaa]">
+                      <h3 className="text-sm uppercase tracking-[0.28em] text-[#f6dfaa] sm:text-lg sm:tracking-[0.24em]">
                         {section.title}
                       </h3>
                       <span className="text-[10px] uppercase tracking-[0.22em] text-white/35">
@@ -827,7 +827,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                           key={`${section.key}-${name}`}
                           type="button"
                           data-mobile-gallery-card="true"
-                          className="animate-gallery-item relative aspect-square w-[74vw] shrink-0 snap-start overflow-hidden rounded-[1.35rem] border border-transparent bg-white/10 text-left shadow-[0_18px_55px_rgba(0,0,0,0.34)] transition-all duration-300"
+                          className="animate-gallery-item relative aspect-square w-[64vw] shrink-0 snap-start overflow-hidden rounded-[1.2rem] border border-white/8 bg-white/10 text-left shadow-[0_18px_40px_rgba(0,0,0,0.28)] transition-all duration-300"
                           style={{ animationDelay: `${Math.min(index, 6) * 80}ms` }}
                           onClick={() => openLightbox(sectionVisible, index)}
                         >
@@ -835,7 +835,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                             src={toSrc(name)}
                             alt=""
                             fill
-                            sizes="74vw"
+                            sizes="64vw"
                             className="object-cover"
                             priority={index < 2}
                             quality={76}
@@ -870,7 +870,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                               [section.key]: prev[section.key] + 5,
                             }))
                           }
-                          className="text-[11px] uppercase tracking-[0.24em] text-[#f6dfaa] transition hover:text-white"
+                          className="text-[10px] uppercase tracking-[0.24em] text-[#f6dfaa] transition hover:text-white"
                         >
                           {T[lang].showMore}...
                         </button>
