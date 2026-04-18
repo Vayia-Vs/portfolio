@@ -25,7 +25,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [lang, setLang] = useState<"en" | "gr">("en");
   const [viewMode, setViewMode] = useState<"auto" | "mobile" | "desktop">("auto");
   const [hasChosenView, setHasChosenView] = useState(true);
-  const [isFramesExpanded, setIsFramesExpanded] = useState(false);
   const [contactState, setContactState] = useState<
     "idle" | "submitting" | "success" | "error"
   >("idle");
@@ -218,22 +217,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
     return () => window.removeEventListener("keydown", onKey);
   }, [closeLightbox, lightbox.open, moveLightbox]);
 
-  const openExpandedGallery = useCallback(() => {
-    setIsFramesExpanded(true);
-    window.setTimeout(() => {
-      framesSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
-    }, 60);
-  }, []);
-
   const scrollTo = useCallback(
     (id: string) => {
-      if (id === "gallery") {
-        openExpandedGallery();
-        return;
-      }
-      document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+      const target = id === "gallery" ? framesSectionRef.current : document.getElementById(id);
+      target?.scrollIntoView({ behavior: "smooth", block: "start" });
     },
-    [openExpandedGallery],
+    [],
   );
 
   const handleContactSubmit = async (
@@ -399,7 +388,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const isDesktopGallery = viewMode === "desktop";
   const isMobileLayout = viewMode !== "desktop";
   const previewImages = images.slice(0, isMobileLayout ? 8 : 10);
-  const galleryImages = isFramesExpanded ? images : previewImages;
+  const galleryImages = previewImages;
   const selectedProjects = projectsContent;
   const looseGalleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 22vw, (min-width: 1024px) 28vw, 45vw"
@@ -677,11 +666,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="mx-auto max-w-[92rem]">
           <div className="mb-10 flex items-end justify-between gap-4">
             <div>
-              <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/45">
+              <p className={`mb-4 uppercase tracking-[0.34em] ${isGreek ? "text-[11px] font-medium text-white/72" : "text-[10px] text-white/45"}`}>
                 {isGreek ? "Selected projects" : "Selected projects"}
               </p>
               <h2 className={`text-3xl italic sm:text-4xl md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
-              {isGreek ? "Ιστοριες σε ενοτητες" : "Stories in Project Form"}
+                {isGreek ? "Ιστοριες σε ενοτητες" : "Stories in Project Form"}
               </h2>
             </div>
           </div>
@@ -710,7 +699,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                     <h3 className={`text-2xl italic ${isGreek ? "font-sans" : "font-serif"}`}>
                       {isGreek ? project.gr.title : project.en.title}
                     </h3>
-                    <span className="text-[11px] uppercase tracking-[0.24em] text-white/38">
+                    <span className={`uppercase tracking-[0.24em] ${isGreek ? "text-[12px] font-medium text-white/62" : "text-[11px] text-white/38"}`}>
                       {project.year}
                     </span>
                   </div>
@@ -726,7 +715,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="mt-8">
             <Link
               href="/projects"
-              className="inline-flex rounded-full border border-white/12 px-4 py-2 text-sm text-white/70 transition hover:border-[#d7b46a] hover:text-[#f6dfaa]"
+              className={`inline-flex rounded-full border border-white/12 px-4 py-2 transition hover:border-[#d7b46a] hover:text-[#f6dfaa] ${isGreek ? "text-[15px] font-medium text-white/82" : "text-sm text-white/70"}`}
             >
               {isGreek ? "Ολες οι σελιδες" : "All projects"}
             </Link>
@@ -751,18 +740,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 {T[lang].galleryTitle}
               </h2>
             </div>
-            {isFramesExpanded ? (
-              <button
-                type="button"
-                onClick={() => setIsFramesExpanded(false)}
-                className="rounded-full border border-white/12 px-4 py-2 text-xs uppercase tracking-[0.22em] text-white/60 transition hover:border-[#d7b46a] hover:text-[#f6dfaa] sm:text-sm"
-              >
-                {isGreek ? "Κλεισιμο" : "Close"}
-              </button>
-            ) : null}
           </div>
 
-          <div className={`grid gap-2.5 sm:gap-3.5 ${isFramesExpanded ? "grid-cols-2 md:grid-cols-4 xl:grid-cols-5" : "grid-cols-2 sm:grid-cols-3 lg:grid-cols-5"}`}>
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3.5 lg:grid-cols-5">
             {galleryImages.map((name, index) => {
               return (
                 <button
@@ -795,7 +775,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             })}
           </div>
 
-          {!isFramesExpanded && images.length > previewImages.length && (
+          {images.length > previewImages.length && (
             <div className="mt-10 flex justify-center sm:mt-12">
               <Link
                 href="/gallery"
@@ -981,7 +961,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   rows={1}
                   placeholder={T[lang].formMessagePlaceholder}
                   onInput={handleMessageInput}
-                  className="min-h-8 w-full resize-none bg-transparent py-1 text-[0.85rem] text-white/80 placeholder:text-[0.72rem] placeholder:text-white/35 transition focus:outline-none sm:text-base sm:placeholder:text-sm"
+                  className="min-h-8 w-full resize-none bg-transparent py-1 text-[0.88rem] text-white/80 placeholder:text-[0.78rem] placeholder:text-white/35 transition focus:outline-none sm:text-base sm:placeholder:text-sm"
                 />
                 <button
                   type="submit"
