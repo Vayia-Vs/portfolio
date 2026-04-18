@@ -21,18 +21,18 @@ export default function ProjectPage({ projectSlug }: ProjectPageProps) {
       </Head>
       <main className="min-h-screen bg-black px-4 py-14 text-white sm:px-8 md:px-16 md:py-16">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-10 flex items-center justify-between gap-4">
+          <div className="mb-10 flex flex-wrap items-center justify-between gap-3">
             <Link
-              href="/projects"
+              href="/"
               className="rounded-full border border-white/15 px-4 py-2 text-sm text-white/70 transition hover:border-[#d7b46a] hover:text-[#f6dfaa]"
             >
-              All projects
+              Back home
             </Link>
             <Link
-              href="/#contact"
+              href="/projects"
               className="rounded-full border border-[#d7b46a] bg-[#d7b46a] px-4 py-2 text-sm text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa]"
             >
-              Inquire
+              More projects
             </Link>
           </div>
 
@@ -102,4 +102,3 @@ export const getStaticProps: GetStaticProps<ProjectPageProps> = async ({ params 
     },
   };
 };
-
