@@ -751,7 +751,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 );
 
                 return (
-                  <div key={section.key} className="space-y-3 rounded-[1.55rem] border border-[#d7b46a]/35 bg-[#d7b46a]/14 px-4 py-4 shadow-[0_20px_42px_rgba(0,0,0,0.18)]">
+                  <div key={section.key} className="space-y-3 rounded-[1.55rem] border border-[#d7b46a]/55 bg-[rgba(215,180,106,0.26)] px-4 py-4 shadow-[0_20px_42px_rgba(0,0,0,0.18)]">
                     <div className="flex items-end justify-between gap-3">
                       <h3 className="text-sm uppercase tracking-[0.28em] text-white sm:text-lg sm:tracking-[0.24em]">
                         {section.title}
@@ -961,7 +961,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative flex min-h-[88svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-14 sm:px-8 sm:py-16 md:px-20 md:py-18">
+      <section className="relative flex min-h-[96svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-18 md:px-20 md:py-18">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -989,7 +989,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 sm:min-h-[228px]"
+                  className="rounded-[1.15rem] border border-[#d7b46a]/38 bg-black/52 p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/66 hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:rounded-lg sm:p-6 sm:min-h-[260px]"
                 >
                   <h3 className={`mb-2 text-[1.35rem] leading-tight sm:text-[1.55rem] ${isGreek ? "font-sans" : "font-serif"}`}>{service.title}</h3>
                   <p className="mb-4 text-sm leading-7 text-white/60">{service.text}</p>
