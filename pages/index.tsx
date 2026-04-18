@@ -116,6 +116,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [isLightboxClosing, setIsLightboxClosing] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "prev" | "none">("none");
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
   /* ================= LOAD SAVED LANGUAGE & VIEW MODE ================= */
   useEffect(() => {
@@ -135,6 +136,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
     } else {
       setHasChosenView(false);
     }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+
+    return () => {
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
   }, []);
 
   /* ================= TEXTS ================= */
@@ -309,6 +322,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
     };
   }, [lightbox.open]);
 
+  useEffect(() => {
+    setItemsToShow(5);
+  }, [activeFilter]);
+
   const openLightbox = (lightboxImages: string[], index: number) => {
     if (closeTimerRef.current) {
       clearTimeout(closeTimerRef.current);
@@ -343,6 +360,22 @@ export default function Home({ imagesFromFs }: HomeProps) {
       };
     });
   }, []);
+
+  const handleLightboxTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartXRef.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleLightboxTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const startX = touchStartXRef.current;
+    const endX = e.changedTouches[0]?.clientX ?? null;
+    touchStartXRef.current = null;
+
+    if (startX === null || endX === null) return;
+    const deltaX = endX - startX;
+
+    if (Math.abs(deltaX) < 45) return;
+    moveLightbox(deltaX < 0 ? "next" : "prev");
+  };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -581,7 +614,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </div>
           </div>
 
-          <ul className="mt-3 flex gap-2 overflow-x-auto pb-1 md:hidden">
+          <ul className="mt-3 flex justify-center gap-2 overflow-x-auto pb-1 md:hidden">
             {T[lang].nav.map((item) => (
               <li key={item.target}>
                 <button
@@ -691,7 +724,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           <div className={galleryGridClass}>
-            {(viewMode === "desktop" ? visibleImages : visibleImages.slice(0, itemsToShow)).map((name, index) => {
+            {visibleImages.slice(0, itemsToShow).map((name, index) => {
               // Determine height based on viewMode
               const heightClass = viewMode === "mobile" 
                 ? "h-[25rem] min-[420px]:h-56 md:h-72 lg:h-96"
@@ -725,10 +758,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           {/* SHOW MORE BUTTON - MOBILE ONLY */}
-          {viewMode !== "desktop" && visibleImages.length > itemsToShow && (
+          {visibleImages.length > itemsToShow && (
             <div className="mt-12 flex justify-center">
               <button
-                onClick={() => setItemsToShow(itemsToShow + 5)}
+                onClick={() => setItemsToShow((current) => current + 5)}
                 className="rounded-full border border-[#d7b46a] bg-[#d7b46a] px-6 py-3 text-[11px] uppercase tracking-[0.28em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:rounded sm:px-8 sm:text-sm sm:tracking-widest"
               >
                 {T[lang].showMore} ↓
@@ -744,7 +777,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         id="about"
         className="border-t border-white/10 px-4 py-16 sm:px-8 md:px-16 md:py-24 xl:px-20 xl:py-28"
       >
-        <div className="ml-0 mr-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
+        <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
           <div className="max-w-[44rem]">
             <p className="mb-4 text-[10px] uppercase tracking-[0.34em] text-white/50 sm:mb-5 sm:tracking-[0.45em]">
               {T[lang].aboutKicker}
@@ -782,7 +815,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32">
+      <section className="relative overflow-hidden border-t border-white/10 bg-black px-4 py-12 sm:px-8 sm:py-16 md:px-20 md:py-24">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -793,7 +826,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-black/42" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
-        <div className="relative z-10 ml-auto mr-0 max-w-5xl">
+        <div className="relative z-10 mx-auto max-w-5xl">
           <p className="mb-5 text-[10px] uppercase tracking-[0.32em] text-white/50 sm:mb-6 sm:text-xs sm:tracking-[0.4em]">
             {T[lang].servicesKicker}
           </p>
@@ -803,12 +836,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </h2>
           )}
 
-          <div className="grid items-start gap-8">
-            <div className="mb-12 grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2">
+          <div className="grid items-start gap-6">
+            <div className="mb-6 grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-5">
               {T[lang].services.map((service) => (
                 <div
                   key={service.title}
-                  className="rounded-[1.25rem] border border-[#d7b46a]/45 bg-black/52 p-5 shadow-[0_18px_55px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/68 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)] sm:rounded-lg sm:p-8"
+                  className="rounded-[1.25rem] border border-[#d7b46a]/45 bg-black/52 p-5 shadow-[0_18px_55px_rgba(0,0,0,0.28)] backdrop-blur-sm transition hover:border-[#f6dfaa] hover:bg-black/68 hover:shadow-[0_0_24px_rgba(215,180,106,0.16)] sm:rounded-lg sm:p-6"
                 >
                   <div className="mb-7 text-[#d7b46a]">
                     <ServiceIcon name={service.icon} />
@@ -937,13 +970,13 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
       {/* ================= FOOTER ================= */}
       <footer className="border-t border-white/10 bg-[#111716] px-4 py-6 sm:px-8 md:px-20">
-        <div className="grid items-center gap-6 text-center md:grid-cols-[1fr_auto_1fr] md:text-left">
-          <p className="text-white/50 text-sm md:justify-self-start">
+        <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
+          <p className="justify-self-start text-[11px] text-white/50 sm:text-sm">
             &copy; {new Date().getFullYear()} All rights reserved
           </p>
-          <div className="flex items-center justify-center gap-5 text-xs sm:text-sm tracking-wide">
+          <div className="flex items-center justify-center gap-2 text-xs tracking-wide sm:gap-5 sm:text-sm">
             <a
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black sm:h-12 sm:w-12"
               href="https://www.instagram.com/vayiavs/"
               target="_blank"
               rel="noreferrer"
@@ -964,7 +997,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </svg>
             </a>
             <a
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black sm:h-12 sm:w-12"
               href="#"
               aria-label="Pinterest"
             >
@@ -985,7 +1018,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               </svg>
             </a>
             <a
-              className="inline-flex h-12 w-12 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black"
+              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/35 text-white/60 transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black sm:h-12 sm:w-12"
               href="#"
               aria-label="Facebook"
             >
@@ -1005,7 +1038,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             alt="Vayia signature"
             width={160}
             height={56}
-            className="h-8 w-auto justify-self-center opacity-75 sm:h-10 md:justify-self-end"
+            className="h-7 w-auto justify-self-end opacity-75 sm:h-10"
           />
         </div>
       </footer>
@@ -1045,22 +1078,19 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div
             className="relative max-h-full w-full"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleLightboxTouchStart}
+            onTouchEnd={handleLightboxTouchEnd}
           >
-            <div className="lightbox-panel sticky top-0 z-10 flex flex-wrap items-center justify-between gap-3 bg-black/80 px-2 py-2 backdrop-blur sm:gap-4">
-              <p className="text-[9px] sm:text-[10px] uppercase tracking-[0.2em] sm:tracking-[0.3em] text-white/40">
-                {String(lightbox.index + 1).padStart(2, "0")} /{" "}
-                {String(lightbox.images.length).padStart(2, "0")}
-                {lightbox.images.length > 1 ? " / Arrows" : ""} / Esc
-              </p>
+            <div className="lightbox-panel mx-auto mb-4 flex w-full max-w-4xl justify-center pt-1 sm:mb-6 sm:pt-2">
               <button
                 type="button"
-                className="rounded border border-[#d7b46a]/70 bg-[#d7b46a]/15 px-3 py-1 text-xs sm:text-sm font-medium text-[#f6dfaa] transition hover:bg-[#d7b46a] hover:text-black"
+                className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#d7b46a] bg-black/55 text-lg text-[#f6dfaa] transition hover:bg-[#d7b46a] hover:text-black"
                 onClick={closeLightbox}
               >
                 ✕
               </button>
             </div>
-            <div className="relative flex items-center justify-center pt-6 sm:pt-10">
+            <div className="relative flex items-center justify-center pt-2 sm:pt-4">
               {lightbox.images.length > 1 && (
                 <>
                   <button
@@ -1092,6 +1122,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   priority
                 />
               </div>
+            </div>
+            <div className="mt-4 text-center">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-white/55 sm:text-xs sm:tracking-[0.34em]">
+                {String(lightbox.index + 1).padStart(2, "0")} / {String(lightbox.images.length).padStart(2, "0")}
+              </p>
             </div>
           </div>
         </div>
