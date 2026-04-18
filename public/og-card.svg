@@ -1,0 +1,24 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="180" y1="40" x2="980" y2="590" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0E1518"/>
+      <stop offset="0.52" stop-color="#101A1D"/>
+      <stop offset="1" stop-color="#050607"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#F1D28C"/>
+      <stop offset="1" stop-color="#C59A3D"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" rx="36" fill="url(#bg)"/>
+  <rect x="38" y="38" width="1124" height="554" rx="28" fill="none" stroke="rgba(241,210,140,0.38)"/>
+  <circle cx="962" cy="170" r="168" fill="#132128" fill-opacity="0.88"/>
+  <circle cx="1012" cy="200" r="112" fill="#1A2D35" fill-opacity="0.78"/>
+  <circle cx="1054" cy="244" r="54" fill="url(#gold)" fill-opacity="0.72"/>
+  <text x="92" y="162" fill="#F1D28C" font-size="24" font-family="Georgia, 'Times New Roman', serif" letter-spacing="8">VAYIA VASILEIOU</text>
+  <text x="92" y="286" fill="#F7F2E7" font-size="84" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Street, Portrait,</text>
+  <text x="92" y="376" fill="#F7F2E7" font-size="84" font-style="italic" font-family="Georgia, 'Times New Roman', serif">Atmospheric Photography</text>
+  <text x="94" y="458" fill="#C9D1D3" font-size="28" font-family="'Segoe UI', Arial, sans-serif">Athens-based photography portfolio exploring light, presence,</text>
+  <text x="94" y="496" fill="#C9D1D3" font-size="28" font-family="'Segoe UI', Arial, sans-serif">and the quiet rhythm of everyday moments.</text>
+  <text x="94" y="556" fill="#A8B0B3" font-size="22" font-family="'Segoe UI', Arial, sans-serif" letter-spacing="4">vayia-vs-portfolio.vercel.app</text>
+</svg>

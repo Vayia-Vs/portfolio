@@ -6,8 +6,16 @@ type ContactResponse = {
   error?: string;
 };
 
+type RateLimitEntry = {
+  count: number;
+  resetAt: number;
+};
+
 const resendApiKey = process.env.RESEND_API_KEY;
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
+const rateLimitStore = new Map<string, RateLimitEntry>();
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
 
 const toEmail = process.env.CONTACT_TO_EMAIL || "vayiavs95@gmail.com";
 const fromEmail =
@@ -17,8 +25,12 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ContactResponse>,
 ) {
+  if (req.method === "GET") {
+    return res.redirect(307, "/");
+  }
+
   if (req.method !== "POST") {
-    res.setHeader("Allow", "POST");
+    res.setHeader("Allow", "GET, POST");
     return res.status(405).json({ error: "Method not allowed" });
   }
 
@@ -31,23 +43,42 @@ export default async function handler(
     email = "",
     message = "",
     botField = "",
+    submittedAt = 0,
   } = (req.body ?? {}) as Record<string, string>;
 
   if (String(botField).trim()) {
     return res.status(200).json({ ok: true });
   }
 
+  const clientIp = getClientIp(req);
+  if (!isAllowedRequest(clientIp)) {
+    return res.status(429).json({ error: "Too many requests. Please try again later." });
+  }
+
   const cleanName = String(name).trim();
   const cleanEmail = String(email).trim();
   const cleanMessage = String(message).trim();
+  const submittedAtValue = Number(submittedAt);
 
   if (!cleanName || !cleanEmail || !cleanMessage) {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
+  if (
+    Number.isNaN(submittedAtValue) ||
+    submittedAtValue <= 0 ||
+    Date.now() - submittedAtValue < 2500
+  ) {
+    return res.status(400).json({ error: "Form submission rejected" });
+  }
+
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(cleanEmail)) {
     return res.status(400).json({ error: "Invalid email" });
+  }
+
+  if (cleanName.length > 80 || cleanEmail.length > 160 || cleanMessage.length > 4000) {
+    return res.status(400).json({ error: "Input too long" });
   }
 
   try {
@@ -82,4 +113,36 @@ function escapeHtml(value: string) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#39;");
+}
+
+function getClientIp(req: NextApiRequest) {
+  const forwardedFor = req.headers["x-forwarded-for"];
+  if (typeof forwardedFor === "string") {
+    return forwardedFor.split(",")[0]?.trim() || "unknown";
+  }
+  if (Array.isArray(forwardedFor)) {
+    return forwardedFor[0]?.trim() || "unknown";
+  }
+  return req.socket.remoteAddress || "unknown";
+}
+
+function isAllowedRequest(clientIp: string) {
+  const now = Date.now();
+  const entry = rateLimitStore.get(clientIp);
+
+  if (!entry || entry.resetAt <= now) {
+    rateLimitStore.set(clientIp, {
+      count: 1,
+      resetAt: now + RATE_LIMIT_WINDOW_MS,
+    });
+    return true;
+  }
+
+  if (entry.count >= RATE_LIMIT_MAX_REQUESTS) {
+    return false;
+  }
+
+  entry.count += 1;
+  rateLimitStore.set(clientIp, entry);
+  return true;
 }

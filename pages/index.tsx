@@ -103,6 +103,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [isLightboxClosing, setIsLightboxClosing] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"next" | "prev" | "none">("none");
   const [showSwipeHint, setShowSwipeHint] = useState(false);
+  const [contactStartedAt, setContactStartedAt] = useState(() => Date.now());
   const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const touchStartXRef = useRef<number | null>(null);
   const mobileGalleryRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -138,6 +139,30 @@ export default function Home({ imagesFromFs }: HomeProps) {
     return () => {
       window.history.scrollRestoration = previousScrollRestoration;
     };
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const sections = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-reveal-section='true']"),
+    );
+
+    if (!sections.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        });
+      },
+      { threshold: 0.18, rootMargin: "0px 0px -8% 0px" },
+    );
+
+    sections.forEach((section) => observer.observe(section));
+    return () => observer.disconnect();
   }, []);
 
   /* ================= TEXTS ================= */
@@ -405,6 +430,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       email: String(formData.get("email") ?? "").trim(),
       message: String(formData.get("message") ?? "").trim(),
       botField: String(formData.get("bot-field") ?? "").trim(),
+      submittedAt: Number(formData.get("submitted-at") ?? contactStartedAt),
     };
 
     try {
@@ -421,6 +447,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
       }
 
       form.reset();
+      setContactStartedAt(Date.now());
+      const textarea = messageTextareaRef.current;
+      if (textarea) {
+        textarea.style.height = "";
+      }
       setContactState("success");
     } catch {
       setContactState("error");
@@ -456,7 +487,31 @@ export default function Home({ imagesFromFs }: HomeProps) {
     ? "Portfolio φωτογραφίας με εικόνες δρόμου, πορτρέτα, αρχιτεκτονική και ατμοσφαιρικές λήψεις από την Αθήνα και όχι μόνο."
     : "Photography portfolio featuring street, portrait, architecture, and atmospheric imagery from Athens and beyond.";
   const seoLocale = isGreek ? "el_GR" : "en_US";
-  const seoImage = `${siteUrl}/images/hero.jpg`;
+  const seoImage = `${siteUrl}/og-card.svg`;
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: "Vayia Vasileiou Portfolio",
+      url: siteUrl,
+      inLanguage: isGreek ? "el-GR" : "en-US",
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      name: "Vayia Vasileiou",
+      url: siteUrl,
+      image: `${siteUrl}/images/vayia.JPEG`,
+      jobTitle: isGreek ? "Φωτογράφος" : "Photographer",
+      address: {
+        "@type": "PostalAddress",
+        addressLocality: "Athens",
+        addressCountry: "GR",
+      },
+      email: "mailto:vayiavs95@gmail.com",
+      sameAs: ["https://www.instagram.com/vayiavs/"],
+    },
+  ];
 
   useEffect(() => {
     if (!lightbox.open || typeof window === "undefined" || lightbox.images.length < 2) return;
@@ -490,6 +545,17 @@ export default function Home({ imagesFromFs }: HomeProps) {
     const parts = base.split("-");
     const tagParts = parts.slice(1);
     return tagParts.map((tag) => tag.trim().toLowerCase()).filter(Boolean);
+  };
+
+  const getPrimaryTagLabel = (name: string) => {
+    const primaryTag = parseTags(name)[0];
+
+    if (!primaryTag) return isGreek ? "ΣΥΛΛΟΓΗ" : "COLLECTION";
+    if (primaryTag === "archit") return isGreek ? "ΑΡΧΙΤΕΚΤΟΝΙΚΗ" : "ARCHITECTURE";
+    if (primaryTag === "landsc") return isGreek ? "ΤΟΠΙΑ" : "LANDSCAPE";
+    if (primaryTag === "int") return isGreek ? "ΕΣΩΤΕΡΙΚΟΙ ΧΩΡΟΙ" : "INTERIOR";
+    if (primaryTag === "street") return isGreek ? "ΦΩΤΟΓΡΑΦΙΑ ΔΡΟΜΟΥ" : "STREET";
+    return formatUiLabel(primaryTag);
   };
 
   const allTags = Array.from(new Set(images.flatMap(parseTags))).sort();
@@ -616,10 +682,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <meta property="og:locale" content={seoLocale} />
         <meta property="og:image" content={seoImage} />
         <meta property="og:image:alt" content="Vayia Vasileiou photography portfolio" />
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+        <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+        <link rel="manifest" href="/site.webmanifest" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={seoTitle} />
         <meta name="twitter:description" content={seoDescription} />
         <meta name="twitter:image" content={seoImage} />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </Head>
       {/* ================= SPLASH SCREEN ================= */}
       {!hasChosenView && (
@@ -842,7 +916,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= GALLERY ================= */}
       <section
         id="gallery"
-        className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-8 sm:px-8 sm:py-16 md:px-20 md:py-24"
+        data-reveal-section="true"
+        className="reveal-section gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-8 sm:px-8 sm:py-16 md:px-20 md:py-24"
       >
         <div className={galleryContainerClass}>
           <h2 className={`mb-6 text-3xl italic text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
@@ -969,7 +1044,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               <div className={galleryGridClass}>
                 {visibleImages.slice(0, itemsToShow).map((name, index) => {
                   const heightClass = isDesktopGallery
-                    ? "h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96"
+                    ? "h-60 sm:h-[17.5rem] md:h-[20.5rem] lg:h-[24rem] xl:h-[27rem]"
                     : "h-44 sm:h-56 md:h-72 lg:h-96";
                   const itemClass = isDesktopGallery
                     ? "animate-gallery-item w-full text-left group"
@@ -983,7 +1058,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       style={{ animationDelay: `${Math.min(index, 14) * 90}ms` }}
                       onClick={() => openLightbox(visibleImages, index)}
                     >
-                      <div className={`${heightClass} relative w-full overflow-hidden rounded-[1.25rem] border border-transparent bg-white/10 shadow-[0_18px_55px_rgba(0,0,0,0.34)] transition-all duration-300 group hover:scale-[1.02] hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/70 hover:shadow-[0_18px_55px_rgba(0,0,0,0.34),0_0_28px_rgba(215,180,106,0.3)] sm:rounded-lg sm:hover:scale-105`}>
+                      <div className={`${heightClass} relative w-full overflow-hidden rounded-[1.35rem] border border-white/5 bg-white/10 shadow-[0_22px_60px_rgba(0,0,0,0.34)] transition-all duration-500 group hover:-translate-y-1 hover:border-[#d7b46a] hover:ring-2 hover:ring-[#f6dfaa]/65 hover:shadow-[0_20px_60px_rgba(0,0,0,0.34),0_0_30px_rgba(215,180,106,0.24)] sm:rounded-[1.1rem]`}>
                         <Image
                           src={toSrc(name)}
                           alt=""
@@ -993,6 +1068,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
                           priority={index < 3}
                           quality={index < 3 ? 74 : 68}
                         />
+                        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/8 to-transparent opacity-65 transition duration-500 group-hover:opacity-95" />
+                        <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between gap-4 p-4 opacity-0 transition duration-500 group-hover:opacity-100">
+                          <span className="text-[10px] uppercase tracking-[0.28em] text-white/80">
+                            {getPrimaryTagLabel(name)}
+                          </span>
+                          <span className="text-[10px] uppercase tracking-[0.24em] text-[#f6dfaa]">
+                            {isGreek ? "Ανοιγμα" : "Open Frame"}
+                          </span>
+                        </div>
                       </div>
                     </button>
                   );
@@ -1018,7 +1102,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= ABOUT ================= */}
       <section
         id="about"
-        className="border-t border-white/10 px-4 py-16 sm:px-8 md:px-16 md:py-24 xl:px-20 xl:py-28"
+        data-reveal-section="true"
+        className="reveal-section border-t border-white/10 px-4 py-16 sm:px-8 md:px-16 md:py-24 xl:px-20 xl:py-28"
       >
         <div className="mx-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[380px_minmax(0,1fr)] xl:grid-cols-[420px_minmax(0,1fr)] xl:gap-20">
           <div className="mx-auto w-full max-w-[320px] lg:mx-0 lg:max-w-none lg:pr-8 lg:pt-4">
@@ -1070,7 +1155,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative flex min-h-[96svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-18 md:px-20 md:py-20">
+      <section
+        data-reveal-section="true"
+        className="reveal-section relative flex min-h-[96svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-16 sm:px-8 sm:py-18 md:px-20 md:py-20"
+      >
         <Image
           src="/images/greece1-landsc.png"
           alt=""
@@ -1119,7 +1207,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {/* ================= CONTACT ================= */}
       <section
         id="contact"
-        className="flex min-h-[100svh] items-center border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
+        data-reveal-section="true"
+        className="reveal-section flex min-h-[100svh] items-center border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
       >
         <div className="mx-auto grid max-w-6xl items-start gap-12 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)] lg:gap-16">
           <div className="text-center lg:sticky lg:top-28 lg:text-left">
@@ -1141,6 +1230,11 @@ export default function Home({ imagesFromFs }: HomeProps) {
             >
               {T[lang].contactEmail}
             </a>
+            <p className="mt-4 text-xs uppercase tracking-[0.22em] text-white/40 sm:text-[11px] sm:tracking-[0.28em]">
+              {isGreek
+                ? "Αθηνα • επιλεγμενες συνεργασιες • απαντηση με email"
+                : "Athens-based • selected collaborations • replies by email"}
+            </p>
           </div>
 
           <form
@@ -1152,6 +1246,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 Don&apos;t fill this out if you&apos;re human:
                 <input name="bot-field" />
               </label>
+              <input name="submitted-at" value={contactStartedAt} readOnly />
             </div>
             <div className="grid md:grid-cols-2 gap-6 md:gap-10">
               <label className="block">
@@ -1245,8 +1340,16 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= FOOTER ================= */}
       <footer className="border-t border-white/10 bg-[#111716] px-4 py-6 sm:px-8 md:px-20">
         <div className="grid grid-cols-[1fr_auto_1fr] items-center gap-3 text-center">
-          <p className="justify-self-start text-[11px] text-white/50 sm:text-sm">
-            &copy; {new Date().getFullYear()} All rights reserved
+          <div className="justify-self-start text-left">
+            <p className="text-[11px] text-white/58 sm:text-sm">
+              &copy; {new Date().getFullYear()} Vayia Vasileiou
+            </p>
+            <p className="mt-1 text-[10px] uppercase tracking-[0.18em] text-white/30 sm:text-[11px]">
+              {isGreek ? "Αθηνα, Ελλαδα" : "Athens, Greece"}
+            </p>
+          </div>
+          <p className="hidden text-[10px] uppercase tracking-[0.28em] text-white/35 md:block">
+            {isGreek ? "Street • Portrait • Atmosphere" : "Street • Portrait • Atmosphere"}
           </p>
           <div className="flex items-center justify-center gap-2 text-xs tracking-wide sm:gap-5 sm:text-sm">
             <a
@@ -1276,7 +1379,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             alt="Vayia signature"
             width={160}
             height={56}
-            className="h-7 w-auto justify-self-end opacity-75 sm:h-10"
+            className="h-6 w-auto justify-self-end opacity-70 sm:h-8"
           />
         </div>
       </footer>
@@ -1345,6 +1448,34 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 />
               </div>
             </div>
+            {lightbox.images.length > 1 && (
+              <div className="mx-auto mt-4 hidden w-full max-w-5xl items-center justify-center gap-3 overflow-x-auto px-2 pb-1 sm:flex">
+                {lightbox.images.map((imageName, index) => (
+                  <button
+                    key={`thumb-${imageName}`}
+                    type="button"
+                    onClick={() => {
+                      setSlideDirection(index > lightbox.index ? "next" : "prev");
+                      setLightbox((prev) => ({ ...prev, index }));
+                    }}
+                    className={`relative h-16 w-16 shrink-0 overflow-hidden rounded-[0.9rem] border transition ${
+                      index === lightbox.index
+                        ? "border-[#f6dfaa] opacity-100 shadow-[0_0_0_1px_rgba(246,223,170,0.35)]"
+                        : "border-white/10 opacity-55 hover:border-white/40 hover:opacity-90"
+                    }`}
+                  >
+                    <Image
+                      src={toSrc(imageName)}
+                      alt=""
+                      fill
+                      sizes="64px"
+                      className="object-cover"
+                      quality={52}
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="mt-4 flex items-center justify-between gap-4">
               <button
                 type="button"

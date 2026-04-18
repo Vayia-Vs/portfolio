@@ -52,6 +52,17 @@ body {
   scroll-snap-align: start;
 }
 
+.reveal-section {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 700ms ease, transform 700ms ease;
+}
+
+.reveal-section.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .gallery-backdrop {
   background:
     linear-gradient(rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0.18)),
@@ -197,6 +208,7 @@ body {
   }
 
   .animate-gallery-item,
+  .reveal-section,
   .lightbox-overlay,
   .lightbox-panel,
   .lightbox-image {
