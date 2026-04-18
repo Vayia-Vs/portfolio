@@ -788,7 +788,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= GALLERY ================= */}
       <section
         id="gallery"
-        className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-16 sm:px-8 sm:py-20 md:px-20 md:py-32"
+        className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-12 sm:px-8 sm:py-16 md:px-20 md:py-24"
       >
         <div className={galleryContainerClass}>
           <h2 className={`mb-8 text-3xl italic text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
@@ -805,7 +805,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 );
 
                 return (
-                  <div key={section.key} className="space-y-4 rounded-[1.75rem] border border-white/10 bg-black/18 p-4 shadow-[0_18px_40px_rgba(0,0,0,0.16)] backdrop-blur-[2px] sm:bg-transparent sm:p-0 sm:shadow-none sm:backdrop-blur-0">
+                  <div key={section.key} className="space-y-4">
                     <div className="flex items-end justify-between gap-3">
                       <h3 className="text-sm uppercase tracking-[0.28em] text-[#f6dfaa] sm:text-lg sm:tracking-[0.24em]">
                         {section.title}
