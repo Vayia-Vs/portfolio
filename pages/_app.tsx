@@ -2,6 +2,8 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Noto_Sans, Noto_Serif } from "next/font/google";
 import Script from "next/script";
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 
 const notoSans = Noto_Sans({
   subsets: ["latin", "greek"],
@@ -20,6 +22,26 @@ const notoSerif = Noto_Serif({
 
 export default function App({ Component, pageProps }: AppProps) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const router = useRouter();
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const previousScrollRestoration = window.history.scrollRestoration;
+    window.history.scrollRestoration = "manual";
+
+    const scrollToTop = () => {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    };
+
+    scrollToTop();
+    router.events.on("routeChangeComplete", scrollToTop);
+
+    return () => {
+      router.events.off("routeChangeComplete", scrollToTop);
+      window.history.scrollRestoration = previousScrollRestoration;
+    };
+  }, [router.events]);
 
   return (
     <>

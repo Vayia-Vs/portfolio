@@ -80,7 +80,7 @@ export const homeContent = {
     heroTitle2: "Moments",
     heroTitle3: "in Time",
     heroText:
-      "Street, portrait, and atmospheric photography shaped by quiet observation, natural light, and real moments.",
+      "A curated collection of photographs exploring light, shadow, and the beauty of fleeting moments.",
     viewGallery: "View Gallery",
     contactButton: "Get in Touch",
     galleryTitle: "My Collections",
@@ -148,7 +148,7 @@ export const homeContent = {
     heroTitle2: "που",
     heroTitle3: "μένουν",
     heroText:
-      "Φωτογραφίες δρόμου, πορτρέτα και εικόνες ατμόσφαιρας με έμφαση στο φως, την παρατήρηση και τις αληθινές στιγμές.",
+      "Μια επιμελημένη επιλογή φωτογραφιών γύρω από το φως, τη σκιά και την ομορφιά των στιγμών που χάνονται γρήγορα.",
     viewGallery: "Περιήγηση",
     contactButton: "Επικοινωνία",
     galleryTitle: "Οι Συλλογές μου",
