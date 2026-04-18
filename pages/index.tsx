@@ -105,6 +105,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const [hasChosenView, setHasChosenView] = useState(true);
   const [itemsToShow, setItemsToShow] = useState(5); // Gallery items shown
   const [activeFilter, setActiveFilter] = useState("all");
+  const [contactState, setContactState] = useState<
+    "idle" | "submitting" | "success" | "error"
+  >("idle");
   const [lightbox, setLightbox] = useState<{
     open: boolean;
     images: string[];
@@ -119,7 +122,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
     const savedLang = localStorage.getItem("lang");
     if (savedLang === "en" || savedLang === "gr") {
       // Restores the user's browser-only preference after hydration.
-      // eslint-disable-next-line react-hooks/set-state-in-effect
       setLang(savedLang);
     }
     const savedViewMode = localStorage.getItem("viewMode");
@@ -174,6 +176,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
       formMessage: "Message",
       formMessagePlaceholder: "Tell me what you have in mind...",
       contactCTA: "Send Message",
+      contactSending: "Sending...",
+      contactSuccess: "Your message has been sent.",
+      contactError: "Something went wrong. Please try again.",
       servicesKicker: "Work with me",
       servicesTitle: "",
       services: [
@@ -239,6 +244,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
       formMessage: "ΜΗΝΥΜΑ",
       formMessagePlaceholder: "Πες μου τι έχεις στο μυαλό σου...",
       contactCTA: "Αποστολή",
+      contactSending: "Αποστολή...",
+      contactSuccess: "Το μήνυμά σου στάλθηκε.",
+      contactError: "Κάτι πήγε στραβά. Δοκίμασε ξανά.",
       servicesKicker: "Συνεργασία",
       servicesTitle: "",
       services: [
@@ -355,6 +363,42 @@ export default function Home({ imagesFromFs }: HomeProps) {
 
   const scrollTo = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const handleContactSubmit = async (
+    e: React.FormEvent<HTMLFormElement>,
+  ) => {
+    e.preventDefault();
+    setContactState("submitting");
+
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    const payload = {
+      name: String(formData.get("name") ?? "").trim(),
+      email: String(formData.get("email") ?? "").trim(),
+      message: String(formData.get("message") ?? "").trim(),
+      botField: String(formData.get("bot-field") ?? "").trim(),
+    };
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        throw new Error("Request failed");
+      }
+
+      form.reset();
+      setContactState("success");
+    } catch {
+      setContactState("error");
+    }
   };
 
   const images = useMemo(() => {
@@ -553,7 +597,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 "url('/images/hero.jpg')",
             }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/35 to-black/78" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
 
         <div className="relative z-10 text-center px-6 max-w-4xl">
@@ -689,7 +733,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className="px-4 sm:px-8 md:px-16 xl:px-20 py-18 md:py-24 xl:py-28 border-t border-white/10"
       >
         <div className="ml-0 mr-auto grid max-w-6xl items-start gap-10 lg:grid-cols-[minmax(0,1fr)_360px] xl:grid-cols-[minmax(0,1fr)_420px] xl:gap-20">
-          <div className="max-w-3xl">
+          <div className="max-w-[44rem]">
             <p className="mb-5 text-[10px] uppercase tracking-[0.45em] text-white/50">
               {T[lang].aboutKicker}
             </p>
@@ -698,27 +742,20 @@ export default function Home({ imagesFromFs }: HomeProps) {
               <span className="italic">{T[lang].aboutTitle2}</span>
             </h2>
 
-            <div className="space-y-4 text-sm leading-7 text-white/70 sm:text-base xl:space-y-5">
+            <div className="max-w-[38rem] space-y-5 text-sm leading-8 text-white/70 sm:text-base xl:space-y-6">
               {T[lang].aboutText.map((p) => (
                 <p key={p}>{p}</p>
               ))}
             </div>
 
-            <div className="mt-9 flex flex-wrap gap-x-3 gap-y-2 text-[10px] tracking-[0.35em] text-[#d7b46a]">
-              <span>#streetphotography</span>
-              <span>#landscape</span>
-              <span>#architecture</span>
-              <span>#portrait</span>
-              <span>#streetportrait</span>
-              <span>#urban</span>
-              <span>#citylife</span>
-              <span>#documentary</span>
-              <span>#blackandwhite</span>
-              <span>#athens</span>
+            <div className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.35em] text-[#d7b46a] uppercase">
+              <span>Street Photography</span>
+              <span>Portrait</span>
+              <span>Architecture</span>
             </div>
           </div>
 
-          <div className="lg:border-l lg:border-white/10 lg:pl-8">
+          <div className="lg:border-l lg:border-white/10 lg:pl-8 lg:pt-4">
             <div className="relative aspect-[3/4] w-full max-w-[420px] overflow-hidden bg-white/10">
               <Image
                 src="/images/vayia.JPEG"
@@ -728,9 +765,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 className="object-cover"
               />
             </div>
-            <p className="mt-6 text-sm italic text-white/40">
-              {T[lang].portraitCaption}
-            </p>
           </div>
         </div>
       </section>
@@ -797,13 +831,9 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </p>
 
           <form
-            name="contact"
-            method="POST"
-            data-netlify="true"
-            netlify-honeypot="bot-field"
+            onSubmit={handleContactSubmit}
             className="space-y-10 text-left"
           >
-            <input type="hidden" name="form-name" value="contact" />
             <div className="hidden">
               <label>
                 Don&apos;t fill this out if you&apos;re human:
@@ -817,6 +847,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 </span>
                 <input
                   required
+                  type="text"
                   name="name"
                   placeholder={T[lang].formNamePlaceholder}
                   className="w-full bg-transparent border-b border-white/30 py-3 text-white/80 placeholder:text-white/35 focus:outline-none focus:border-[#d7b46a]/80 transition"
@@ -828,6 +859,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 </span>
                 <input
                   required
+                  type="email"
                   name="email"
                   placeholder={T[lang].formEmailPlaceholder}
                   className="w-full bg-transparent border-b border-white/30 py-3 text-white/80 placeholder:text-white/35 focus:outline-none focus:border-[#d7b46a]/80 transition"
@@ -848,9 +880,33 @@ export default function Home({ imagesFromFs }: HomeProps) {
               />
             </label>
 
+            {contactState !== "idle" && (
+              <p
+                className={`text-sm ${
+                  contactState === "success"
+                    ? "text-[#d7b46a]"
+                    : contactState === "error"
+                      ? "text-red-300"
+                      : "text-white/60"
+                }`}
+              >
+                {contactState === "success"
+                  ? T[lang].contactSuccess
+                  : contactState === "error"
+                    ? T[lang].contactError
+                    : T[lang].contactSending}
+              </p>
+            )}
+
             <div className="text-center pt-8">
-              <button className="inline-flex items-center gap-2 sm:gap-3 border border-white bg-white px-6 sm:px-12 py-3 sm:py-4 text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] uppercase text-black transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black hover:shadow-[0_0_28px_rgba(215,180,106,0.3)]">
-                {T[lang].contactCTA}
+              <button
+                type="submit"
+                disabled={contactState === "submitting"}
+                className="inline-flex items-center gap-2 sm:gap-3 border border-white bg-white px-6 sm:px-12 py-3 sm:py-4 text-[11px] sm:text-xs tracking-[0.3em] sm:tracking-[0.4em] uppercase text-black transition hover:border-[#d7b46a] hover:bg-[#d7b46a] hover:text-black hover:shadow-[0_0_28px_rgba(215,180,106,0.3)] disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {contactState === "submitting"
+                  ? T[lang].contactSending
+                  : T[lang].contactCTA}
                 <svg
                   aria-hidden="true"
                   width="16"
