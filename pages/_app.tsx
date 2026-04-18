@@ -48,7 +48,7 @@ export default function App({ Component, pageProps }: AppProps) {
       window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     };
 
-    handleRouteChangeComplete(router.asPath);
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
     router.events.on("routeChangeComplete", handleRouteChangeComplete);
 
     return () => {
