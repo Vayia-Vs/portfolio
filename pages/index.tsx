@@ -717,10 +717,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {visibleImages.slice(0, itemsToShow).map((name, index) => {
               // Determine height based on viewMode
               const heightClass = viewMode === "mobile" 
-                ? "h-32 sm:h-56 md:h-72 lg:h-96"
+                ? "h-44 sm:h-56 md:h-72 lg:h-96"
                 : viewMode === "desktop"
                 ? "h-56 sm:h-64 md:h-72 lg:h-80 xl:h-96"
-                : "h-32 sm:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
+                : "h-44 sm:h-56 md:h-72 lg:h-96"; // auto defaults to mobile
               const mobileSpanClass =
                 index % 5 < 3 ? "col-span-2 sm:col-span-1" : "col-span-3 sm:col-span-1";
               const itemClass = isDesktopGallery
@@ -1051,14 +1051,14 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <>
                   <button
                     type="button"
-                    className="absolute left-1 top-1/2 z-30 -translate-y-1/2 rounded-full border border-[#d7b46a]/75 bg-transparent px-3 py-2 text-lg text-[#e6c989] shadow-[0_0_20px_rgba(215,180,106,0.14)] transition hover:border-[#f6dfaa] hover:text-[#f6dfaa] touch-manipulation sm:left-3 sm:px-4 sm:py-3"
+                    className="absolute left-2 top-1/2 z-30 -translate-y-1/2 bg-transparent px-2 py-2 text-[2rem] font-light leading-none text-[#e6c989] transition hover:text-[#f6dfaa] touch-manipulation sm:left-3 sm:text-[2.4rem]"
                     onClick={() => moveLightbox("prev")}
                   >
                     ←
                   </button>
                   <button
                     type="button"
-                    className="absolute right-1 top-1/2 z-30 -translate-y-1/2 rounded-full border border-[#d7b46a]/75 bg-transparent px-3 py-2 text-lg text-[#e6c989] shadow-[0_0_20px_rgba(215,180,106,0.14)] transition hover:border-[#f6dfaa] hover:text-[#f6dfaa] touch-manipulation sm:right-3 sm:px-4 sm:py-3"
+                    className="absolute right-2 top-1/2 z-30 -translate-y-1/2 bg-transparent px-2 py-2 text-[2rem] font-light leading-none text-[#e6c989] transition hover:text-[#f6dfaa] touch-manipulation sm:right-3 sm:text-[2.4rem]"
                     onClick={() => moveLightbox("next")}
                   >
                     →
