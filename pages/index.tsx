@@ -653,7 +653,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               }}
               className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3.5 py-2 text-[9px] uppercase tracking-[0.18em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
-              {T[lang].viewGallery} ↓
+              {formatUiLabel(T[lang].viewGallery)} ↓
             </button>
             <button
               onClick={() => {
@@ -662,7 +662,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
               }}
               className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-3 py-1.5 text-[8.5px] uppercase tracking-[0.16em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
-              {T[lang].contactButton}
+              {formatUiLabel(T[lang].contactButton)}
             </button>
           </div>
         </div>
