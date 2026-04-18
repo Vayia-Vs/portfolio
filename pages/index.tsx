@@ -446,6 +446,22 @@ export default function Home({ imagesFromFs }: HomeProps) {
   }, [imagesFromFs]);
 
   const toSrc = (name: string) => `/images/${encodeURIComponent(name)}`;
+  const isGreek = lang === "gr";
+
+  useEffect(() => {
+    if (!lightbox.open || typeof window === "undefined" || lightbox.images.length < 2) return;
+
+    const preloadIndexes = [
+      (lightbox.index + 1) % lightbox.images.length,
+      (lightbox.index - 1 + lightbox.images.length) % lightbox.images.length,
+    ];
+
+    preloadIndexes.forEach((imageIndex) => {
+      const img = new window.Image();
+      img.decoding = "async";
+      img.src = toSrc(lightbox.images[imageIndex]);
+    });
+  }, [lightbox.images, lightbox.index, lightbox.open]);
 
   const formatGreekCaps = (value: string) =>
     value
@@ -481,7 +497,6 @@ export default function Home({ imagesFromFs }: HomeProps) {
       : images.filter((name) => parseTags(name).includes(activeFilter));
   const isDesktopGallery = viewMode === "desktop";
   const isMobileLayout = viewMode !== "desktop";
-  const isGreek = lang === "gr";
   const galleryContainerClass = isDesktopGallery
     ? "mx-auto w-full max-w-[1600px] px-2 sm:px-0 relative z-10"
     : "mx-auto w-full max-w-6xl px-1 sm:px-0 relative z-10";
@@ -741,12 +756,14 @@ export default function Home({ imagesFromFs }: HomeProps) {
         className="relative flex min-h-[110svh] items-center justify-center overflow-hidden"
       >
         <div className="absolute inset-0">
-          <div
-            className="h-full w-full bg-cover bg-[position:58%_center] sm:bg-center"
-            style={{
-              backgroundImage:
-                "url('/images/hero.jpg')",
-            }}
+          <Image
+            src="/images/hero.jpg"
+            alt=""
+            fill
+            priority
+            quality={74}
+            sizes="100vw"
+            className="object-cover object-[58%_center] sm:object-center"
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
@@ -827,7 +844,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                       ref={(element) => {
                         mobileGalleryRefs.current[section.key] = element;
                       }}
-                      className="hide-scrollbar -mx-4 flex snap-x snap-mandatory gap-3 overflow-x-auto px-4 pb-2"
+                      className="mobile-gallery-track hide-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-2"
                       onScroll={() => handleMobileGalleryScroll(section.key)}
                     >
                       {sectionVisible.map((name, index) => (
@@ -843,10 +860,10 @@ export default function Home({ imagesFromFs }: HomeProps) {
                             src={toSrc(name)}
                             alt=""
                             fill
-                            sizes="72vw"
+                            sizes="(min-width: 640px) 280px, 72vw"
                             className="object-cover"
-                            priority={index < 2}
-                            quality={76}
+                            priority={section.key === mobileGallerySections[0]?.key && index === 0}
+                            quality={index === 0 ? 74 : 68}
                           />
                         </button>
                       ))}
@@ -945,7 +962,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                           sizes={galleryImageSizes}
                           className="object-cover"
                           priority={index < 3}
-                          quality={index < 5 ? 78 : 72}
+                          quality={index < 3 ? 74 : 68}
                         />
                       </div>
                     </button>
@@ -1016,6 +1033,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 fill
                 sizes="(min-width: 1024px) 40vw, 90vw"
                 className="object-cover"
+                quality={74}
               />
             </div>
           </div>
@@ -1030,6 +1048,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           fill
           sizes="100vw"
           className="object-cover object-center"
+          quality={70}
         />
         <div className="absolute inset-0 bg-black/42" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
@@ -1138,6 +1157,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <button
                   type="submit"
                   disabled={contactState === "submitting"}
+                  aria-label={contactState === "submitting" ? T[lang].contactSending : T[lang].contactCTA}
                   className="absolute right-3 top-1/2 inline-flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border border-[#d7b46a] bg-[#d7b46a] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_20px_rgba(215,180,106,0.26)] disabled:cursor-not-allowed disabled:opacity-70"
                 >
                   <svg
@@ -1281,6 +1301,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                   sizes="84vw"
                   className="object-contain"
                   priority
+                  quality={78}
                 />
               </div>
             </div>
