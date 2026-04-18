@@ -654,15 +654,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </div>
           </div>
 
-          <ul className={`flex justify-center gap-2 overflow-x-auto pb-1 md:hidden ${scrolled ? "mt-1" : "mt-3"}`}>
+          <ul className={`flex justify-center gap-1.5 overflow-x-auto pb-1 md:hidden ${scrolled ? "mt-1" : "mt-3"}`}>
             {T[lang].nav.map((item) => (
               <li key={item.target}>
                 <button
                   onClick={() => scrollTo(item.target)}
-                  className={`min-h-11 whitespace-nowrap px-3 py-2 text-[10px] uppercase transition ${
+                  className={`min-h-9 whitespace-nowrap px-2.5 py-1.5 text-[8.5px] uppercase transition ${
                     scrolled
-                      ? "font-semibold tracking-[0.2em] text-[#d7b46a]"
-                      : "rounded-full border border-[#d7b46a]/30 bg-black/35 px-4 py-3 tracking-[0.24em] text-white/80 hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
+                      ? "font-semibold tracking-[0.14em] text-[#d7b46a]"
+                      : "rounded-full border border-[#d7b46a]/30 bg-black/35 px-3 py-2 tracking-[0.16em] text-white/80 hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa]"
                   }`}
                 >
                   {formatUiLabel(item.label)}
@@ -689,8 +689,8 @@ export default function Home({ imagesFromFs }: HomeProps) {
           <div className="absolute inset-0 bg-gradient-to-b from-black/24 via-black/16 to-black/58" />
         </div>
 
-        <div className="relative z-10 max-w-4xl px-5 pb-18 pt-32 text-center sm:px-6 sm:pb-20 sm:pt-36">
-          <h1 className={`mb-8 text-[clamp(1.58rem,7.2vw,5.1rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
+        <div className="relative z-10 max-w-4xl px-5 pb-18 pt-28 text-center sm:px-6 sm:pb-20 sm:pt-36">
+          <h1 className={`mb-6 text-[clamp(1.58rem,7.2vw,5.1rem)] leading-[0.98] whitespace-nowrap sm:mb-10 ${isGreek ? "font-sans italic font-medium" : "font-serif italic"}`}>
             {lang === "gr" ? (
               <>
                 {T[lang].heroTitle1} {T[lang].heroTitle2}{" "}
@@ -705,7 +705,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </h1>
 
           <p
-            className={`mx-auto mb-10 text-sm leading-7 text-white/72 sm:mb-12 sm:text-lg sm:leading-relaxed md:text-lg ${
+            className={`mx-auto mb-11 text-sm leading-7 text-white/72 sm:mb-12 sm:text-lg sm:leading-relaxed md:text-lg ${
               lang === "en"
                 ? "max-w-xl sm:max-w-2xl lg:max-w-5xl lg:whitespace-nowrap"
                 : "max-w-xl"
@@ -714,7 +714,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             {T[lang].heroText}
           </p>
 
-          <div className="flex flex-row items-center justify-center gap-2 sm:gap-4">
+          <div className="mt-2 flex flex-row items-center justify-center gap-2 sm:gap-4">
             <button
               onClick={() => scrollTo("gallery")}
               className="inline-flex min-h-9 items-center gap-2 rounded-full border border-[#d7b46a] bg-[#d7b46a] px-3.5 py-2 text-[9px] uppercase tracking-[0.18em] text-black transition hover:border-[#f6dfaa] hover:bg-[#f6dfaa] hover:shadow-[0_0_26px_rgba(215,180,106,0.32)] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
@@ -723,7 +723,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
             </button>
             <button
               onClick={() => scrollTo("contact")}
-              className="inline-flex min-h-9 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-3.5 py-2 text-[9px] uppercase tracking-[0.18em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
+              className="inline-flex min-h-8 items-center gap-2 rounded-full border border-white/30 bg-black/25 px-3 py-1.5 text-[8.5px] uppercase tracking-[0.16em] text-white transition hover:border-[#d7b46a] hover:bg-[#d7b46a]/12 hover:text-[#f6dfaa] sm:min-h-0 sm:px-5 sm:text-xs sm:tracking-[0.3em]"
             >
               {T[lang].contactButton}
             </button>
@@ -734,15 +734,15 @@ export default function Home({ imagesFromFs }: HomeProps) {
       {/* ================= GALLERY ================= */}
       <section
         id="gallery"
-        className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-12 sm:px-8 sm:py-16 md:px-20 md:py-24"
+        className="gallery-backdrop relative overflow-hidden border-t border-white/10 px-4 py-8 sm:px-8 sm:py-16 md:px-20 md:py-24"
       >
         <div className={galleryContainerClass}>
-          <h2 className={`mb-8 text-3xl italic text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
+          <h2 className={`mb-6 text-3xl italic text-white sm:mb-10 sm:text-4xl md:mb-20 md:text-5xl ${isGreek ? "font-sans" : "font-serif"}`}>
             {T[lang].galleryTitle}
           </h2>
 
           {isMobileLayout ? (
-            <div className="space-y-12">
+            <div className="space-y-9">
               {mobileGallerySections.map((section) => {
                 const sectionVisible = section.images.slice(0, mobileGalleryVisible[section.key]);
                 const sectionIndex = Math.min(
@@ -751,7 +751,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 );
 
                 return (
-                  <div key={section.key} className="space-y-4 rounded-[1.55rem] bg-black/32 px-4 py-5 shadow-[0_20px_42px_rgba(0,0,0,0.18)]">
+                  <div key={section.key} className="space-y-3 rounded-[1.55rem] bg-black/32 px-4 py-4 shadow-[0_20px_42px_rgba(0,0,0,0.18)]">
                     <div className="flex items-end justify-between gap-3">
                       <h3 className="text-sm uppercase tracking-[0.28em] text-[#f6dfaa] sm:text-lg sm:tracking-[0.24em]">
                         {section.title}
@@ -773,7 +773,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                           key={`${section.key}-${name}`}
                           type="button"
                           data-mobile-gallery-card="true"
-                          className="animate-gallery-item relative aspect-square w-[64vw] shrink-0 snap-start overflow-hidden rounded-[1.2rem] border border-white/8 bg-white/10 text-left shadow-[0_18px_40px_rgba(0,0,0,0.28)] transition-all duration-300"
+                          className="animate-gallery-item relative aspect-square w-[72vw] shrink-0 snap-start overflow-hidden rounded-[1.2rem] border border-white/8 bg-white/10 text-left shadow-[0_18px_40px_rgba(0,0,0,0.28)] transition-all duration-300"
                           style={{ animationDelay: `${Math.min(index, 6) * 80}ms` }}
                           onClick={() => openLightbox(sectionVisible, index)}
                         >
@@ -781,7 +781,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                             src={toSrc(name)}
                             alt=""
                             fill
-                            sizes="64vw"
+                            sizes="72vw"
                             className="object-cover"
                             priority={index < 2}
                             quality={76}
@@ -927,8 +927,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
                 <p key={p}>{p}</p>
               ))}
             </div>
-
-            <div className="mt-9 flex flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.35em] text-[#d7b46a] uppercase">
+            <div className="mt-9 hidden flex-wrap gap-x-5 gap-y-2 text-[10px] tracking-[0.35em] text-[#d7b46a] uppercase lg:flex">
               {isGreek ? (
                 <>
                   <span>Φωτογραφία δρόμου</span>
@@ -962,7 +961,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
       </section>
 
       {/* ================= COLLABORATION ================= */}
-      <section className="relative flex min-h-[72svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-10 sm:px-8 sm:py-14 md:px-20 md:py-18">
+      <section className="relative flex min-h-[82svh] items-center overflow-hidden border-t border-white/10 bg-black px-4 py-12 sm:px-8 sm:py-14 md:px-20 md:py-18">
         <Image
           src="/images/greece1-landsc.png"
           alt=""
