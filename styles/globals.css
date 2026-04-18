@@ -48,7 +48,7 @@ body {
 
 @media (max-width: 640px) {
   .gallery-backdrop::before {
-    inset: 0.75rem;
+    display: none;
   }
 }
 
