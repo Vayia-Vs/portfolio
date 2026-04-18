@@ -1,3 +1,4 @@
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Head from "next/head";
 import type { GetStaticProps } from "next";
 import Link from "next/link";
@@ -11,14 +12,26 @@ type GalleryPageProps = {
 };
 
 export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
-  const rankedImages = new Map(curatedImageOrder.map((name, index) => [name, index]));
-  const images = [...imagesFromFs].sort((a, b) => {
-    const aRank = rankedImages.get(a) ?? Number.MAX_SAFE_INTEGER;
-    const bRank = rankedImages.get(b) ?? Number.MAX_SAFE_INTEGER;
+  const [lightbox, setLightbox] = useState<{
+    open: boolean;
+    images: string[];
+    index: number;
+  }>({ open: false, images: [], index: 0 });
+  const [isLightboxClosing, setIsLightboxClosing] = useState(false);
+  const [slideDirection, setSlideDirection] = useState<"next" | "prev" | "none">("none");
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const touchStartXRef = useRef<number | null>(null);
 
-    if (aRank !== bRank) return aRank - bRank;
-    return a.localeCompare(b);
-  });
+  const images = useMemo(() => {
+    const rankedImages = new Map(curatedImageOrder.map((name, index) => [name, index]));
+    return [...imagesFromFs].sort((a, b) => {
+      const aRank = rankedImages.get(a) ?? Number.MAX_SAFE_INTEGER;
+      const bRank = rankedImages.get(b) ?? Number.MAX_SAFE_INTEGER;
+
+      if (aRank !== bRank) return aRank - bRank;
+      return a.localeCompare(b);
+    });
+  }, [imagesFromFs]);
 
   const toSrc = (name: string) => `/images/${encodeURIComponent(name)}`;
   const getPrimaryTagLabel = (name: string) => {
@@ -33,6 +46,90 @@ export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
     if (primaryTag === "street") return "STREET";
     return primaryTag.toUpperCase();
   };
+
+  const openLightbox = (lightboxImages: string[], index: number) => {
+    if (closeTimerRef.current) {
+      clearTimeout(closeTimerRef.current);
+    }
+    setIsLightboxClosing(false);
+    setSlideDirection("none");
+    setLightbox({
+      open: true,
+      images: lightboxImages,
+      index,
+    });
+  };
+
+  const closeLightbox = useCallback(() => {
+    if (!lightbox.open || isLightboxClosing) return;
+    setIsLightboxClosing(true);
+    closeTimerRef.current = setTimeout(() => {
+      setLightbox({ open: false, images: [], index: 0 });
+      setIsLightboxClosing(false);
+      setSlideDirection("none");
+    }, 240);
+  }, [isLightboxClosing, lightbox.open]);
+
+  const moveLightbox = useCallback((direction: "next" | "prev") => {
+    setSlideDirection(direction);
+    setLightbox((prev) => {
+      if (!prev.open || prev.images.length < 2) return prev;
+      const offset = direction === "next" ? 1 : -1;
+      return {
+        ...prev,
+        index: (prev.index + offset + prev.images.length) % prev.images.length,
+      };
+    });
+  }, []);
+
+  const handleLightboxTouchStart = (e: React.TouchEvent<HTMLDivElement>) => {
+    touchStartXRef.current = e.touches[0]?.clientX ?? null;
+  };
+
+  const handleLightboxTouchEnd = (e: React.TouchEvent<HTMLDivElement>) => {
+    const startX = touchStartXRef.current;
+    const endX = e.changedTouches[0]?.clientX ?? null;
+    touchStartXRef.current = null;
+
+    if (startX === null || endX === null) return;
+    const deltaX = endX - startX;
+    if (Math.abs(deltaX) < 45) return;
+    moveLightbox(deltaX < 0 ? "next" : "prev");
+  };
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) {
+        clearTimeout(closeTimerRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!lightbox.open) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previousOverflow;
+    };
+  }, [lightbox.open]);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeLightbox();
+        return;
+      }
+      if (e.key === "ArrowRight") {
+        moveLightbox("next");
+      }
+      if (e.key === "ArrowLeft") {
+        moveLightbox("prev");
+      }
+    };
+    if (lightbox.open) window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [closeLightbox, lightbox.open, moveLightbox]);
 
   return (
     <>
@@ -62,10 +159,12 @@ export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3.5 lg:grid-cols-5">
             {images.map((name, index) => (
-              <div
+              <button
                 key={name}
-                className="animate-gallery-item group"
+                type="button"
+                className="animate-gallery-item group text-left"
                 style={{ animationDelay: `${Math.min(index, 14) * 60}ms` }}
+                onClick={() => openLightbox(images, index)}
               >
                 <div className="relative aspect-square overflow-hidden rounded-[1.2rem] border border-white/8 bg-white/[0.04] shadow-[0_18px_46px_rgba(0,0,0,0.22)] transition duration-500 group-hover:-translate-y-1 group-hover:border-[#d7b46a]/60">
                   <Image
@@ -77,18 +176,82 @@ export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
                     priority={index < 10}
                     quality={index < 10 ? 74 : 68}
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/54 via-transparent to-transparent opacity-70 transition duration-500 group-hover:opacity-95" />
-                  <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-center justify-between gap-3 px-4 py-3">
-                    <span className="text-[9px] uppercase tracking-[0.24em] text-white/78 sm:text-[10px] sm:tracking-[0.3em]">
-                      {getPrimaryTagLabel(name)}
-                    </span>
-                  </div>
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         </div>
       </main>
+
+      {lightbox.open && (
+        <div
+          className={`lightbox-overlay fixed inset-0 z-[100] overflow-hidden bg-black/92 p-3 sm:p-6 ${
+            isLightboxClosing ? "lightbox-overlay-out" : ""
+          }`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Image preview"
+          onClick={closeLightbox}
+        >
+          <div
+            className="relative flex h-full w-full flex-col justify-center"
+            onClick={(e) => e.stopPropagation()}
+            onTouchStart={handleLightboxTouchStart}
+            onTouchEnd={handleLightboxTouchEnd}
+          >
+            <div className="lightbox-panel mx-auto mb-4 flex w-full max-w-4xl justify-center pt-1 text-center sm:mb-6 sm:pt-2">
+              <p className="text-[11px] uppercase tracking-[0.28em] text-white/55 sm:text-xs sm:tracking-[0.34em]">
+                {String(lightbox.index + 1).padStart(2, "0")} / {String(lightbox.images.length).padStart(2, "0")}
+              </p>
+            </div>
+            <div className="relative flex flex-1 items-center justify-center overflow-hidden pt-2 sm:pt-4">
+              <div
+                key={`${lightbox.images[lightbox.index]}-${slideDirection}`}
+                className={`lightbox-image lightbox-image-${slideDirection} relative z-10 h-[68svh] w-[86vw] max-w-5xl sm:h-[70vh] sm:w-[84vw]`}
+              >
+                <Image
+                  src={toSrc(lightbox.images[lightbox.index])}
+                  alt={`${getPrimaryTagLabel(lightbox.images[lightbox.index]).toLowerCase()} photograph`}
+                  fill
+                  sizes="84vw"
+                  className="object-contain"
+                  priority
+                  quality={78}
+                />
+              </div>
+            </div>
+            <div className="mt-4 flex items-center justify-between gap-4">
+              <button
+                type="button"
+                className="inline-flex min-h-11 items-center px-1 py-2 text-[11px] uppercase tracking-[0.28em] text-white/70 transition hover:text-[#f6dfaa] sm:text-xs sm:tracking-[0.34em]"
+                onClick={closeLightbox}
+              >
+                Exit
+              </button>
+              {lightbox.images.length > 1 ? (
+                <div className="flex items-center gap-4 sm:gap-6">
+                  <button
+                    type="button"
+                    className="inline-flex min-h-11 items-center px-1 py-2 text-[1.4rem] font-light leading-none text-white transition hover:text-[#f6dfaa]"
+                    onClick={() => moveLightbox("prev")}
+                  >
+                    {"<"}
+                  </button>
+                  <button
+                    type="button"
+                    className="inline-flex min-h-11 items-center px-1 py-2 text-[1.4rem] font-light leading-none text-white transition hover:text-[#f6dfaa]"
+                    onClick={() => moveLightbox("next")}
+                  >
+                    {">"}
+                  </button>
+                </div>
+              ) : (
+                <div />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
