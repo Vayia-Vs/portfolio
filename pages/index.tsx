@@ -860,27 +860,24 @@ export default function Home({ imagesFromFs }: HomeProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-black/72 via-black/46 to-black/20" />
         <div className="absolute inset-0 bg-white/8" />
         <div className="relative z-10 mx-auto grid w-full max-w-[92rem] items-start gap-8 lg:grid-cols-[minmax(0,0.92fr)_minmax(0,1.08fr)] lg:gap-10">
-          <div className="animate-gallery-item rounded-[1.5rem] border border-white/10 bg-black/36 p-6 backdrop-blur-md sm:p-8 lg:sticky lg:top-10 lg:min-h-[26rem] lg:p-10">
-            {T[lang].servicesKicker ? (
-              <p className="mb-6 text-[10px] uppercase tracking-[0.32em] text-white/52 sm:text-xs sm:tracking-[0.4em]">
-                {formatUiLabel(T[lang].servicesKicker)}
+          <div className="animate-gallery-item flex items-center justify-center rounded-[1.5rem] border border-white/10 bg-black/36 p-6 backdrop-blur-md sm:p-8 lg:sticky lg:top-10 lg:min-h-[26rem] lg:p-10">
+            <div className="mx-auto max-w-xl text-center lg:max-w-2xl">
+              <h2 className={`text-[2rem] italic leading-[1.04] sm:text-[2.6rem] lg:text-[3.4rem] ${isGreek ? "font-sans" : "font-serif"}`}>
+                {isGreek ? "Τρεις τροποι συνεργασιας με εικονα και ατμοσφαιρα." : "Three ways to work together through image and atmosphere."}
+              </h2>
+              <p className="mt-6 text-sm leading-7 text-white/64 sm:text-base sm:leading-8">
+                {isGreek
+                  ? "Απο πιο προσωπικα πορτραιτα μεχρι καθαρες ληψεις προϊοντων και φωτογραφικες βολτες στην πολη, το section αυτο κρατα την ιδια ησυχη αισθητικη αλλα με πιο καθαρη δομη."
+                  : "From personal portraits to clean product imagery and city photography walks, this section keeps the same quiet tone but in a clearer, more intentional structure."}
               </p>
-            ) : null}
-            <h2 className={`max-w-xl text-[2rem] italic leading-[1.04] sm:text-[2.6rem] lg:text-[3.4rem] ${isGreek ? "font-sans" : "font-serif"}`}>
-              {isGreek ? "Τρεις τροποι συνεργασιας με εικονα και ατμοσφαιρα." : "Three ways to work together through image and atmosphere."}
-            </h2>
-            <p className="mt-6 max-w-lg text-sm leading-7 text-white/64 sm:text-base sm:leading-8">
-              {isGreek
-                ? "Απο πιο προσωπικα πορτραιτα μεχρι καθαρες ληψεις προϊοντων και φωτογραφικες βολτες στην πολη, το section αυτο κρατα την ιδια ησυχη αισθητικη αλλα με πιο καθαρη δομη."
-                : "From personal portraits to clean product imagery and city photography walks, this section keeps the same quiet tone but in a clearer, more intentional structure."}
-            </p>
+            </div>
           </div>
 
           <div className="grid gap-4 sm:gap-5">
             {T[lang].services.map((service, index) => (
               <div
                 key={service.title}
-                className="animate-gallery-item rounded-[1.35rem] border border-[#d7b46a]/30 bg-[linear-gradient(135deg,rgba(0,0,0,0.58),rgba(0,0,0,0.34))] p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition hover:border-[#f6dfaa]/70 hover:bg-[linear-gradient(135deg,rgba(0,0,0,0.64),rgba(0,0,0,0.42))] hover:shadow-[0_0_18px_rgba(215,180,106,0.14)] sm:p-6 lg:grid lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)_auto] lg:items-center lg:gap-8 lg:px-7 lg:py-7"
+                className="animate-gallery-item rounded-[1.35rem] border border-[#d7b46a]/30 bg-[linear-gradient(135deg,rgba(0,0,0,0.58),rgba(0,0,0,0.34))] p-5 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition hover:-translate-y-1.5 hover:scale-[1.015] hover:border-[#f6dfaa] hover:bg-[linear-gradient(135deg,rgba(0,0,0,0.72),rgba(0,0,0,0.48))] hover:shadow-[0_24px_56px_rgba(0,0,0,0.34),0_0_28px_rgba(215,180,106,0.22)] sm:p-6 lg:grid lg:grid-cols-[minmax(0,16rem)_minmax(0,1fr)_auto] lg:items-center lg:gap-8 lg:px-7 lg:py-7"
                 style={{ animationDelay: `${220 + index * 160}ms` }}
               >
                 <div className="mb-4 lg:mb-0">
