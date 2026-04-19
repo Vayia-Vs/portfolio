@@ -22,7 +22,7 @@ const notoSerif = Noto_Serif({
 });
 
 export default function App({ Component, pageProps }: AppProps) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-0V7N5LDWZF";
   const router = useRouter();
 
   useEffect(() => {
