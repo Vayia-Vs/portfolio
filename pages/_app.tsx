@@ -2,7 +2,7 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { Noto_Sans, Noto_Serif } from "next/font/google";
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { trackPageView } from "@/lib/analytics";
 
@@ -24,6 +24,13 @@ const notoSerif = Noto_Serif({
 export default function App({ Component, pageProps }: AppProps) {
   const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-0V7N5LDWZF";
   const router = useRouter();
+  const [gaDebug, setGaDebug] = useState<{
+    hasGtag: boolean;
+    hasScript: boolean;
+  }>({
+    hasGtag: false,
+    hasScript: false,
+  });
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -62,6 +69,24 @@ export default function App({ Component, pageProps }: AppProps) {
     };
   }, [gaId, router.asPath, router.events]);
 
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const updateDebugState = () => {
+      setGaDebug({
+        hasGtag: typeof window.gtag === "function",
+        hasScript: Boolean(
+          document.querySelector("script[src*='googletagmanager.com/gtag/js']"),
+        ),
+      });
+    };
+
+    updateDebugState();
+    const timer = window.setInterval(updateDebugState, 1500);
+
+    return () => window.clearInterval(timer);
+  }, []);
+
   return (
     <>
       {gaId ? (
@@ -86,6 +111,11 @@ export default function App({ Component, pageProps }: AppProps) {
       <main className={`${notoSans.variable} ${notoSerif.variable}`}>
         <Component {...pageProps} />
       </main>
+      <div className="fixed bottom-3 left-3 z-[300] rounded-xl border border-white/15 bg-black/85 px-3 py-2 text-[10px] uppercase tracking-[0.18em] text-white/80 shadow-[0_12px_34px_rgba(0,0,0,0.35)] backdrop-blur">
+        <p>GA ID: {gaId || "missing"}</p>
+        <p>gtag: {gaDebug.hasGtag ? "yes" : "no"}</p>
+        <p>script: {gaDebug.hasScript ? "yes" : "no"}</p>
+      </div>
     </>
   );
 }
