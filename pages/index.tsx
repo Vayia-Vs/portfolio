@@ -3,8 +3,6 @@ import type { GetStaticProps } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
-import path from "path";
-import fs from "fs";
 import {
   curatedImageOrder,
   homeContent,
@@ -12,12 +10,14 @@ import {
 } from "@/content/homeContent";
 import { projectsContent } from "@/content/projectsContent";
 import { trackEvent } from "@/lib/analytics";
+import { getGalleryImages } from "@/lib/galleryImages";
+import { getImageName, toImageSrc } from "@/lib/galleryImageHelpers";
 
 type HomeProps = {
-  imagesFromFs: string[];
+  galleryImages: string[];
 };
 
-export default function Home({ imagesFromFs }: HomeProps) {
+export default function Home({ galleryImages }: HomeProps) {
   /* ================= STATE ================= */
   const [scrolled, setScrolled] = useState(false);
   const [isAtPageBottom, setIsAtPageBottom] = useState(false);
@@ -291,16 +291,18 @@ export default function Home({ imagesFromFs }: HomeProps) {
       curatedImageOrder.map((name, index) => [name, index]),
     );
 
-    return [...imagesFromFs].sort((a, b) => {
-      const aRank = rankedImages.get(a) ?? Number.MAX_SAFE_INTEGER;
-      const bRank = rankedImages.get(b) ?? Number.MAX_SAFE_INTEGER;
+    return [...galleryImages].sort((a, b) => {
+      const aName = getImageName(a);
+      const bName = getImageName(b);
+      const aRank = rankedImages.get(aName) ?? Number.MAX_SAFE_INTEGER;
+      const bRank = rankedImages.get(bName) ?? Number.MAX_SAFE_INTEGER;
 
       if (aRank !== bRank) return aRank - bRank;
-      return a.localeCompare(b);
+      return aName.localeCompare(bName);
     });
-  }, [imagesFromFs]);
+  }, [galleryImages]);
 
-  const toSrc = (name: string) => `/images/${encodeURIComponent(name)}`;
+  const toSrc = (name: string) => toImageSrc(name);
   const isGreek = lang === "gr";
   const seoTitle = isGreek
     ? "Βάγια Βασιλείου | Φωτογραφία δρόμου, πορτρέτα και οπτικές ιστορίες"
@@ -362,7 +364,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   );
 
   const parseTags = (name: string) => {
-    const filename = name.split("/").pop() ?? "";
+    const filename = getImageName(name);
     const base = filename.replace(/\.[^/.]+$/, "");
     const parts = base.split("-");
     const tagParts = parts.slice(1);
@@ -388,7 +390,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
   const isDesktopGallery = viewMode === "desktop";
   const isMobileLayout = viewMode !== "desktop";
   const previewImages = images.slice(0, isMobileLayout ? 8 : 10);
-  const galleryImages = previewImages;
+  const galleryPreviewImages = previewImages;
   const selectedProjects = projectsContent;
   const looseGalleryImageSizes = isDesktopGallery
     ? "(min-width: 1280px) 22vw, (min-width: 1024px) 28vw, 45vw"
@@ -743,7 +745,7 @@ export default function Home({ imagesFromFs }: HomeProps) {
           </div>
 
           <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3.5 lg:grid-cols-5">
-            {galleryImages.map((name, index) => {
+            {galleryPreviewImages.map((name, index) => {
               return (
                 <button
                   key={name}
@@ -1203,21 +1205,12 @@ export default function Home({ imagesFromFs }: HomeProps) {
 }
 
 export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const imagesDir = path.join(process.cwd(), "public", "images");
-  const entries = fs.readdirSync(imagesDir, { withFileTypes: true });
-  const imagesFromFs = entries
-    .filter((entry) => entry.isFile())
-    .map((entry) => entry.name)
-    .filter((name) => /\.(png|jpe?g|webp|avif)$/i.test(name))
-    .filter((name) => {
-      const base = name.replace(/\.[^/.]+$/, "");
-      return base.split("-").length > 1;
-    })
-    .sort();
+  const galleryImages = await getGalleryImages();
 
   return {
     props: {
-      imagesFromFs,
+      galleryImages,
     },
+    revalidate: 300,
   };
 };

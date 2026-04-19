@@ -3,15 +3,15 @@ import Head from "next/head";
 import type { GetStaticProps } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import path from "path";
-import fs from "fs";
 import { curatedImageOrder } from "@/content/homeContent";
+import { getGalleryImages } from "@/lib/galleryImages";
+import { getImageName, toImageSrc } from "@/lib/galleryImageHelpers";
 
 type GalleryPageProps = {
-  imagesFromFs: string[];
+  galleryImages: string[];
 };
 
-export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
+export default function GalleryPage({ galleryImages }: GalleryPageProps) {
   const [lightbox, setLightbox] = useState<{
     open: boolean;
     images: string[];
@@ -24,18 +24,20 @@ export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
 
   const images = useMemo(() => {
     const rankedImages = new Map(curatedImageOrder.map((name, index) => [name, index]));
-    return [...imagesFromFs].sort((a, b) => {
-      const aRank = rankedImages.get(a) ?? Number.MAX_SAFE_INTEGER;
-      const bRank = rankedImages.get(b) ?? Number.MAX_SAFE_INTEGER;
+    return [...galleryImages].sort((a, b) => {
+      const aName = getImageName(a);
+      const bName = getImageName(b);
+      const aRank = rankedImages.get(aName) ?? Number.MAX_SAFE_INTEGER;
+      const bRank = rankedImages.get(bName) ?? Number.MAX_SAFE_INTEGER;
 
       if (aRank !== bRank) return aRank - bRank;
-      return a.localeCompare(b);
+      return aName.localeCompare(bName);
     });
-  }, [imagesFromFs]);
+  }, [galleryImages]);
 
-  const toSrc = (name: string) => `/images/${encodeURIComponent(name)}`;
+  const toSrc = (name: string) => toImageSrc(name);
   const getPrimaryTagLabel = (name: string) => {
-    const filename = name.split("/").pop() ?? "";
+    const filename = getImageName(name);
     const base = filename.replace(/\.[^/.]+$/, "");
     const primaryTag = base.split("-")[1]?.trim().toLowerCase();
 
@@ -264,21 +266,12 @@ export default function GalleryPage({ imagesFromFs }: GalleryPageProps) {
 }
 
 export const getStaticProps: GetStaticProps<GalleryPageProps> = async () => {
-  const imagesDir = path.join(process.cwd(), "public", "images");
-  const entries = fs.readdirSync(imagesDir, { withFileTypes: true });
-  const imagesFromFs = entries
-    .filter((entry) => entry.isFile())
-    .map((entry) => entry.name)
-    .filter((name) => /\.(png|jpe?g|webp|avif)$/i.test(name))
-    .filter((name) => {
-      const base = name.replace(/\.[^/.]+$/, "");
-      return base.split("-").length > 1;
-    })
-    .sort();
+  const galleryImages = await getGalleryImages();
 
   return {
     props: {
-      imagesFromFs,
+      galleryImages,
     },
+    revalidate: 300,
   };
 };

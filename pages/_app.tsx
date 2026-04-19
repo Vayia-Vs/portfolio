@@ -4,6 +4,7 @@ import { Noto_Sans, Noto_Serif } from "next/font/google";
 import Script from "next/script";
 import { useEffect } from "react";
 import { useRouter } from "next/router";
+import { trackPageView } from "@/lib/analytics";
 
 const notoSans = Noto_Sans({
   subsets: ["latin", "greek"],
@@ -31,6 +32,10 @@ export default function App({ Component, pageProps }: AppProps) {
     window.history.scrollRestoration = "manual";
 
     const handleRouteChangeComplete = (url: string) => {
+      if (gaId) {
+        trackPageView(url, gaId);
+      }
+
       const hashIndex = url.indexOf("#");
 
       if (hashIndex >= 0) {
@@ -55,7 +60,7 @@ export default function App({ Component, pageProps }: AppProps) {
       router.events.off("routeChangeComplete", handleRouteChangeComplete);
       window.history.scrollRestoration = previousScrollRestoration;
     };
-  }, [router.asPath, router.events]);
+  }, [gaId, router.asPath, router.events]);
 
   return (
     <>
@@ -70,7 +75,10 @@ export default function App({ Component, pageProps }: AppProps) {
               window.dataLayer = window.dataLayer || [];
               function gtag(){dataLayer.push(arguments);}
               gtag('js', new Date());
-              gtag('config', '${gaId}', { page_path: window.location.pathname });
+              gtag('config', '${gaId}', {
+                page_path: window.location.pathname,
+                send_page_view: true
+              });
             `}
           </Script>
         </>

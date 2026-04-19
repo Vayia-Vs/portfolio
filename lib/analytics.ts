@@ -4,11 +4,30 @@ declare global {
   }
 }
 
-export function trackEvent(eventName: string, params?: Record<string, unknown>) {
+function getGtag() {
   if (typeof window === "undefined" || typeof window.gtag !== "function") {
+    return null;
+  }
+
+  return window.gtag;
+}
+
+export function trackEvent(eventName: string, params?: Record<string, unknown>) {
+  const gtag = getGtag();
+  if (!gtag) {
     return;
   }
 
-  window.gtag("event", eventName, params ?? {});
+  gtag("event", eventName, params ?? {});
 }
 
+export function trackPageView(url: string, gaId: string) {
+  const gtag = getGtag();
+  if (!gtag) {
+    return;
+  }
+
+  gtag("config", gaId, {
+    page_path: url,
+  });
+}
